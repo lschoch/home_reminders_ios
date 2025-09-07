@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		46700ECB2E6C5F50009E2785 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 46700ECA2E6C5F50009E2785 /* SQLite */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		46700EAC2E6C5DF0009E2785 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46700ECB2E6C5F50009E2785 /* SQLite in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +130,7 @@
 			);
 			name = "Home Reminders";
 			packageProductDependencies = (
+				46700ECA2E6C5F50009E2785 /* SQLite */,
 			);
 			productName = "Home Reminders";
 			productReference = 46700E952E6C5DEF009E2785 /* Home Reminders.app */;
@@ -208,6 +214,9 @@
 			);
 			mainGroup = 46700E8C2E6C5DEF009E2785;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				46700EC92E6C5F50009E2785 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 46700E962E6C5DEF009E2785 /* Products */;
 			projectDirPath = "";
@@ -571,6 +580,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		46700EC92E6C5F50009E2785 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.15.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		46700ECA2E6C5F50009E2785 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 46700EC92E6C5F50009E2785 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 46700E8D2E6C5DEF009E2785 /* Project object */;
 }
