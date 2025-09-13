@@ -20,6 +20,16 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="lkm-lS-iyJ">
                                 <rect key="frame" x="0.0" y="162" width="393" height="572"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReminderCell" id="oa7-IG-vvA">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oa7-IG-vvA" id="Gck-W9-jpa">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
                             </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="Rqb-gQ-BMZ">
                                 <rect key="frame" x="96.666666666666686" y="749.66666666666663" width="200" height="34.333333333333371"/>
@@ -67,7 +77,7 @@
             </objects>
             <point key="canvasLocation" x="1046.5648854961833" y="-34.507042253521128"/>
         </scene>
-        <!--New Item-->
+        <!--New Reminder-->
         <scene sceneID="Igm-jW-Exv">
             <objects>
                 <viewController id="NUt-DV-aUr" customClass="NewItemViewController" customModule="Home_Reminders" customModuleProvider="target" sceneMemberID="viewController">
@@ -77,7 +87,7 @@
                         <viewLayoutGuide key="safeArea" id="0Ob-VO-CkX"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" title="New Item" id="OSf-ZT-rw6"/>
+                    <navigationItem key="navigationItem" title="New Reminder" id="OSf-ZT-rw6"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mcn-MQ-Sti" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
