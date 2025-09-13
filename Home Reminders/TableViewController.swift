@@ -12,7 +12,7 @@ class TableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Home Reminders"
+        //self.title = "Home Reminders"
     }
 
 
