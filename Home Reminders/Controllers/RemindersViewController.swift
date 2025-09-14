@@ -14,9 +14,8 @@ class RemindersViewController: UIViewController {
     
     var reminders: [Reminder] = [
         Reminder(description: "Check water softener level", frequency: "2", period: "weeks", dateLast: "2025-09-06", dateNext: "2025-09-20", note: "no note for this reminder"),
-        Reminder(description: "Change furnace filters", frequency: "6", period: "months", dateLast: "2025-06-06", dateNext: "2025-12-06", note: "no note for this reminder")
-        
-        
+        Reminder(description: "Change furnace filters", frequency: "6", period: "months", dateLast: "2025-06-06", dateNext: "2025-12-06", note: "no note for this reminder but what happens if the note is very long?"),
+        Reminder(description: "Change furnace filters", frequency: "6", period: "months", dateLast: "2025-06-06", dateNext: "2025-12-06", note: "no note for this reminder but what happens if the note is very long?")
     ]
     
     override func viewDidLoad() {
@@ -24,12 +23,17 @@ class RemindersViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
+        
+        tableView.rowHeight = 160 // UITableView.automaticDimension
+//        tableView.estimatedRowHeight = 130 // Adjust as needed
+        
         
         //MARK: - Date Logic
-        let currentDate = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let formattedDate = dateFormatter.string(from: currentDate)
+//        let currentDate = Date()
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//        let formattedDate = dateFormatter.string(from: currentDate)
 //        print("Formatted date: \(formattedDate)")
         
         //MARK: - Database File
@@ -53,9 +57,14 @@ extension RemindersViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let reminder = reminders[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ReminderCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
         
-        cell.textLabel?.text = reminder.description
+        cell.descriptionField.text = reminder.description
+        cell.dateLastField.text = reminder.dateLast
+        cell.dateNextField.text = reminder.dateNext
+        cell.frequencyField.text = reminder.frequency
+        cell.periodField.text = reminder.period
+        cell.noteField.text = reminder.note
 
         return cell
     }
