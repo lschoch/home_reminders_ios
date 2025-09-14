@@ -10,7 +10,6 @@ import SQLite
 
 class RemindersViewController: UIViewController {
     
-    
     @IBOutlet weak var tableView: UITableView!
     
     var reminders: [Reminder] = []
@@ -30,6 +29,10 @@ class RemindersViewController: UIViewController {
     
     //MARK: - Data Manipulation Methods
     func loadReminders() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let today = Date.now
+        
         // Copy database file to documents directory (one time only), print database file path
         let docName = "home_reminders"
         let docExt = "db"
@@ -54,7 +57,7 @@ class RemindersViewController: UIViewController {
             let date_next = Expression<String>("date_next")
             let note = Expression<String>("note")
             
-            for reminder in try db.prepare(remindersTable) {
+            for reminder in try db.prepare(remindersTable.order(date_next.asc)) {
                 reminders.append(Reminder(
                     description: try reminder.get(description),
                     frequency: try reminder.get(frequency),
@@ -64,6 +67,15 @@ class RemindersViewController: UIViewController {
                     note: try reminder.get(note)
                 )
                 )
+                
+                do {
+                    let dateNext = try dateFormatter.date(from: reminder.get(date_next))!
+                    if dateNext < today {
+                        print("expired")
+                    }
+                } catch {
+                    print("Error converting string to date: \(error)")
+                }
             }
         } catch {
             print("Error during query: \(error)")

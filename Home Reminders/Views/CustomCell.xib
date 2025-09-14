@@ -98,6 +98,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="customCell" destination="H2p-sc-9uM" id="ymA-74-EAL"/>
                 <outlet property="dateLastField" destination="5ni-0h-RcJ" id="A4w-u1-yjY"/>
                 <outlet property="dateNextField" destination="272-le-tie" id="ifM-US-gXl"/>
                 <outlet property="descriptionField" destination="j53-aq-Z9h" id="6Pk-iQ-pGY"/>

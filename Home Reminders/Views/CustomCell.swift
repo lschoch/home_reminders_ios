@@ -8,7 +8,8 @@
 import UIKit
 
 class CustomCell: UITableViewCell {
-
+    @IBOutlet weak var customCell: UIView!
+    
     @IBOutlet weak var noteField: UITextField!
     @IBOutlet weak var periodField: UITextField!
     @IBOutlet weak var frequencyField: UITextField!
