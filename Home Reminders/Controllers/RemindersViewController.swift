@@ -89,6 +89,10 @@ extension RemindersViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let today = Date.now
+        
         let reminder = reminders[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
         
@@ -98,6 +102,16 @@ extension RemindersViewController: UITableViewDataSource {
         cell.frequencyField.text = reminder.frequency
         cell.periodField.text = reminder.period
         cell.noteField.text = reminder.note
+        
+        // Modify cell background color as a function of due date compared to today's date
+        let dateNext = dateFormatter.date(from: reminder.dateNext)
+        if dateNext! < today {
+            cell.contentView.backgroundColor = .yellow
+        } else if dateNext! == today {
+            cell.contentView.backgroundColor = .green
+        } else {
+            cell.contentView.backgroundColor = .white
+        }
 
         return cell
     }
