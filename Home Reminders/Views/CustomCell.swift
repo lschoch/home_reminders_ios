@@ -14,9 +14,12 @@ class CustomCell: UITableViewCell {
     @IBOutlet weak var periodField: UITextField!
     @IBOutlet weak var frequencyField: UITextField!
     @IBOutlet weak var descriptionField: UITextField!
-    
     @IBOutlet weak var dateNextField: UITextField!
     @IBOutlet weak var dateLastField: UITextField!
+    
+    @IBOutlet weak var dropDownButton: UIButton!
+    
+    let periodPicker = ViewController()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,6 +32,11 @@ class CustomCell: UITableViewCell {
         noteField.leftViewMode = .always;
     }
 
+    @IBAction func dropDownButtonTapped(_ sender: UIButton) {
+        periodPicker.dropdownTableView?.isHidden.toggle()
+    }
+    
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 

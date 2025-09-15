@@ -13,6 +13,7 @@ class RemindersViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var reminders: [Reminder] = []
+    let periodPicker = ViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,12 +28,12 @@ class RemindersViewController: UIViewController {
         
     }
     
+    @IBAction func dropDownButtonTapped(_ sender: UIButton) {
+        periodPicker.dropdownTableView?.isHidden.toggle()
+    }
+    
     //MARK: - Data Manipulation Methods
     func loadReminders() {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let today = Date.now
-        
         // Copy database file to documents directory (one time only), print database file path
         let docName = "home_reminders"
         let docExt = "db"
@@ -67,15 +68,6 @@ class RemindersViewController: UIViewController {
                     note: try reminder.get(note)
                 )
                 )
-                
-                do {
-                    let dateNext = try dateFormatter.date(from: reminder.get(date_next))!
-                    if dateNext < today {
-                        print("expired")
-                    }
-                } catch {
-                    print("Error converting string to date: \(error)")
-                }
             }
         } catch {
             print("Error during query: \(error)")
