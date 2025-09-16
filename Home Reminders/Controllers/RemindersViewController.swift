@@ -13,7 +13,6 @@ class RemindersViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var reminders: [Reminder] = []
-    let periodPicker = ViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +20,6 @@ class RemindersViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
-        
         tableView.rowHeight = 160 // UITableView.automaticDimension
         
         loadReminders()
@@ -29,7 +27,7 @@ class RemindersViewController: UIViewController {
     }
     
     @IBAction func dropDownButtonTapped(_ sender: UIButton) {
-        periodPicker.dropdownTableView?.isHidden.toggle()
+
     }
     
     //MARK: - Data Manipulation Methods
@@ -92,7 +90,7 @@ extension RemindersViewController: UITableViewDataSource {
         cell.dateLastField.text = reminder.dateLast
         cell.dateNextField.text = reminder.dateNext
         cell.frequencyField.text = reminder.frequency
-        cell.periodField.text = reminder.period
+//        cell.periodField.text = reminder.period
         cell.noteField.text = reminder.note
         
         // Modify cell background color as a function of due date compared to today's date
@@ -111,6 +109,6 @@ extension RemindersViewController: UITableViewDataSource {
 
 extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected row: \(indexPath.row)")
+//        print("Selected row: \(indexPath.row)")
     }
 }

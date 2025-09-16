@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CustomCell: UITableViewCell {
+class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource {
     @IBOutlet weak var customCell: UIView!
     
     @IBOutlet weak var noteField: UITextField!
@@ -17,9 +17,12 @@ class CustomCell: UITableViewCell {
     @IBOutlet weak var dateNextField: UITextField!
     @IBOutlet weak var dateLastField: UITextField!
     
-    @IBOutlet weak var dropDownButton: UIButton!
+    @IBOutlet weak var picker: UIPickerView!
     
-    let periodPicker = ViewController()
+    var pickerData: [String] = []
+    var pickerDataIndex: Int = 0
+    
+    var dateFormatter = DateFormatter()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,17 +33,93 @@ class CustomCell: UITableViewCell {
         descriptionField.leftViewMode = .always;
         noteField.leftView = paddingView2;
         noteField.leftViewMode = .always;
-    }
-
-    @IBAction func dropDownButtonTapped(_ sender: UIButton) {
-        periodPicker.dropdownTableView?.isHidden.toggle()
+        
+        dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        
+        picker.delegate = self
+        picker.dataSource = self
+        pickerData = ["one-time", "days", "weeks", "months", "years"]
+        
     }
     
+    // Number of columns of data
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    // The number of rows of data
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+    
+    // The data to return for the row and component (column) that's being passed in
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+    }
+    
+    // Capture the picker view selection
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        // This method is triggered whenever the user makes a change to the picker selection.
+        // The parameter named row and component represents what was selected.
+        dateNextField.text = calculateNextDate(row: row)
+        pickerDataIndex = row
+    }
+    
+    // Recalculate date next and modify cell background color when there is a change in date last or frequency
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        dateNextField.text = calculateNextDate(row: pickerDataIndex)
+//        print("Text field value changed to: \(textField.text ?? "")")
+    }
+    
+    // Calculate next date as a function of last date, frequency and period
+    func calculateNextDate(row: Int) -> String {
+        var nextDate: Date
+        var dateFormatter: DateFormatter
+        dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let period = pickerData[row]
+        if let frequencyInt = Int(frequencyField.text!) {
+            if let lastDate = dateFormatter.date(from: dateLastField.text!) {
+                switch period {
+                case "days":
+                    nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt, to: lastDate)!
+                case "weeks":
+                    nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: lastDate)!
+                case "months":
+                    nextDate = Calendar.current.date(byAdding: .month, value: frequencyInt, to: lastDate)!
+                case "years":
+                    nextDate = Calendar.current.date(byAdding: .year, value: frequencyInt, to: lastDate)!
+                default:
+                    nextDate = lastDate
+                }
+                return dateFormatter.string(from: nextDate)
+            }
+            else {
+                print("Please enter a valid last date.")
+                return ""
+            }
+        } else {
+            print("Please enter a valid frequency.")
+            return ""
+        }
+    }
+    
+    // To change fonts on picker menu
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        var label: UILabel
+        if let reusedLabel = view as? UILabel {
+            label = reusedLabel
+        } else {
+            label = UILabel()
+        }
 
-        // Configure the view for the selected state
+        label.font = UIFont(name: "Helvetica Neue", size: 14) // Customize font name and size
+        label.text = pickerData[row]
+        label.textAlignment = .center
+
+        return label
     }
     
 }
