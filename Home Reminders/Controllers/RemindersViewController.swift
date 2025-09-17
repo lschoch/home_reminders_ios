@@ -8,7 +8,7 @@
 import UIKit
 import SQLite
 
-class RemindersViewController: UIViewController {
+class RemindersViewController: UIViewController, CustomCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -26,9 +26,12 @@ class RemindersViewController: UIViewController {
         
     }
     
-    @IBAction func dropDownButtonTapped(_ sender: UIButton) {
-
-    }
+    func textFieldDidUpdate(text: String?, forCell cell: CustomCell) {
+            // Safely get the index path for the cell
+//            guard let indexPath = tableView.indexPath(for: cell) else { return }
+            
+            print("text from textFieldDidUpdate: \(text ?? "No text")")
+        }
     
     //MARK: - Data Manipulation Methods
     func loadReminders() {
@@ -46,7 +49,7 @@ class RemindersViewController: UIViewController {
             print("Error opening database: \(error)")
         }
         
-        // Select all reminders and append each to the reminders array
+        // Select all reminders, append each reminder to the reminders array
         do {
             let remindersTable = Table("reminders")
             let description = Expression<String>("description")
@@ -83,8 +86,12 @@ extension RemindersViewController: UITableViewDataSource {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let today = Date.now
         
+        let pickerData = ["one-time", "days", "weeks", "months", "years"]
+        
         let reminder = reminders[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
+        
+        cell.delegate = self
         
         cell.descriptionField.text = reminder.description
         cell.dateLastField.text = reminder.dateLast
@@ -93,7 +100,12 @@ extension RemindersViewController: UITableViewDataSource {
 //        cell.periodField.text = reminder.period
         cell.noteField.text = reminder.note
         
-        // Modify cell background color as a function of due date compared to today's date
+        // To initialize picker with data from the database
+        if let index = pickerData.firstIndex(of: reminder.period) {
+            cell.picker.selectRow(index, inComponent: 0, animated: false)
+        }
+        
+        // Modify cell background color as a function of due date in relation to today's date
         let dateNext = dateFormatter.date(from: reminder.dateNext)
         if dateNext! < today {
             cell.contentView.backgroundColor = .yellow

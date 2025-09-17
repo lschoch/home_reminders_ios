@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol CustomCellDelegate: AnyObject {
+    func textFieldDidUpdate(text: String?, forCell cell: CustomCell)
+}
+
 class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource {
     @IBOutlet weak var customCell: UIView!
     
@@ -22,7 +26,7 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
     var pickerData: [String] = []
     var pickerDataIndex: Int = 0
     
-    var dateFormatter = DateFormatter()
+    weak var delegate: CustomCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -36,6 +40,7 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
         
         dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+//        dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
         picker.delegate = self
         picker.dataSource = self
@@ -62,24 +67,28 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         // This method is triggered whenever the user makes a change to the picker selection.
         // The parameter named row and component represents what was selected.
-        dateNextField.text = calculateNextDate(row: row)
+        dateNextField.text = calculateDateNext(row: row)
         pickerDataIndex = row
     }
     
-    // Recalculate date next and modify cell background color when there is a change in date last or frequency
+    // Recalculate next date when there is a change in last date or frequency
     @objc func textFieldDidChange(_ textField: UITextField) {
-        dateNextField.text = calculateNextDate(row: pickerDataIndex)
+        dateNextField.text = calculateDateNext(row: pickerDataIndex)
 //        print("Text field value changed to: \(textField.text ?? "")")
+        
+        if textField == dateNextField {
+            delegate?.textFieldDidUpdate(text: textField.text, forCell: self)
+        }
     }
     
     // Calculate next date as a function of last date, frequency and period
-    func calculateNextDate(row: Int) -> String {
+    func calculateDateNext(row: Int) -> String {
         var nextDate: Date
         var dateFormatter: DateFormatter
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        let period = pickerData[row]
+        let period = pickerData[picker.selectedRow(inComponent: 0)]
         if let frequencyInt = Int(frequencyField.text!) {
             if let lastDate = dateFormatter.date(from: dateLastField.text!) {
                 switch period {
