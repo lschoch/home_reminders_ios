@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol CustomCellDelegate: AnyObject {
-    func textFieldDidUpdate(text: String?, forCell cell: CustomCell)
-}
-
 class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource {
     @IBOutlet weak var customCell: UIView!
     
@@ -25,8 +21,6 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
     
     var pickerData: [String] = []
     var pickerDataIndex: Int = 0
-    
-    weak var delegate: CustomCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -75,10 +69,6 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
     @objc func textFieldDidChange(_ textField: UITextField) {
         dateNextField.text = calculateDateNext(row: pickerDataIndex)
 //        print("Text field value changed to: \(textField.text ?? "")")
-        
-        if textField == dateNextField {
-            delegate?.textFieldDidUpdate(text: textField.text, forCell: self)
-        }
     }
     
     // Calculate next date as a function of last date, frequency and period

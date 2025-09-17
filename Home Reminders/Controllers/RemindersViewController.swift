@@ -8,7 +8,7 @@
 import UIKit
 import SQLite
 
-class RemindersViewController: UIViewController, CustomCellDelegate {
+class RemindersViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -25,13 +25,6 @@ class RemindersViewController: UIViewController, CustomCellDelegate {
         loadReminders()
         
     }
-    
-    func textFieldDidUpdate(text: String?, forCell cell: CustomCell) {
-            // Safely get the index path for the cell
-//            guard let indexPath = tableView.indexPath(for: cell) else { return }
-            
-            print("text from textFieldDidUpdate: \(text ?? "No text")")
-        }
     
     //MARK: - Data Manipulation Methods
     func loadReminders() {
@@ -52,6 +45,7 @@ class RemindersViewController: UIViewController, CustomCellDelegate {
         // Select all reminders, append each reminder to the reminders array
         do {
             let remindersTable = Table("reminders")
+            let id = Expression<Int64>("id")
             let description = Expression<String>("description")
             let frequency = Expression<String>("frequency")
             let period = Expression<String>("period")
@@ -61,6 +55,7 @@ class RemindersViewController: UIViewController, CustomCellDelegate {
             
             for reminder in try db.prepare(remindersTable.order(date_next.asc)) {
                 reminders.append(Reminder(
+                    id: try reminder.get(id),
                     description: try reminder.get(description),
                     frequency: try reminder.get(frequency),
                     period: try reminder.get(period),
@@ -84,20 +79,17 @@ extension RemindersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        let today = Date.now
+//        let today = Date.now
         
         let pickerData = ["one-time", "days", "weeks", "months", "years"]
         
         let reminder = reminders[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
         
-        cell.delegate = self
-        
         cell.descriptionField.text = reminder.description
         cell.dateLastField.text = reminder.dateLast
         cell.dateNextField.text = reminder.dateNext
         cell.frequencyField.text = reminder.frequency
-//        cell.periodField.text = reminder.period
         cell.noteField.text = reminder.note
         
         // To initialize picker with data from the database
@@ -106,14 +98,19 @@ extension RemindersViewController: UITableViewDataSource {
         }
         
         // Modify cell background color as a function of due date in relation to today's date
-        let dateNext = dateFormatter.date(from: reminder.dateNext)
-        if dateNext! < today {
-            cell.contentView.backgroundColor = .yellow
-        } else if dateNext! == today {
-            cell.contentView.backgroundColor = .green
-        } else {
-            cell.contentView.backgroundColor = .white
-        }
+//        let dateNext = dateFormatter.date(from: reminder.dateNext)
+//        if dateNext! < today {
+//            cell.contentView.backgroundColor = .yellow
+//        } else if dateNext! == today {
+//            cell.contentView.backgroundColor = .green
+//        } else {
+//            cell.contentView.backgroundColor = .white
+//        }
+        
+        // Create and set the custom selection background view
+        let customSelectedBackgroundView = UIView()
+        customSelectedBackgroundView.backgroundColor = .brandLightYellow
+        cell.selectedBackgroundView = customSelectedBackgroundView
 
         return cell
     }
@@ -121,6 +118,8 @@ extension RemindersViewController: UITableViewDataSource {
 
 extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print("Selected row: \(indexPath.row)")
+        print("Selected row: \(indexPath.row)")
+        let row = indexPath.row
+        print("id: \(reminders[row].id)")
     }
 }

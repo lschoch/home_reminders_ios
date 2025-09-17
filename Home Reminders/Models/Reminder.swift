@@ -8,6 +8,7 @@
 import Foundation
 
 struct Reminder {
+    let id: Int64
     let description: String
     let frequency: String
     let period: String
