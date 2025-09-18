@@ -8,11 +8,11 @@
 import Foundation
 
 struct Reminder {
-    let id: Int64
-    let description: String
-    let frequency: String
-    let period: String
-    let dateLast: String
-    let dateNext: String
-    let note: String
+    var id: Int64
+    var description: String
+    var frequency: String
+    var period: String
+    var dateLast: String
+    var dateNext: String
+    var note: String
 }

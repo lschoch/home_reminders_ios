@@ -7,7 +7,15 @@
 
 import UIKit
 
-class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource {
+protocol CustomCellDelegate: AnyObject {
+        func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?)
+    }
+
+protocol PickerCellDelegate: AnyObject {
+    func picker(cell: CustomCell, didSelectRow row: Int)
+}
+
+class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     @IBOutlet weak var customCell: UIView!
     
     @IBOutlet weak var noteField: UITextField!
@@ -18,6 +26,9 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
     @IBOutlet weak var dateLastField: UITextField!
     
     @IBOutlet weak var picker: UIPickerView!
+    
+    weak var delegate: CustomCellDelegate?
+    weak var delegate2: PickerCellDelegate?
     
     var pickerData: [String] = []
     var pickerDataIndex: Int = 0
@@ -34,7 +45,6 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
         
         dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-//        dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
         picker.delegate = self
         picker.dataSource = self
@@ -63,12 +73,14 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
         // The parameter named row and component represents what was selected.
         dateNextField.text = calculateDateNext(row: row)
         pickerDataIndex = row
+        delegate2?.picker(cell: self, didSelectRow: row)
     }
     
     // Recalculate next date when there is a change in last date or frequency
     @objc func textFieldDidChange(_ textField: UITextField) {
         dateNextField.text = calculateDateNext(row: pickerDataIndex)
-//        print("Text field value changed to: \(textField.text ?? "")")
+        delegate?.customCell(self, didUpdateText: textField)
+        
     }
     
     // Calculate next date as a function of last date, frequency and period
@@ -93,6 +105,7 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource 
                 default:
                     nextDate = lastDate
                 }
+    
                 return dateFormatter.string(from: nextDate)
             }
             else {
