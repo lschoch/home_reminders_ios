@@ -8,7 +8,7 @@
 import UIKit
 import SQLite
 
-class RemindersViewController: UIViewController, CustomCellDelegate, PickerCellDelegate {
+class RemindersViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -28,39 +28,10 @@ class RemindersViewController: UIViewController, CustomCellDelegate, PickerCellD
         
     }
     
-    func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?) {
-        print("textField: \(textField as Any)")
-        print("tableRow: \(tableRow ?? -1)")
-        if let safeTextField = textField, let safeTableRow = tableRow {
-            if safeTextField.tag == 1 {
-                print("dateLastField")
-                reminders[safeTableRow].dateLast = safeTextField.text!
-            } else if safeTextField.tag == 2 {
-                print("frequencyField")
-                reminders[safeTableRow].frequency = safeTextField.text!
-            } else {
-                print("no tag")
-            }
-        }
-    }
-    
-    func picker(cell: CustomCell, didSelectRow row: Int) {
-            // You now have access to the cell and the selected row.
-            // Get the index path of the cell to update your data model.
-            if let indexPath = tableView.indexPath(for: cell) {
-                print("Selected row \(row) in cell at \(indexPath)")
-                if let safeTableRow = tableRow {
-                    reminders[safeTableRow].period = pickerData[row]
-                    print("period: \(reminders[safeTableRow].period)")
-                    print("pickerdata: \(pickerData[row])")
-                }
-                
-            }
-        }
-    
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         print("Save button pressed")
         print("row: \(tableRow ?? -1)")
+        print(reminders)
         
         if tableRow ?? -1 < 0 {
             print("Please select a reminder to save.")
@@ -91,6 +62,7 @@ class RemindersViewController: UIViewController, CustomCellDelegate, PickerCellD
             do {
                 if let safeTableRow = tableRow {
                     let myId = reminders[safeTableRow].id
+                    print(safeTableRow, myId)
                     let reminderToSave = remindersTable.filter(id == myId)
                     try db.run(reminderToSave.update(
                         description <- reminders[tableRow!].description,
@@ -108,7 +80,7 @@ class RemindersViewController: UIViewController, CustomCellDelegate, PickerCellD
     }
     
     //MARK: - Data Manipulation Methods
-    func loadReminders() {
+    func loadReminders() -> Void {
         // Copy database file to documents directory (one time only), print database file path
         let docName = "home_reminders"
         let docExt = "db"
@@ -151,17 +123,14 @@ class RemindersViewController: UIViewController, CustomCellDelegate, PickerCellD
         }
     }
 }
-   
+
+//MARK: - UITableViewDataSource Extension
 extension RemindersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return reminders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-//        let today = Date.now
-        
         let reminder = reminders[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
         
@@ -170,8 +139,8 @@ extension RemindersViewController: UITableViewDataSource {
         cell.dateNextField.text = reminder.dateNext
         cell.frequencyField.text = reminder.frequency
         cell.noteField.text = reminder.note
-        cell.delegate = self
-        cell.delegate2 = self
+        cell.customCellDelegate = self
+        cell.pickerDelegate = self
         
         // To initialize picker with data from the database
         if let index = pickerData.firstIndex(of: reminder.period) {
@@ -179,6 +148,9 @@ extension RemindersViewController: UITableViewDataSource {
         }
         
         // Modify cell background color as a function of due date in relation to today's date
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//        let today = Date.now
 //        let dateNext = dateFormatter.date(from: reminder.dateNext)
 //        if dateNext! < today {
 //            cell.contentView.backgroundColor = .yellow
@@ -197,11 +169,62 @@ extension RemindersViewController: UITableViewDataSource {
     }
 }
 
+//MARK: - UITableViewDelegate Extension
 extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Selected row: \(indexPath.row)")
         let row = indexPath.row
         print("id: \(reminders[row].id)")
         tableRow = row
+    }
+}
+
+//MARK: - CustomCellDelegate Extension
+extension RemindersViewController: CustomCellDelegate {
+    func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?) {
+        print("tableRow: \(tableRow ?? -1)")
+        if let safeTextField = textField, let safeTableRow = tableRow {
+            print("safeTextField: \(safeTextField.text ?? "empty")")
+            var reminder = reminders[safeTableRow]
+            switch safeTextField.tag {
+            case 1:
+                print("description")
+                reminder.description = safeTextField.text!
+            case 2:
+                print("dateLast")
+                reminder.dateLast = safeTextField.text!
+            case 3:
+                print("dateNext")
+                reminder.dateNext = safeTextField.text!
+            case 4:
+                print("frequency")
+                reminder.frequency = safeTextField.text!
+            case 5:
+                print("note")
+                reminder.note = safeTextField.text!
+            default:
+                print("unknown")
+            }
+        }
+    }
+    
+    func didTapElementInCell(_ cell: CustomCell) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            print("Tapped cell at \(indexPath)")
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
+        }
+    }
+}
+
+//MARK: - PickerCellDelegate Extension
+extension RemindersViewController: PickerCellDelegate {
+    func picker(cell: CustomCell, didSelectRow row: Int) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            print("Selected row \(row) in cell at \(indexPath)")
+            if let safeTableRow = tableRow {
+                reminders[safeTableRow].period = pickerData[row]
+            }
+        }
     }
 }

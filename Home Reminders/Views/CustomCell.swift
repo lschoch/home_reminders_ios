@@ -9,10 +9,12 @@ import UIKit
 
 protocol CustomCellDelegate: AnyObject {
         func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?)
+        func didTapElementInCell(_ cell: CustomCell)
     }
 
 protocol PickerCellDelegate: AnyObject {
     func picker(cell: CustomCell, didSelectRow row: Int)
+    func didTapElementInCell(_ cell: CustomCell)
 }
 
 class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
@@ -27,8 +29,8 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource,
     
     @IBOutlet weak var picker: UIPickerView!
     
-    weak var delegate: CustomCellDelegate?
-    weak var delegate2: PickerCellDelegate?
+    weak var customCellDelegate: CustomCellDelegate?
+    weak var pickerDelegate: PickerCellDelegate?
     
     var pickerData: [String] = []
     var pickerDataIndex: Int = 0
@@ -43,13 +45,36 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource,
         noteField.leftView = paddingView2;
         noteField.leftViewMode = .always;
         
+        descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        noteField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
         picker.delegate = self
         picker.dataSource = self
         pickerData = ["one-time", "days", "weeks", "months", "years"]
         
+    }
+    
+    @IBAction func descriptionTapped(_ sender: UITextField) {
+        customCellDelegate?.didTapElementInCell(self)   
+    }
+    
+    @IBAction func dateLastTapped(_ sender: UITextField) {
+        customCellDelegate?.didTapElementInCell(self)
+    }
+    
+    @IBAction func dateNextTapped(_ sender: UITextField) {
+        customCellDelegate?.didTapElementInCell(self)
+    }
+    
+    @IBAction func frequencyTapped(_ sender: UITextField) {
+        customCellDelegate?.didTapElementInCell(self)
+    }
+    
+    @IBAction func noteTapped(_ sender: UITextField) {
+        customCellDelegate?.didTapElementInCell(self)
     }
     
     // Number of columns of data
@@ -73,13 +98,14 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource,
         // The parameter named row and component represents what was selected.
         dateNextField.text = calculateDateNext(row: row)
         pickerDataIndex = row
-        delegate2?.picker(cell: self, didSelectRow: row)
+        pickerDelegate?.picker(cell: self, didSelectRow: row)
+        pickerDelegate?.didTapElementInCell(self)
     }
     
     // Recalculate next date when there is a change in last date or frequency
     @objc func textFieldDidChange(_ textField: UITextField) {
         dateNextField.text = calculateDateNext(row: pickerDataIndex)
-        delegate?.customCell(self, didUpdateText: textField)
+        customCellDelegate?.customCell(self, didUpdateText: textField)
         
     }
     
