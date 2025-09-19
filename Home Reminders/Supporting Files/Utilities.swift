@@ -24,3 +24,4 @@ func copyFileToDocumentsFolder(nameForFile: String, extForFile: String) {
         }
 }
 
+

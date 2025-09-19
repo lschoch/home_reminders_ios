@@ -17,7 +17,7 @@ protocol PickerCellDelegate: AnyObject {
     func didTapElementInCell(_ cell: CustomCell)
 }
 
-class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+class CustomCell: UITableViewCell {
     @IBOutlet weak var customCell: UIView!
     
     @IBOutlet weak var noteField: UITextField!
@@ -51,6 +51,7 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource,
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         noteField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
+        
         picker.delegate = self
         picker.dataSource = self
         pickerData = ["one-time", "days", "weeks", "months", "years"]
@@ -75,38 +76,6 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource,
     
     @IBAction func noteTapped(_ sender: UITextField) {
         customCellDelegate?.didTapElementInCell(self)
-    }
-    
-    // Number of columns of data
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    // The number of rows of data
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData.count
-    }
-    
-    // The data to return for the row and component (column) that's being passed in
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerData[row]
-    }
-    
-    // Capture the picker view selection
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        // This method is triggered whenever the user makes a change to the picker selection.
-        // The parameter named row and component represents what was selected.
-        dateNextField.text = calculateDateNext(row: row)
-        pickerDataIndex = row
-        pickerDelegate?.picker(cell: self, didSelectRow: row)
-        pickerDelegate?.didTapElementInCell(self)
-    }
-    
-    // Recalculate next date when there is a change in last date or frequency
-    @objc func textFieldDidChange(_ textField: UITextField) {
-        dateNextField.text = calculateDateNext(row: pickerDataIndex)
-        customCellDelegate?.customCell(self, didUpdateText: textField)
-        
     }
     
     // Calculate next date as a function of last date, frequency and period
@@ -153,11 +122,50 @@ class CustomCell: UITableViewCell, UIPickerViewDelegate, UIPickerViewDataSource,
             label = UILabel()
         }
 
-        label.font = UIFont(name: "Helvetica Neue", size: 14) // Customize font name and size
+        label.font = UIFont(name: "Helvetica Neue", size: 16) // Customize font name and size
         label.text = pickerData[row]
         label.textAlignment = .center
 
         return label
     }
     
+}
+
+//MARK: - UIPickerViewDataSource Extension
+extension CustomCell: UIPickerViewDataSource {
+    // Number of columns of data
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    // The number of rows of data
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+    
+    // The data to return for the row and component (column) that's being passed in
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+    }
+}
+
+//MARK: - UIPickerViewDelegate Extension
+extension CustomCell: UIPickerViewDelegate {
+    // Capture the picker view selection
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        // This method is triggered whenever the user makes a change to the picker selection.
+        // The parameter named row and component represents what was selected.
+        pickerDataIndex = row
+        pickerDelegate?.picker(cell: self, didSelectRow: row)
+        pickerDelegate?.didTapElementInCell(self)
+    }
+}
+
+//MARK: - UITextFieldDelegate Extension
+extension CustomCell: UITextFieldDelegate {
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        // Recalculate next date when there is a change in last date or frequency
+        dateNextField.text = calculateDateNext(row: pickerDataIndex)
+        customCellDelegate?.customCell(self, didUpdateText: textField)
+    }
 }

@@ -29,10 +29,9 @@ class RemindersViewController: UIViewController {
     }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
-        print("Save button pressed")
-        print("row: \(tableRow ?? -1)")
-        print(reminders)
-        
+        print("Save button pressed.")
+        print(reminders[tableRow ?? -1])
+
         if tableRow ?? -1 < 0 {
             print("Please select a reminder to save.")
             return
@@ -60,7 +59,7 @@ class RemindersViewController: UIViewController {
             let note = Expression<String>("note")
             
             do {
-                if let safeTableRow = tableRow {
+                if let safeTableRow = tableRow  {
                     let myId = reminders[safeTableRow].id
                     print(safeTableRow, myId)
                     let reminderToSave = remindersTable.filter(id == myId)
@@ -79,9 +78,48 @@ class RemindersViewController: UIViewController {
         }
     }
     
+    // Calculate next date as a function of last date, frequency and period
+    func calculateDateNext() -> String {
+        var nextDate: Date
+        var dateFormatter: DateFormatter
+        dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        if let safeTableRow = tableRow {
+            let period = reminders[safeTableRow].period
+            if let frequencyInt = Int(reminders[tableRow ?? -1].frequency) {
+                if let lastDate = dateFormatter.date(from: reminders[tableRow ?? -1].dateLast) {
+                    switch period {
+                    case "days":
+                        nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt, to: lastDate)!
+                    case "weeks":
+                        nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: lastDate)!
+                    case "months":
+                        nextDate = Calendar.current.date(byAdding: .month, value: frequencyInt, to: lastDate)!
+                    case "years":
+                        nextDate = Calendar.current.date(byAdding: .year, value: frequencyInt, to: lastDate)!
+                    default:
+                        nextDate = lastDate
+                    }
+                    return dateFormatter.string(from: nextDate)
+                }
+                else {
+                    print("Please enter a valid last date.")
+                    return ""
+                }
+            } else {
+                print("Please enter a valid frequency.")
+                return ""
+            }
+        }
+        return "Select a row to edit."
+    }
+    
     //MARK: - Data Manipulation Methods
     func loadReminders() -> Void {
-        // Copy database file to documents directory (one time only), print database file path
+        // Copy database file from app bundle to documents directory (one time only)
+//        copyFileToDocumentsFolder(nameForFile: "home_reminders", extForFile: "db")
+        
         let docName = "home_reminders"
         let docExt = "db"
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
@@ -172,9 +210,7 @@ extension RemindersViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate Extension
 extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected row: \(indexPath.row)")
         let row = indexPath.row
-        print("id: \(reminders[row].id)")
         tableRow = row
     }
 }
@@ -182,35 +218,24 @@ extension RemindersViewController: UITableViewDelegate {
 //MARK: - CustomCellDelegate Extension
 extension RemindersViewController: CustomCellDelegate {
     func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?) {
-        print("tableRow: \(tableRow ?? -1)")
-        if let safeTextField = textField, let safeTableRow = tableRow {
-            print("safeTextField: \(safeTextField.text ?? "empty")")
-            var reminder = reminders[safeTableRow]
-            switch safeTextField.tag {
-            case 1:
-                print("description")
-                reminder.description = safeTextField.text!
-            case 2:
-                print("dateLast")
-                reminder.dateLast = safeTextField.text!
-            case 3:
-                print("dateNext")
-                reminder.dateNext = safeTextField.text!
-            case 4:
-                print("frequency")
-                reminder.frequency = safeTextField.text!
-            case 5:
-                print("note")
-                reminder.note = safeTextField.text!
-            default:
-                print("unknown")
-            }
+        switch textField!.tag {
+        case 1: // description
+            reminders[tableRow ?? -1].description = textField?.text ?? "no text"
+        case 2: // dateLast
+            reminders[tableRow ?? -1].dateLast = textField?.text ?? "no text"
+        case 4: // frequency
+            reminders[tableRow ?? -1].frequency = textField?.text ?? "no text"
+        case 5: // note
+            reminders[tableRow ?? -1].note = textField?.text ?? "no text"
+        default:
+            print("unknown")
         }
+        reminders[tableRow ?? -1].dateNext = calculateDateNext()
     }
     
     func didTapElementInCell(_ cell: CustomCell) {
         if let indexPath = tableView.indexPath(for: cell) {
-            print("Tapped cell at \(indexPath)")
+//            print("Tapped cell at \(indexPath)")
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
         }
@@ -221,10 +246,15 @@ extension RemindersViewController: CustomCellDelegate {
 extension RemindersViewController: PickerCellDelegate {
     func picker(cell: CustomCell, didSelectRow row: Int) {
         if let indexPath = tableView.indexPath(for: cell) {
-            print("Selected row \(row) in cell at \(indexPath)")
-            if let safeTableRow = tableRow {
-                reminders[safeTableRow].period = pickerData[row]
-            }
+            // Update tableRow directly
+            tableRow = indexPath.row
+
+            reminders[indexPath.row].period = pickerData[row]
+            reminders[indexPath.row].dateNext = calculateDateNext()
+            tableView.reloadRows(at: [indexPath], with: .none)
+
+            // Programmatically select the row
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         }
     }
 }
