@@ -30,51 +30,61 @@ class RemindersViewController: UIViewController {
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         print("Save button pressed.")
-        print(reminders[tableRow ?? -1])
 
         if tableRow ?? -1 < 0 {
             print("Please select a reminder to save.")
             return
         } else {
-            // Copy database file to documents directory (one time only), print database file path
-            let docName = "home_reminders"
-            let docExt = "db"
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-            let dbPath = documentsURL!.appendingPathComponent(docName).appendingPathExtension(docExt)
-            
-            // Connect to database
-            var db: Connection!
-            do {
-                db = try Connection("\(dbPath)")
-            } catch {
-                print("Error opening database: \(error)")
+            if let db = getConnection() {
+                let remindersTable = Table("reminders")
+                let id = Expression<Int64>("id")
+                let description = Expression<String>("description")
+                let frequency = Expression<String>("frequency")
+                let period = Expression<String>("period")
+                let dateLast = Expression<String>("date_last")
+                let dateNext = Expression<String>("date_next")
+                let note = Expression<String>("note")
+                
+                do {
+                    if let safeTableRow = tableRow  {
+                        let myId = reminders[safeTableRow].id
+                        print(safeTableRow, myId)
+                        let reminderToSave = remindersTable.filter(id == myId)
+                        try db.run(reminderToSave.update(
+                            description <- reminders[tableRow!].description,
+                            frequency <- reminders[tableRow!].frequency,
+                            period <- reminders[tableRow!].period,
+                            dateLast <- reminders[tableRow!].dateLast,
+                            dateNext <- reminders[tableRow!].dateNext,
+                            note <- reminders[tableRow!].note
+                        ))
+                    }
+                } catch {
+                    print("Error saving reminder: \(error)")
+                }
+            } else {
+                print("Error: Could not open database.")
             }
+        }
+    }
+    
+    @IBAction func deleteButtonPressed(_ sender: UIButton) {
+        print("Delete button pressed.")
+        if let db = getConnection() {
             let remindersTable = Table("reminders")
             let id = Expression<Int64>("id")
-            let description = Expression<String>("description")
-            let frequency = Expression<String>("frequency")
-            let period = Expression<String>("period")
-            let dateLast = Expression<String>("date_last")
-            let dateNext = Expression<String>("date_next")
-            let note = Expression<String>("note")
-            
-            do {
-                if let safeTableRow = tableRow  {
-                    let myId = reminders[safeTableRow].id
-                    print(safeTableRow, myId)
-                    let reminderToSave = remindersTable.filter(id == myId)
-                    try db.run(reminderToSave.update(
-                        description <- reminders[tableRow!].description,
-                        frequency <- reminders[tableRow!].frequency,
-                        period <- reminders[tableRow!].period,
-                        dateLast <- reminders[tableRow!].dateLast,
-                        dateNext <- reminders[tableRow!].dateNext,
-                        note <- reminders[tableRow!].note
-                    ))
-                }
-            } catch {
-                print("Error saving reminder: \(error)")
+            if let safeTableRow = tableRow  {
+                let myId = reminders[safeTableRow].id
+                let reminderToDelete = remindersTable.filter(id == myId)
+                try! db.run(reminderToDelete.delete())
+                reminders = []
+                loadReminders()
+                tableView.reloadData()
+            } else {
+                print("No row to delete.")
             }
+        } else {
+            print("Error: Could not open database.")
         }
     }
     
@@ -120,49 +130,40 @@ class RemindersViewController: UIViewController {
         // Copy database file from app bundle to documents directory (one time only)
 //        copyFileToDocumentsFolder(nameForFile: "home_reminders", extForFile: "db")
         
-        let docName = "home_reminders"
-        let docExt = "db"
-        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        let dbPath = documentsURL!.appendingPathComponent(docName).appendingPathExtension(docExt)
-        
-        // Connect to database
-        var db: Connection!
-        do {
-            db = try Connection("\(dbPath)")
-        } catch {
-            print("Error opening database: \(error)")
-        }
-        
-        // Select all reminders, append each reminder to the reminders array
-        do {
-            let remindersTable = Table("reminders")
-            let id = Expression<Int64>("id")
-            let description = Expression<String>("description")
-            let frequency = Expression<String>("frequency")
-            let period = Expression<String>("period")
-            let date_last = Expression<String>("date_last")
-            let date_next = Expression<String>("date_next")
-            let note = Expression<String>("note")
-            
-            for reminder in try db.prepare(remindersTable.order(date_next.asc)) {
-                reminders.append(Reminder(
-                    id: Int64(try reminder.get(id)),
-                    description: try reminder.get(description),
-                    frequency: try reminder.get(frequency),
-                    period: try reminder.get(period),
-                    dateLast: try reminder.get(date_last),
-                    dateNext: try reminder.get(date_next),
-                    note: try reminder.get(note)
-                )
-                )
+        if let db = getConnection() {
+            // Select all reminders, append each reminder to the reminders array
+            do {
+                let remindersTable = Table("reminders")
+                let id = Expression<Int64>("id")
+                let description = Expression<String>("description")
+                let frequency = Expression<String>("frequency")
+                let period = Expression<String>("period")
+                let date_last = Expression<String>("date_last")
+                let date_next = Expression<String>("date_next")
+                let note = Expression<String>("note")
+                
+                for reminder in try db.prepare(remindersTable.order(date_next.asc)) {
+                    reminders.append(Reminder(
+                        id: Int64(try reminder.get(id)),
+                        description: try reminder.get(description),
+                        frequency: try reminder.get(frequency),
+                        period: try reminder.get(period),
+                        dateLast: try reminder.get(date_last),
+                        dateNext: try reminder.get(date_next),
+                        note: try reminder.get(note)
+                    )
+                    )
+                }
+            } catch {
+                print("Error during query: \(error)")
             }
-        } catch {
-            print("Error during query: \(error)")
+        } else {
+            print("Could not open database")
         }
     }
 }
 
-//MARK: - UITableViewDataSource Extension
+//MARK: - UITableViewDataSource Implementation
 extension RemindersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return reminders.count
@@ -207,7 +208,7 @@ extension RemindersViewController: UITableViewDataSource {
     }
 }
 
-//MARK: - UITableViewDelegate Extension
+//MARK: - UITableViewDelegate Implementation
 extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = indexPath.row
@@ -215,7 +216,7 @@ extension RemindersViewController: UITableViewDelegate {
     }
 }
 
-//MARK: - CustomCellDelegate Extension
+//MARK: - CustomCellDelegate Implementation
 extension RemindersViewController: CustomCellDelegate {
     func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?) {
         switch textField!.tag {
@@ -242,7 +243,7 @@ extension RemindersViewController: CustomCellDelegate {
     }
 }
 
-//MARK: - PickerCellDelegate Extension
+//MARK: - PickerCellDelegate Implementation
 extension RemindersViewController: PickerCellDelegate {
     func picker(cell: CustomCell, didSelectRow row: Int) {
         if let indexPath = tableView.indexPath(for: cell) {

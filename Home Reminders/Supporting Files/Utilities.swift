@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SQLite
 
 func copyFileToDocumentsFolder(nameForFile: String, extForFile: String) {
 
@@ -22,6 +23,23 @@ func copyFileToDocumentsFolder(nameForFile: String, extForFile: String) {
         } catch {
             print("Unable to copy file")
         }
+}
+
+func getConnection() -> Connection? {
+    let docName = "home_reminders"
+    let docExt = "db"
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    let dbPath = documentsURL!.appendingPathComponent(docName).appendingPathExtension(docExt)
+    
+    // Connect to database
+    var db: Connection!
+    do {
+        db = try Connection("\(dbPath)")
+        return db
+    } catch {
+        print("Error opening database: \(error)")
+        return nil
+    }
 }
 
 

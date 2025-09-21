@@ -131,7 +131,7 @@ class CustomCell: UITableViewCell {
     
 }
 
-//MARK: - UIPickerViewDataSource Extension
+//MARK: - UIPickerViewDataSource Implementation
 extension CustomCell: UIPickerViewDataSource {
     // Number of columns of data
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -149,7 +149,7 @@ extension CustomCell: UIPickerViewDataSource {
     }
 }
 
-//MARK: - UIPickerViewDelegate Extension
+//MARK: - UIPickerViewDelegate Implementation
 extension CustomCell: UIPickerViewDelegate {
     // Capture the picker view selection
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -161,7 +161,7 @@ extension CustomCell: UIPickerViewDelegate {
     }
 }
 
-//MARK: - UITextFieldDelegate Extension
+//MARK: - UITextFieldDelegate Implementation
 extension CustomCell: UITextFieldDelegate {
     @objc func textFieldDidChange(_ textField: UITextField) {
         // Recalculate next date when there is a change in last date or frequency

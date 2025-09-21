@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BZd-ac-mDx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BZd-ac-mDx">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="lkm-lS-iyJ">
-                                <rect key="frame" x="0.0" y="162" width="393" height="572"/>
+                                <rect key="frame" x="0.0" y="172" width="393" height="562"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="separatorColor" name="BrandDarkBlue"/>
                                 <prototypes>
@@ -53,6 +53,9 @@
                                             <color key="baseForegroundColor" name="BrandLightYellow"/>
                                             <color key="baseBackgroundColor" name="BrandDarkBlue"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="deleteButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="shc-G1-88Y"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                             </stackView>
@@ -69,7 +72,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Home Reminders" id="ecz-1n-oNE">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="DYg-MH-xiq">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="DYg-MH-xiq">
                             <color key="tintColor" name="BrandLightYellow"/>
                             <connections>
                                 <segue destination="NUt-DV-aUr" kind="show" id="JhE-VC-gD5"/>
@@ -106,7 +109,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="BZd-ac-mDx" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="a4o-hI-H9z">
-                        <rect key="frame" x="0.0" y="118" width="393" height="44"/>
+                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
