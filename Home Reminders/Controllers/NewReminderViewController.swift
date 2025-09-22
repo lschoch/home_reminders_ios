@@ -11,6 +11,7 @@ import SQLite
 class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
     @IBOutlet weak var newPicker: UIPickerView!
+    @IBOutlet weak var datePicker: UIDatePicker!
     
     @IBOutlet weak var descriptionField: UITextField!
     @IBOutlet weak var frequencyField: UITextField!
@@ -20,6 +21,9 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     var newPickerData: [String] = []
     var newPickerDataIndex: Int = 0
+    
+    var selectedDate: Date?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,13 +42,28 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             newPicker.delegate = self
             newPicker.dataSource = self
             newPickerData = ["one-time", "days", "weeks", "months", "years"]
+            
+            // Configure the date picker
+            datePicker.datePickerMode = .date // Can also be .time, .dateAndTime, .countDownTimer
+            datePicker.preferredDatePickerStyle = .compact // Or .wheels, .compact, .inline (iOS 14+)
+            
+            // Add a target to respond to value changes
+            datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         }
-
     }
+    
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+            selectedDate = sender.date
+        }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         print("save button pressed")
         if let db = getConnection() {
+            
+            var dateFormatter: DateFormatter
+            dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            
             let remindersTable = Table("reminders")
             let description = Expression<String?>("description")
             // TODO: retrieve date last from date picker, calculate date next, refresh?, reload?
@@ -60,7 +79,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     frequency <- frequencyField.text,
                     period <- newPickerData[newPickerDataIndex],
                     note <- noteField.text,
-                    dateLast <- "2020-01-01",
+                    dateLast <- dateFormatter.string(from: selectedDate ?? Date()),
                     dateNext <- "2020-01-01"))
             } catch {
                 print("Error saving reminder: \(error)")

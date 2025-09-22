@@ -182,6 +182,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="New Reminder" id="OSf-ZT-rw6"/>
                     <connections>
+                        <outlet property="datePicker" destination="PdA-ej-JOY" id="0Wk-yz-jDr"/>
                         <outlet property="descriptionField" destination="5Ux-hu-mDj" id="HmI-Ho-O8f"/>
                         <outlet property="frequencyField" destination="1Fx-D5-ckq" id="KcA-hb-g4U"/>
                         <outlet property="newPicker" destination="mKp-87-cdD" id="pch-yi-ISv"/>
