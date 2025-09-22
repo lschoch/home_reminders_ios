@@ -66,7 +66,6 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             
             let remindersTable = Table("reminders")
             let description = Expression<String?>("description")
-            // TODO: retrieve date last from date picker, calculate date next, refresh?, reload?
             let dateLast = Expression<String?>("date_last")
             let dateNext = Expression<String?>("date_next")
             let frequency = Expression<String?>("frequency")
@@ -80,11 +79,37 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     period <- newPickerData[newPickerDataIndex],
                     note <- noteField.text,
                     dateLast <- dateFormatter.string(from: selectedDate ?? Date()),
-                    dateNext <- "2020-01-01"))
+                    dateNext <- calculateDateNext()))
             } catch {
                 print("Error saving reminder: \(error)")
             }
         }
+    }
+    
+    func calculateDateNext() -> String {
+        var dateNext: Date
+        var dateFormatter: DateFormatter
+        dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let period = newPickerData[newPickerDataIndex]
+        let frequency = frequencyField.text
+        let frequencyInt = Int(frequency ?? "0")!
+        let dateLast = selectedDate ?? Date()
+        
+        switch period {
+        case "days":
+            dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt, to: dateLast)!
+        case "weeks":
+            dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: dateLast)!
+        case "months":
+            dateNext = Calendar.current.date(byAdding: .month, value: frequencyInt, to: dateLast)!
+        case "years":
+            dateNext = Calendar.current.date(byAdding: .year, value: frequencyInt, to: dateLast)!
+        default:
+            dateNext = dateLast
+        }
+        return dateFormatter.string(from: dateNext)
     }
     
     /*
