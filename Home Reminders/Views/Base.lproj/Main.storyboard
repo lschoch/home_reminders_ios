@@ -33,7 +33,7 @@
                                 </prototypes>
                             </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="Rqb-gQ-BMZ">
-                                <rect key="frame" x="103.33333333333331" y="749.66666666666663" width="186.66666666666669" height="34.333333333333371"/>
+                                <rect key="frame" x="103.33333333333333" y="749.66666666666663" width="186.66666666666669" height="34.333333333333371"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6In-Dz-dn3">
                                         <rect key="frame" x="0.0" y="0.0" width="73.333333333333329" height="34.333333333333336"/>
@@ -90,8 +90,8 @@
         <!--New Reminder-->
         <scene sceneID="Igm-jW-Exv">
             <objects>
-                <viewController id="NUt-DV-aUr" customClass="NewItemViewController" customModule="Home_Reminders" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="abC-zR-uAt">
+                <viewController id="NUt-DV-aUr" customClass="NewReminderViewController" customModule="Home_Reminders" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="abC-zR-uAt" customClass="New">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -137,6 +137,9 @@
                                     </backgroundConfiguration>
                                     <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="saveButtonPressed:" destination="NUt-DV-aUr" eventType="touchUpInside" id="dmf-bt-e7L"/>
+                                </connections>
                             </button>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mKp-87-cdD">
                                 <rect key="frame" x="80" y="327.33333333333331" width="191" height="51"/>
@@ -178,6 +181,12 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="New Reminder" id="OSf-ZT-rw6"/>
+                    <connections>
+                        <outlet property="descriptionField" destination="5Ux-hu-mDj" id="HmI-Ho-O8f"/>
+                        <outlet property="frequencyField" destination="1Fx-D5-ckq" id="KcA-hb-g4U"/>
+                        <outlet property="newPicker" destination="mKp-87-cdD" id="pch-yi-ISv"/>
+                        <outlet property="noteField" destination="z1I-ou-bmM" id="tzi-PL-rpv"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mcn-MQ-Sti" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

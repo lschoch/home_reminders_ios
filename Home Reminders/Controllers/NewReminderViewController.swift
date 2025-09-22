@@ -1,0 +1,122 @@
+//
+//  NewItemViewController.swift
+//  Home Reminders
+//
+//  Created by Lawrence H. Schoch on 9/6/25.
+//
+
+import UIKit
+import SQLite
+
+class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+
+    @IBOutlet weak var newPicker: UIPickerView!
+    
+    @IBOutlet weak var descriptionField: UITextField!
+    @IBOutlet weak var frequencyField: UITextField!
+    @IBOutlet weak var noteField: UITextField!
+    
+    weak var newPickerDelegate: PickerCellDelegate?
+    
+    var newPickerData: [String] = []
+    var newPickerDataIndex: Int = 0
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if let navBar = navigationController?.navigationBar {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .brandLightBlue // nav bar color
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.brandLightYellow] // center title
+            
+            // Change the back button background (the "circle")
+            appearance.backButtonAppearance.normal.backgroundImage = UIImage(color: .brandLightYellow, size: CGSize(width: 30, height: 30)).withRoundedCorners(radius: 15)
+
+            navBar.standardAppearance = appearance
+            navBar.scrollEdgeAppearance = appearance
+            
+            newPicker.delegate = self
+            newPicker.dataSource = self
+            newPickerData = ["one-time", "days", "weeks", "months", "years"]
+        }
+
+    }
+    
+    @IBAction func saveButtonPressed(_ sender: UIButton) {
+        print("save button pressed")
+        if let db = getConnection() {
+            let remindersTable = Table("reminders")
+            let description = Expression<String?>("description")
+            // TODO: retrieve date last from date picker, calculate date next, refresh?, reload?
+            let dateLast = Expression<String?>("date_last")
+            let dateNext = Expression<String?>("date_next")
+            let frequency = Expression<String?>("frequency")
+            let period = Expression<String?>("period")
+            let note = Expression<String?>("note")
+            
+            do {
+                try db.run(remindersTable.insert(
+                    description <- descriptionField.text,
+                    frequency <- frequencyField.text,
+                    period <- newPickerData[newPickerDataIndex],
+                    note <- noteField.text,
+                    dateLast <- "2020-01-01",
+                    dateNext <- "2020-01-01"))
+            } catch {
+                print("Error saving reminder: \(error)")
+            }
+        }
+    }
+    
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+    }
+    */
+    
+    //MARK: - UIPickerViewDataSource Implementation
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return newPickerData.count
+    }
+    
+    //MARK: - UIPickerViewDelegate Implementation
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return newPickerData[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        print("Selected: \(newPickerData[row])")
+        newPickerDataIndex = row
+    }
+
+}
+
+//MARK: - Create UIImage
+extension UIImage {
+    convenience init(color: UIColor, size: CGSize) {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        color.setFill()
+        UIRectFill(CGRect(origin: .zero, size: size))
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        self.init(cgImage: image!.cgImage!)
+    }
+
+    func withRoundedCorners(radius: CGFloat) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        let rect = CGRect(origin: .zero, size: size)
+        UIBezierPath(roundedRect: rect, cornerRadius: radius).addClip()
+        draw(in: rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image ?? self
+    }
+}
