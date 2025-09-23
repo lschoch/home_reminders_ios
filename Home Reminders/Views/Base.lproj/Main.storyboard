@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -39,8 +40,8 @@
                                         <rect key="frame" x="0.0" y="0.0" width="73.333333333333329" height="34.333333333333336"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Save">
-                                            <color key="baseForegroundColor" name="BrandLightYellow"/>
-                                            <color key="baseBackgroundColor" name="BrandDarkBlue"/>
+                                            <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="baseBackgroundColor" name="BrandLightYellow"/>
                                         </buttonConfiguration>
                                         <connections>
                                             <action selector="saveButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2OC-ev-1MG"/>
@@ -50,8 +51,8 @@
                                         <rect key="frame" x="113.33333333333334" y="0.0" width="73.333333333333343" height="34.333333333333336"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Delete">
-                                            <color key="baseForegroundColor" name="BrandLightYellow"/>
-                                            <color key="baseBackgroundColor" name="BrandDarkBlue"/>
+                                            <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="baseBackgroundColor" name="BrandLightYellow"/>
                                         </buttonConfiguration>
                                         <connections>
                                             <action selector="deleteButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="shc-G1-88Y"/>
@@ -131,11 +132,10 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sny-a0-j3e">
                                 <rect key="frame" x="166" y="749" width="61" height="35"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Save">
-                                    <backgroundConfiguration key="background">
-                                        <color key="backgroundColor" name="BrandMediumBlue"/>
-                                    </backgroundConfiguration>
-                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Save">
+                                    <backgroundConfiguration key="background"/>
+                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="baseBackgroundColor" name="BrandLightBlue"/>
                                 </buttonConfiguration>
                                 <connections>
                                     <action selector="saveButtonPressed:" destination="NUt-DV-aUr" eventType="touchUpInside" id="dmf-bt-e7L"/>
@@ -180,7 +180,15 @@
                             <constraint firstItem="mKp-87-cdD" firstAttribute="leading" secondItem="0Ob-VO-CkX" secondAttribute="leading" constant="80" id="tvr-N4-raL"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="New Reminder" id="OSf-ZT-rw6"/>
+                    <navigationItem key="navigationItem" title="New Reminder" id="OSf-ZT-rw6">
+                        <barButtonItem key="leftBarButtonItem" style="done" id="5nd-vv-FbZ">
+                            <imageReference key="image" image="chevron.left" catalog="system" symbolScale="default"/>
+                            <color key="tintColor" name="BrandLightYellow"/>
+                            <connections>
+                                <action selector="backButtonPressed:" destination="NUt-DV-aUr" id="60V-af-McF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="datePicker" destination="PdA-ej-JOY" id="0Wk-yz-jDr"/>
                         <outlet property="descriptionField" destination="5Ux-hu-mDj" id="HmI-Ho-O8f"/>
@@ -213,6 +221,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="chevron.left" catalog="system" width="97" height="128"/>
         <namedColor name="BrandDarkBlue">
             <color red="0.082352941176470587" green="0.29803921568627451" blue="0.4392156862745098" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
@@ -221,9 +230,6 @@
         </namedColor>
         <namedColor name="BrandLightYellow">
             <color red="1" green="0.97254901960784312" blue="0.68235294117647061" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="BrandMediumBlue">
-            <color red="0.10980392156862745" green="0.42745098039215684" blue="0.63921568627450975" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

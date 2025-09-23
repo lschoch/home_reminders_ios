@@ -34,8 +34,9 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             appearance.titleTextAttributes = [.foregroundColor: UIColor.brandLightYellow] // center title
             
             // Change the back button background (the "circle")
-            appearance.backButtonAppearance.normal.backgroundImage = UIImage(color: .brandLightYellow, size: CGSize(width: 30, height: 30)).withRoundedCorners(radius: 15)
-
+            //            appearance.backButtonAppearance.normal.backgroundImage = UIImage(color: .brandLightYellow, size: CGSize(width: 30, height: 30)).withRoundedCorners(radius: 15)
+            navigationItem.hidesBackButton = true
+            
             navBar.standardAppearance = appearance
             navBar.scrollEdgeAppearance = appearance
             
@@ -52,12 +53,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
         }
     }
     
-    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
-            selectedDate = sender.date
-        }
-    
-    @IBAction func saveButtonPressed(_ sender: UIButton) {
-        print("save button pressed")
+    @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
         if let db = getConnection() {
             
             var dateFormatter: DateFormatter
@@ -84,32 +80,44 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
                 print("Error saving reminder: \(error)")
             }
         }
+        self.navigationController?.popViewController(animated: true)
     }
     
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+            selectedDate = sender.date
+        }
+    
     func calculateDateNext() -> String {
-        var dateNext: Date
         var dateFormatter: DateFormatter
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
         let period = newPickerData[newPickerDataIndex]
         let frequency = frequencyField.text
-        let frequencyInt = Int(frequency ?? "0")!
         let dateLast = selectedDate ?? Date()
         
-        switch period {
-        case "days":
-            dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt, to: dateLast)!
-        case "weeks":
-            dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: dateLast)!
-        case "months":
-            dateNext = Calendar.current.date(byAdding: .month, value: frequencyInt, to: dateLast)!
-        case "years":
-            dateNext = Calendar.current.date(byAdding: .year, value: frequencyInt, to: dateLast)!
-        default:
-            dateNext = dateLast
+        if let frequencyInt = Int(frequency!) {
+            var dateNext: Date
+            switch period {
+            case "days":
+                dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt, to: dateLast)!
+                return dateFormatter.string(from: dateNext)
+            case "weeks":
+                dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: dateLast)!
+                return dateFormatter.string(from: dateNext)
+            case "months":
+                dateNext = Calendar.current.date(byAdding: .month, value: frequencyInt, to: dateLast)!
+                return dateFormatter.string(from: dateNext)
+            case "years":
+                dateNext = Calendar.current.date(byAdding: .year, value: frequencyInt, to: dateLast)!
+                return dateFormatter.string(from: dateNext)
+            default:
+                dateNext = dateLast
+                return dateFormatter.string(from: dateLast)
+            }
         }
-        return dateFormatter.string(from: dateNext)
+        // FrequencyInt is nil (i.e., frequency is nil)
+        return dateFormatter.string(from: dateLast)
     }
     
     /*
@@ -137,30 +145,29 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        print("Selected: \(newPickerData[row])")
         newPickerDataIndex = row
     }
 
 }
 
 //MARK: - Create UIImage
-extension UIImage {
-    convenience init(color: UIColor, size: CGSize) {
-        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        color.setFill()
-        UIRectFill(CGRect(origin: .zero, size: size))
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        self.init(cgImage: image!.cgImage!)
-    }
-
-    func withRoundedCorners(radius: CGFloat) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        let rect = CGRect(origin: .zero, size: size)
-        UIBezierPath(roundedRect: rect, cornerRadius: radius).addClip()
-        draw(in: rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image ?? self
-    }
-}
+//extension UIImage {
+//    convenience init(color: UIColor, size: CGSize) {
+//        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+//        color.setFill()
+//        UIRectFill(CGRect(origin: .zero, size: size))
+//        let image = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        self.init(cgImage: image!.cgImage!)
+//    }
+//
+//    func withRoundedCorners(radius: CGFloat) -> UIImage {
+//        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+//        let rect = CGRect(origin: .zero, size: size)
+//        UIBezierPath(roundedRect: rect, cornerRadius: radius).addClip()
+//        draw(in: rect)
+//        let image = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//        return image ?? self
+//    }
+//}

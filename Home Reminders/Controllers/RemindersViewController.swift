@@ -28,6 +28,13 @@ class RemindersViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+
+            loadReminders()
+            tableView.reloadData()
+        }
+    
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         print("Save button pressed.")
 
@@ -142,6 +149,7 @@ class RemindersViewController: UIViewController {
                 let date_next = Expression<String>("date_next")
                 let note = Expression<String>("note")
                 
+                reminders = []
                 for reminder in try db.prepare(remindersTable.order(date_next.asc)) {
                     reminders.append(Reminder(
                         id: Int64(try reminder.get(id)),
