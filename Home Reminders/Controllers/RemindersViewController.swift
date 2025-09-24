@@ -98,38 +98,33 @@ class RemindersViewController: UIViewController {
     // Calculate next date as a function of last date, frequency and period
     func calculateDateNext() -> String {
         var nextDate: Date
-        var dateFormatter: DateFormatter
-        dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        if let safeTableRow = tableRow {
-            let period = reminders[safeTableRow].period
-            if let frequencyInt = Int(reminders[tableRow ?? -1].frequency) {
-                if let lastDate = dateFormatter.date(from: reminders[tableRow ?? -1].dateLast) {
-                    switch period {
-                    case "days":
-                        nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt, to: lastDate)!
-                    case "weeks":
-                        nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: lastDate)!
-                    case "months":
-                        nextDate = Calendar.current.date(byAdding: .month, value: frequencyInt, to: lastDate)!
-                    case "years":
-                        nextDate = Calendar.current.date(byAdding: .year, value: frequencyInt, to: lastDate)!
-                    default:
-                        nextDate = lastDate
-                    }
-                    return dateFormatter.string(from: nextDate)
-                }
-                else {
-                    print("Please enter a valid last date.")
-                    return ""
-                }
-            } else {
-                print("Please enter a valid frequency.")
-                return ""
-            }
+        guard let tableRow else { return "Error: No row selected."}
+        let period = reminders[tableRow].period
+        guard let lastDate = DF.dateFormatter.date(from: reminders[tableRow].dateLast) else { print("Error: Could not parse lastDate."); return ""}
+        let lastDateString = DF.dateFormatter.string(from: lastDate)
+        
+        // If frequency is nil or zero, set return last date
+        guard let frequency = reminders[tableRow].frequency as String? else { return DF.dateFormatter.string(from: lastDate) }
+        if frequency == "0" { return lastDateString }
+        
+        guard let frequencyInt = Int(frequency) else { return lastDateString }
+        
+        switch period {
+        case "one-time":
+            return lastDateString
+        case "days":
+            nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt, to: lastDate)!
+        case "weeks":
+            nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: lastDate)!
+        case "months":
+            nextDate = Calendar.current.date(byAdding: .month, value: frequencyInt, to: lastDate)!
+        case "years":
+            nextDate = Calendar.current.date(byAdding: .year, value: frequencyInt, to: lastDate)!
+        default:
+            nextDate = lastDate
         }
-        return "Select a row to edit."
+        return DF.dateFormatter.string(from: nextDate)
     }
     
     //MARK: - Data Manipulation Methods
@@ -195,10 +190,10 @@ extension RemindersViewController: UITableViewDataSource {
         }
         
         // Modify cell background color as a function of due date in relation to today's date
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//        let DF.dateFormatter = DateFormatter()
+//        DF.dateFormatter.dateFormat = "yyyy-MM-dd"
 //        let today = Date.now
-//        let dateNext = dateFormatter.date(from: reminder.dateNext)
+//        let dateNext = DF.dateFormatter.date(from: reminder.dateNext)
 //        if dateNext! < today {
 //            cell.contentView.backgroundColor = .yellow
 //        } else if dateNext! == today {

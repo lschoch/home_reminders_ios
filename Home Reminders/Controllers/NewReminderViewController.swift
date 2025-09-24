@@ -55,11 +55,6 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
         if let db = getConnection() {
-            
-            var dateFormatter: DateFormatter
-            dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            
             let remindersTable = Table("reminders")
             let description = Expression<String?>("description")
             let dateLast = Expression<String?>("date_last")
@@ -74,7 +69,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     frequency <- frequencyField.text,
                     period <- newPickerData[newPickerDataIndex],
                     note <- noteField.text,
-                    dateLast <- dateFormatter.string(from: selectedDate ?? Date()),
+                    dateLast <- DF.dateFormatter.string(from: selectedDate ?? Date()),
                     dateNext <- calculateDateNext()))
             } catch {
                 print("Error saving reminder: \(error)")
@@ -88,10 +83,6 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
         }
     
     func calculateDateNext() -> String {
-        var dateFormatter: DateFormatter
-        dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
         let period = newPickerData[newPickerDataIndex]
         let frequency = frequencyField.text
         let dateLast = selectedDate ?? Date()
@@ -101,23 +92,23 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             switch period {
             case "days":
                 dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt, to: dateLast)!
-                return dateFormatter.string(from: dateNext)
+                return DF.dateFormatter.string(from: dateNext)
             case "weeks":
                 dateNext = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: dateLast)!
-                return dateFormatter.string(from: dateNext)
+                return DF.dateFormatter.string(from: dateNext)
             case "months":
                 dateNext = Calendar.current.date(byAdding: .month, value: frequencyInt, to: dateLast)!
-                return dateFormatter.string(from: dateNext)
+                return DF.dateFormatter.string(from: dateNext)
             case "years":
                 dateNext = Calendar.current.date(byAdding: .year, value: frequencyInt, to: dateLast)!
-                return dateFormatter.string(from: dateNext)
+                return DF.dateFormatter.string(from: dateNext)
             default:
                 dateNext = dateLast
-                return dateFormatter.string(from: dateLast)
+                return DF.dateFormatter.string(from: dateLast)
             }
         }
         // FrequencyInt is nil (i.e., frequency is nil)
-        return dateFormatter.string(from: dateLast)
+        return DF.dateFormatter.string(from: dateLast)
     }
     
     /*

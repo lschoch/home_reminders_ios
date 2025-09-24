@@ -81,36 +81,33 @@ class CustomCell: UITableViewCell {
     // Calculate next date as a function of last date, frequency and period
     func calculateDateNext(row: Int) -> String {
         var nextDate: Date
-        var dateFormatter: DateFormatter
-        dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
         
         let period = pickerData[picker.selectedRow(inComponent: 0)]
-        if let frequencyInt = Int(frequencyField.text!) {
-            if let lastDate = dateFormatter.date(from: dateLastField.text!) {
-                switch period {
-                case "days":
-                    nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt, to: lastDate)!
-                case "weeks":
-                    nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: lastDate)!
-                case "months":
-                    nextDate = Calendar.current.date(byAdding: .month, value: frequencyInt, to: lastDate)!
-                case "years":
-                    nextDate = Calendar.current.date(byAdding: .year, value: frequencyInt, to: lastDate)!
-                default:
-                    nextDate = lastDate
-                }
-    
-                return dateFormatter.string(from: nextDate)
-            }
-            else {
-                print("Please enter a valid last date.")
-                return ""
-            }
-        } else {
-            print("Please enter a valid frequency.")
-            return ""
+        
+        guard let lastDate = DF.dateFormatter.date(from: dateLastField.text!) else { print("Error: Could not parse lastDate."); return ""}
+        let lastDateString = DF.dateFormatter.string(from: lastDate)
+        
+        // If frequency is nil or zero, set return last date
+        guard let frequency = frequencyField.text! as String? else { return lastDateString }
+        if frequency == "0" { return lastDateString }
+        
+        guard let frequencyInt = Int(frequency) else { return lastDateString }
+        
+        switch period {
+        case "one-time":
+            return lastDateString
+        case "days":
+            nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt, to: lastDate)!
+        case "weeks":
+            nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: lastDate)!
+        case "months":
+            nextDate = Calendar.current.date(byAdding: .month, value: frequencyInt, to: lastDate)!
+        case "years":
+            nextDate = Calendar.current.date(byAdding: .year, value: frequencyInt, to: lastDate)!
+        default:
+            nextDate = lastDate
         }
+        return DF.dateFormatter.string(from: nextDate)
     }
     
     // To change fonts on picker menu
