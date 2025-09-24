@@ -150,24 +150,3 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
 
 }
 
-//MARK: - Create UIImage
-//extension UIImage {
-//    convenience init(color: UIColor, size: CGSize) {
-//        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-//        color.setFill()
-//        UIRectFill(CGRect(origin: .zero, size: size))
-//        let image = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        self.init(cgImage: image!.cgImage!)
-//    }
-//
-//    func withRoundedCorners(radius: CGFloat) -> UIImage {
-//        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-//        let rect = CGRect(origin: .zero, size: size)
-//        UIBezierPath(roundedRect: rect, cornerRadius: radius).addClip()
-//        draw(in: rect)
-//        let image = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
-//        return image ?? self
-//    }
-//}
