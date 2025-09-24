@@ -10,6 +10,8 @@ import UIKit
 protocol CustomCellDelegate: AnyObject {
         func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?)
         func didTapElementInCell(_ cell: CustomCell)
+        func pickerValueDidChange(inCell cell: CustomCell, withText text: String)
+    //        func reloadTableViewData()
     }
 
 protocol PickerCellDelegate: AnyObject {
@@ -17,9 +19,13 @@ protocol PickerCellDelegate: AnyObject {
     func didTapElementInCell(_ cell: CustomCell)
 }
 
+protocol TextCalculationDelegate: AnyObject {
+    func didCalculateText(_ text: String)
+}
+
 class CustomCell: UITableViewCell {
     @IBOutlet weak var customCell: UIView!
-    
+
     @IBOutlet weak var noteField: UITextField!
     @IBOutlet weak var periodField: UITextField!
     @IBOutlet weak var frequencyField: UITextField!
@@ -31,6 +37,7 @@ class CustomCell: UITableViewCell {
     
     weak var customCellDelegate: CustomCellDelegate?
     weak var pickerDelegate: PickerCellDelegate?
+    weak var textCalculationDelegate: TextCalculationDelegate?
     
     var pickerData: [String] = []
     var pickerDataIndex: Int = 0
@@ -76,6 +83,12 @@ class CustomCell: UITableViewCell {
     
     @IBAction func noteTapped(_ sender: UITextField) {
         customCellDelegate?.didTapElementInCell(self)
+    }
+    
+    @objc private func calculateAndSendText() {
+        let calculatedResult = calculateDateNext(row: pickerDataIndex)
+        // Call the delegate
+        textCalculationDelegate?.didCalculateText(calculatedResult)
     }
     
     // Calculate next date as a function of last date, frequency and period
@@ -151,8 +164,10 @@ extension CustomCell: UIPickerViewDelegate {
     // Capture the picker view selection
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         // This method is triggered whenever the user makes a change to the picker selection.
-        // The parameter named row and component represents what was selected.
+        // The parameters named row and component represent what was selected.
         pickerDataIndex = row
+        let calculatedDateNext = calculateDateNext(row: pickerDataIndex)
+        customCellDelegate?.pickerValueDidChange(inCell: self, withText: calculatedDateNext)
         pickerDelegate?.picker(cell: self, didSelectRow: row)
         pickerDelegate?.didTapElementInCell(self)
     }
@@ -164,5 +179,6 @@ extension CustomCell: UITextFieldDelegate {
         // Recalculate next date when there is a change in last date or frequency
         dateNextField.text = calculateDateNext(row: pickerDataIndex)
         customCellDelegate?.customCell(self, didUpdateText: textField)
+        
     }
 }

@@ -15,6 +15,7 @@ class RemindersViewController: UIViewController {
     var reminders: [Reminder] = []
     var tableRow: Int?
     let pickerData = ["one-time", "days", "weeks", "months", "years"]
+    var calculatedDateNext: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,45 +36,45 @@ class RemindersViewController: UIViewController {
             tableView.reloadData()
         }
     
-    @IBAction func saveButtonPressed(_ sender: UIButton) {
-        print("Save button pressed.")
-
-        if tableRow ?? -1 < 0 {
-            print("Please select a reminder to save.")
-            return
-        } else {
-            if let db = getConnection() {
-                let remindersTable = Table("reminders")
-                let id = Expression<Int64>("id")
-                let description = Expression<String>("description")
-                let frequency = Expression<String>("frequency")
-                let period = Expression<String>("period")
-                let dateLast = Expression<String>("date_last")
-                let dateNext = Expression<String>("date_next")
-                let note = Expression<String>("note")
-                
-                do {
-                    if let safeTableRow = tableRow  {
-                        let myId = reminders[safeTableRow].id
-                        print(safeTableRow, myId)
-                        let reminderToSave = remindersTable.filter(id == myId)
-                        try db.run(reminderToSave.update(
-                            description <- reminders[tableRow!].description,
-                            frequency <- reminders[tableRow!].frequency,
-                            period <- reminders[tableRow!].period,
-                            dateLast <- reminders[tableRow!].dateLast,
-                            dateNext <- reminders[tableRow!].dateNext,
-                            note <- reminders[tableRow!].note
-                        ))
-                    }
-                } catch {
-                    print("Error saving reminder: \(error)")
-                }
-            } else {
-                print("Error: Could not open database.")
-            }
-        }
-    }
+//    @IBAction func saveButtonPressed(_ sender: UIButton) {
+//        print("Save button pressed.")
+//
+//        if tableRow ?? -1 < 0 {
+//            print("Please select a reminder to save.")
+//            return
+//        } else {
+//            if let db = getConnection() {
+//                let remindersTable = Table("reminders")
+//                let id = Expression<Int64>("id")
+//                let description = Expression<String>("description")
+//                let frequency = Expression<String>("frequency")
+//                let period = Expression<String>("period")
+//                let dateLast = Expression<String>("date_last")
+//                let dateNext = Expression<String>("date_next")
+//                let note = Expression<String>("note")
+//                
+//                do {
+//                    if let safeTableRow = tableRow  {
+//                        let myId = reminders[safeTableRow].id
+//                        print(safeTableRow, myId)
+//                        let reminderToSave = remindersTable.filter(id == myId)
+//                        try db.run(reminderToSave.update(
+//                            description <- reminders[tableRow!].description,
+//                            frequency <- reminders[tableRow!].frequency,
+//                            period <- reminders[tableRow!].period,
+//                            dateLast <- reminders[tableRow!].dateLast,
+//                            dateNext <- reminders[tableRow!].dateNext,
+//                            note <- reminders[tableRow!].note
+//                        ))
+//                    }
+//                } catch {
+//                    print("Error saving reminder: \(error)")
+//                }
+//            } else {
+//                print("Error: Could not open database.")
+//            }
+//        }
+//    }
     
     @IBAction func deleteButtonPressed(_ sender: UIButton) {
         print("Delete button pressed.")
@@ -93,38 +94,6 @@ class RemindersViewController: UIViewController {
         } else {
             print("Error: Could not open database.")
         }
-    }
-    
-    // Calculate next date as a function of last date, frequency and period
-    func calculateDateNext() -> String {
-        var nextDate: Date
-        
-        guard let tableRow else { return "Error: No row selected."}
-        let period = reminders[tableRow].period
-        guard let lastDate = DF.dateFormatter.date(from: reminders[tableRow].dateLast) else { print("Error: Could not parse lastDate."); return ""}
-        let lastDateString = DF.dateFormatter.string(from: lastDate)
-        
-        // If frequency is nil or zero, set return last date
-        guard let frequency = reminders[tableRow].frequency as String? else { return DF.dateFormatter.string(from: lastDate) }
-        if frequency == "0" { return lastDateString }
-        
-        guard let frequencyInt = Int(frequency) else { return lastDateString }
-        
-        switch period {
-        case "one-time":
-            return lastDateString
-        case "days":
-            nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt, to: lastDate)!
-        case "weeks":
-            nextDate = Calendar.current.date(byAdding: .day, value: frequencyInt * 7, to: lastDate)!
-        case "months":
-            nextDate = Calendar.current.date(byAdding: .month, value: frequencyInt, to: lastDate)!
-        case "years":
-            nextDate = Calendar.current.date(byAdding: .year, value: frequencyInt, to: lastDate)!
-        default:
-            nextDate = lastDate
-        }
-        return DF.dateFormatter.string(from: nextDate)
     }
     
     //MARK: - Data Manipulation Methods
@@ -234,7 +203,7 @@ extension RemindersViewController: CustomCellDelegate {
         default:
             print("unknown")
         }
-        reminders[tableRow ?? -1].dateNext = calculateDateNext()
+        reminders[tableRow ?? -1].dateNext = calculatedDateNext
     }
     
     func didTapElementInCell(_ cell: CustomCell) {
@@ -244,6 +213,20 @@ extension RemindersViewController: CustomCellDelegate {
             tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
         }
     }
+    
+//    func reloadTableViewData() {
+//        loadReminders()
+//        tableView.reloadData() // This reloads the entire table view
+//        // Or, if you only need to update specific rows:
+//        // tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+//    }
+    
+    func pickerValueDidChange(inCell cell: CustomCell, withText text: String) {
+            // Handle the received text from the custom cell
+//            print("Received text from picker in cell: \(text)")
+            // Update UI or perform other actions in the view controller
+            calculatedDateNext = text
+        }
 }
 
 //MARK: - PickerCellDelegate Implementation
@@ -254,11 +237,18 @@ extension RemindersViewController: PickerCellDelegate {
             tableRow = indexPath.row
 
             reminders[indexPath.row].period = pickerData[row]
-            reminders[indexPath.row].dateNext = calculateDateNext()
+            reminders[indexPath.row].dateNext = calculatedDateNext
             tableView.reloadRows(at: [indexPath], with: .none)
 
             // Programmatically select the row
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         }
     }
+}
+
+//MARK: - TextCalculationDelegate Implementation
+extension RemindersViewController: TextCalculationDelegate {
+    func didCalculateText(_ text: String) {
+            calculatedDateNext = text
+        }
 }
