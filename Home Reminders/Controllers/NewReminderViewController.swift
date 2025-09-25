@@ -40,6 +40,8 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             navBar.standardAppearance = appearance
             navBar.scrollEdgeAppearance = appearance
             
+            UITextField.appearance().tintColor = .black
+            
             newPicker.delegate = self
             newPicker.dataSource = self
             newPickerData = ["one-time", "days", "weeks", "months", "years"]
@@ -47,11 +49,18 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             // Configure the date picker
             datePicker.datePickerMode = .date // Can also be .time, .dateAndTime, .countDownTimer
             datePicker.preferredDatePickerStyle = .compact // Or .wheels, .compact, .inline (iOS 14+)
+            datePicker.tintColor = .black
+            datePicker.addTarget(self, action: #selector(pickerTapped), for: .primaryActionTriggered)
             
             // Add a target to respond to value changes
             datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         }
     }
+    
+    @objc func pickerTapped() {
+            self.datePicker.preferredDatePickerStyle = .wheels
+            self.datePicker.preferredDatePickerStyle = .automatic
+        }
     
     @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
         if let db = getConnection() {
