@@ -37,52 +37,77 @@ class RemindersViewController: UIViewController {
         }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
-        
-        if tableRow ?? -1 < 0 {
-            print("Please select a reminder to save.")
-            return
-        } else {
-            if let db = getConnection() {
-                let remindersTable = Table("reminders")
-                let id = Expression<Int64>("id")
-                let description = Expression<String>("description")
-                let frequency = Expression<String>("frequency")
-                let period = Expression<String>("period")
-                let dateLast = Expression<String>("date_last")
-                let dateNext = Expression<String>("date_next")
-                let note = Expression<String>("note")
-                
-                do {
-                    if let safeTableRow = tableRow  {
-                        reminders[safeTableRow].dateNext = calculatedDateNext
-                        let myId = reminders[safeTableRow].id
-//                        print(safeTableRow, myId)
-                        let reminderToSave = remindersTable.filter(id == myId)
-                        try db.run(reminderToSave.update(
-                            description <- reminders[safeTableRow].description,
-                            frequency <- reminders[safeTableRow].frequency,
-                            period <- reminders[safeTableRow].period,
-                            dateLast <- reminders[safeTableRow].dateLast,
-                            dateNext <- reminders[safeTableRow].dateNext,
-                            note <- reminders[safeTableRow].note
-                        ))
-                    }
-                    loadReminders()
-                    tableView.reloadData()
-                } catch {
-                    print("Error saving reminder: \(error)")
-                }
-            } else {
-                print("Error: Could not open database.")
-            }
-        }
+        showSaveConfirmationAlert()
     }
+    
+    func showSaveConfirmationAlert() {
+        let alertController = UIAlertController(title: "Update Reminder?", message: "Are you sure you want to save this reminder?", preferredStyle: .alert)
+        
+        let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
+            // Handle "Yes" tap
+//            print("User chose Yes. Proceeding with the action.")
+            if self.tableRow ?? -1 < 0 {
+                print("Please select a reminder to save.")
+                return
+            } else {
+                if let db = getConnection() {
+                    let remindersTable = Table("reminders")
+                    let id = Expression<Int64>("id")
+                    let description = Expression<String>("description")
+                    let frequency = Expression<String>("frequency")
+                    let period = Expression<String>("period")
+                    let dateLast = Expression<String>("date_last")
+                    let dateNext = Expression<String>("date_next")
+                    let note = Expression<String>("note")
+                    
+                    do {
+                        if let safeTableRow = self.tableRow  {
+                            self.reminders[safeTableRow].dateNext = self.calculatedDateNext
+                            let myId = self.reminders[safeTableRow].id
+    //                        print(safeTableRow, myId)
+                            let reminderToSave = remindersTable.filter(id == myId)
+                            try db.run(reminderToSave.update(
+                                description <- self.reminders[safeTableRow].description,
+                                frequency <- self.reminders[safeTableRow].frequency,
+                                period <- self.reminders[safeTableRow].period,
+                                dateLast <- self.reminders[safeTableRow].dateLast,
+                                dateNext <- self.reminders[safeTableRow].dateNext,
+                                note <- self.reminders[safeTableRow].note
+                            ))
+                        }
+                        self.loadReminders()
+                        self.tableView.reloadData()
+                        let ac = UIAlertController(title: "Updated!", message: "Your reminder has been updated.", preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(ac, animated: true)
+                    } catch {
+                        print("Error saving reminder: \(error)")
+                    }
+                } else {
+                    print("Error: Could not open database.")
+                }
+            }
+            
+        }
+    
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            // Handle "Cancel" tap
+//            print("User chose Cancel. Canceling the action.")
+        }
+    
+        alertController.addAction(yesAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+        
+        
     
     @IBAction func deleteButtonPressed(_ sender: UIButton) {
-        showConfirmationAlert()
+        showDeleteConfirmationAlert()
     }
     
-    func showConfirmationAlert() {
+    func showDeleteConfirmationAlert() {
         let alertController = UIAlertController(title: "Delete Reminder?", message: "Are you sue you want to delete this reminder?", preferredStyle: .alert)
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in

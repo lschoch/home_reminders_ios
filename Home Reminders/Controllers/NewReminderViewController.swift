@@ -50,14 +50,14 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             datePicker.datePickerMode = .date // Can also be .time, .dateAndTime, .countDownTimer
             datePicker.preferredDatePickerStyle = .compact // Or .wheels, .compact, .inline (iOS 14+)
             datePicker.tintColor = .black
-            datePicker.addTarget(self, action: #selector(pickerTapped), for: .primaryActionTriggered)
+            datePicker.addTarget(self, action: #selector(datePickerTapped), for: .primaryActionTriggered)
             
             // Add a target to respond to value changes
             datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         }
     }
     
-    @objc func pickerTapped() {
+    @objc func datePickerTapped() {
             self.datePicker.preferredDatePickerStyle = .wheels
             self.datePicker.preferredDatePickerStyle = .automatic
         }
