@@ -195,14 +195,15 @@ extension RemindersViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
         
         cell.descriptionField.text = reminder.description
-        cell.dateLastField.text = reminder.dateLast
+//        cell.dateLastField.text = reminder.dateLast
+        cell.datePicker.date = DF.dateFormatter.date(from: reminder.dateLast) ?? Date()
         cell.dateNextField.text = reminder.dateNext
         cell.frequencyField.text = reminder.frequency
         cell.noteField.text = reminder.note
         cell.customCellDelegate = self
         cell.pickerDelegate = self
         cell.textCalculationDelegate = self // VERY IMPORTANT!
-        cell.dateLastField.delegate = cell // Ensure the text field delegate is set to the cell
+//        cell.dateLastField.delegate = cell // Ensure the text field delegate is set to the cell
         
         // To initialize picker with data from the database
         if let index = pickerData.firstIndex(of: reminder.period) {
@@ -245,8 +246,8 @@ extension RemindersViewController: CustomCellDelegate {
         switch textField!.tag {
         case 1: // description
             reminders[tableRow ?? -1].description = textField?.text ?? "no text"
-        case 2: // dateLast
-            reminders[tableRow ?? -1].dateLast = textField?.text ?? "no text"
+//        case 2: // dateLast
+//            reminders[tableRow ?? -1].dateLast = textField?.text ?? "no text"
         case 4: // frequency
             reminders[tableRow ?? -1].frequency = textField?.text ?? "no text"
         case 5: // note

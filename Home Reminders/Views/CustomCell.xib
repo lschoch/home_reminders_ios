@@ -36,16 +36,6 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5ni-0h-RcJ">
-                        <rect key="frame" x="282" y="77" width="109" height="34"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                        <textInputTraits key="textInputTraits"/>
-                        <connections>
-                            <action selector="dateLastTapped:" destination="KGk-i7-Jjw" eventType="editingDidBegin" id="NcS-Tz-nue"/>
-                        </connections>
-                    </textField>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Date Next:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jn-Ix-QKN">
                         <rect key="frame" x="217" y="53" width="64" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -135,8 +125,8 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="customCell" destination="H2p-sc-9uM" id="ymA-74-EAL"/>
-                <outlet property="dateLastField" destination="5ni-0h-RcJ" id="A4w-u1-yjY"/>
                 <outlet property="dateNextField" destination="272-le-tie" id="ifM-US-gXl"/>
+                <outlet property="datePicker" destination="P1m-fr-TCO" id="TUC-iX-79F"/>
                 <outlet property="descriptionField" destination="j53-aq-Z9h" id="6Pk-iQ-pGY"/>
                 <outlet property="frequencyField" destination="MRY-KU-hkA" id="8EC-hR-tAp"/>
                 <outlet property="noteField" destination="UUw-bv-h7A" id="eAc-NZ-Jla"/>

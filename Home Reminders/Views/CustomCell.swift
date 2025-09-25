@@ -33,6 +33,7 @@ class CustomCell: UITableViewCell {
     @IBOutlet weak var dateNextField: UITextField!
     @IBOutlet weak var dateLastField: UITextField!
     
+    @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var picker: UIPickerView!
     
     weak var customCellDelegate: CustomCellDelegate?
@@ -41,6 +42,7 @@ class CustomCell: UITableViewCell {
     
     var pickerData: [String] = []
     var pickerDataIndex: Int = 0
+    var selectedDate: Date?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -53,12 +55,12 @@ class CustomCell: UITableViewCell {
         noteField.leftViewMode = .always;
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+//        dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         noteField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
-        dateLastField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
+//        dateLastField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         dateNextField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         
@@ -67,6 +69,29 @@ class CustomCell: UITableViewCell {
         picker.dataSource = self
         pickerData = ["one-time", "days", "weeks", "months", "years"]
         
+        // Configure the date picker
+        datePicker.datePickerMode = .date // Can also be .time, .dateAndTime, .countDownTimer
+        datePicker.preferredDatePickerStyle = .compact // Or .wheels, .compact, .inline (iOS 14+)
+        datePicker.tintColor = .black
+        
+        // Add a target to dismiss calendar when date is selected
+        datePicker.addTarget(self, action: #selector(datePickerTapped), for: .primaryActionTriggered)
+        
+        // Add a target to respond to value changes
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        
+    }
+    
+    @objc func datePickerTapped() {
+            self.datePicker.preferredDatePickerStyle = .wheels
+            self.datePicker.preferredDatePickerStyle = .automatic
+        }
+    
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+        selectedDate = sender.date
+        // Perform actions with the selected date, e.g., update a label,
+        // send data to another component, etc.
+        dateNextField.text = calculateDateNext(row: pickerDataIndex)
     }
     
     @IBAction func descriptionTapped(_ sender: UITextField) {
@@ -101,7 +126,11 @@ class CustomCell: UITableViewCell {
         
         let period = pickerData[picker.selectedRow(inComponent: 0)]
         
-        guard let lastDate = DF.dateFormatter.date(from: dateLastField.text!) else { print("Error: Could not parse lastDate."); return ""}
+//        guard let lastDate = DF.dateFormatter.date(from: dateLastField.text!) else { print("Error: Could not parse lastDate."); return ""}
+//        let lastDateString = DF.dateFormatter.string(from: lastDate)
+        
+        guard let selectedDate else { print("Error: Could not parse selectedDate."); return "" }
+        let lastDate = selectedDate
         let lastDateString = DF.dateFormatter.string(from: lastDate)
         
         // If frequency is nil or zero, set return last date
@@ -170,6 +199,7 @@ extension CustomCell: UIPickerViewDelegate {
         // This method is triggered whenever the user makes a change to the picker selection.
         // The parameters named row and component represent what was selected.
         pickerDataIndex = row
+        selectedDate = datePicker.date
         let calculatedDateNext = calculateDateNext(row: pickerDataIndex)
         customCellDelegate?.pickerValueDidChange(inCell: self, withText: calculatedDateNext)
         pickerDelegate?.picker(cell: self, didSelectRow: row)
