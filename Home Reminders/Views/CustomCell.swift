@@ -58,6 +58,10 @@ class CustomCell: UITableViewCell {
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         noteField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
+        dateLastField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
+        dateNextField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
+        frequencyField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
+        
         
         picker.delegate = self
         picker.dataSource = self

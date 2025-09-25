@@ -63,33 +63,55 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
         }
     
     @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
-        if let db = getConnection() {
-            let remindersTable = Table("reminders")
-            let description = Expression<String?>("description")
-            let dateLast = Expression<String?>("date_last")
-            let dateNext = Expression<String?>("date_next")
-            let frequency = Expression<String?>("frequency")
-            let period = Expression<String?>("period")
-            let note = Expression<String?>("note")
-            
-            do {
-                try db.run(remindersTable.insert(
-                    description <- descriptionField.text,
-                    frequency <- frequencyField.text,
-                    period <- newPickerData[newPickerDataIndex],
-                    note <- noteField.text,
-                    dateLast <- DF.dateFormatter.string(from: selectedDate ?? Date()),
-                    dateNext <- calculateDateNext()))
-            } catch {
-                print("Error saving reminder: \(error)")
-            }
-        }
-        self.navigationController?.popViewController(animated: true)
+        showConfirmationAlert()
     }
     
-    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
-            selectedDate = sender.date
+    func showConfirmationAlert() {
+        let alertController = UIAlertController(title: "Save Reminder?", message: "Do you want to save this reminder?", preferredStyle: .alert)
+        
+        let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
+            // Handle "Yes" tap
+//            print("User chose Yes. Proceeding with the action.")
+            if let db = getConnection() {
+                let remindersTable = Table("reminders")
+                let description = Expression<String?>("description")
+                let dateLast = Expression<String?>("date_last")
+                let dateNext = Expression<String?>("date_next")
+                let frequency = Expression<String?>("frequency")
+                let period = Expression<String?>("period")
+                let note = Expression<String?>("note")
+                
+                do {
+                    try db.run(remindersTable.insert(
+                        description <- self.descriptionField.text,
+                        frequency <- self.frequencyField.text,
+                        period <- self.newPickerData[self.newPickerDataIndex],
+                        note <- self.noteField.text,
+                        dateLast <- DF.dateFormatter.string(from: self.selectedDate ?? Date()),
+                        dateNext <- self.calculateDateNext()))
+                } catch {
+                    print("Error saving reminder: \(error)")
+                }
+            }
+            self.navigationController?.popViewController(animated: true)
         }
+    
+        let noAction = UIAlertAction(title: "No", style: .cancel) { _ in
+            // Handle "No" tap
+//            print("User chose No. Canceling the action.")
+            self.navigationController?.popViewController(animated: true)
+        }
+    
+        alertController.addAction(yesAction)
+        alertController.addAction(noAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+        
+    
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+        selectedDate = sender.date
+    }
     
     func calculateDateNext() -> String {
         let period = newPickerData[newPickerDataIndex]
