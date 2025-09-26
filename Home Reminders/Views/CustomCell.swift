@@ -54,6 +54,11 @@ class CustomCell: UITableViewCell {
         noteField.leftView = paddingView2;
         noteField.leftViewMode = .always;
         
+        descriptionField.borderStyle = .bezel
+        frequencyField.borderStyle = .bezel
+        noteField.borderStyle = .bezel
+        
+        
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
 //        dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
@@ -135,6 +140,7 @@ class CustomCell: UITableViewCell {
         
         // If frequency is nil or zero, set return last date
         guard let frequency = frequencyField.text! as String? else { return lastDateString }
+        
         if frequency == "0" { return lastDateString }
         
         guard let frequencyInt = Int(frequency) else { return lastDateString }

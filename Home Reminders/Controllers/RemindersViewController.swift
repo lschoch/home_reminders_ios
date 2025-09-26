@@ -174,6 +174,9 @@ class RemindersViewController: UIViewController {
                         note: try reminder.get(note)
                     )
                     )
+                    if reminders.last!.period == "one-time" {
+                        reminders[reminders.count - 1].frequency = ""
+                    }
                 }
             } catch {
                 print("Error during query: \(error)")
