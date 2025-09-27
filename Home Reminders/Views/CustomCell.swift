@@ -11,7 +11,6 @@ protocol CustomCellDelegate: AnyObject {
         func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?)
         func didTapElementInCell(_ cell: CustomCell)
         func pickerValueDidChange(inCell cell: CustomCell, withText text: String)
-    //        func reloadTableViewData()
     }
 
 protocol PickerCellDelegate: AnyObject {
@@ -41,7 +40,7 @@ class CustomCell: UITableViewCell {
     weak var textCalculationDelegate: TextCalculationDelegate?
     
     var pickerData: [String] = []
-    var pickerDataIndex: Int = 0
+    var pickerDataIndex: Int = -1
     var selectedDate: Date?
     
     override func awakeFromNib() {
@@ -60,12 +59,9 @@ class CustomCell: UITableViewCell {
         
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-//        dateLastField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         noteField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        
-//        dateLastField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         dateNextField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         
@@ -130,12 +126,7 @@ class CustomCell: UITableViewCell {
         var nextDate: Date
         
         let period = pickerData[picker.selectedRow(inComponent: 0)]
-        
-//        guard let lastDate = DF.dateFormatter.date(from: dateLastField.text!) else { print("Error: Could not parse lastDate."); return ""}
-//        let lastDateString = DF.dateFormatter.string(from: lastDate)
-        
-        guard let selectedDate else { print("Error: Could not parse selectedDate."); return "" }
-        let lastDate = selectedDate
+        let lastDate = datePicker.date
         let lastDateString = DF.dateFormatter.string(from: lastDate)
         
         // If frequency is nil or zero, set return last date
@@ -205,6 +196,13 @@ extension CustomCell: UIPickerViewDelegate {
         // This method is triggered whenever the user makes a change to the picker selection.
         // The parameters named row and component represent what was selected.
         pickerDataIndex = row
+        
+        // picker.selectedRow(inComponent: 0) == 0: corresponds to "one-time"
+        if picker.selectedRow(inComponent: 0) == 0 {
+            frequencyField.text = "0"
+            textFieldDidChange(frequencyField)
+        }
+        
         selectedDate = datePicker.date
         let calculatedDateNext = calculateDateNext(row: pickerDataIndex)
         customCellDelegate?.pickerValueDidChange(inCell: self, withText: calculatedDateNext)
@@ -218,7 +216,10 @@ extension CustomCell: UITextFieldDelegate {
     @objc func textFieldDidChange(_ textField: UITextField) {
         // Recalculate next date when there is a change in last date or frequency
         dateNextField.text = calculateDateNext(row: pickerDataIndex)
+        if picker.selectedRow(inComponent: 0) == 0 {
+            frequencyField.text = "0"
+        }
         customCellDelegate?.customCell(self, didUpdateText: textField)
-        
+                
     }
 }

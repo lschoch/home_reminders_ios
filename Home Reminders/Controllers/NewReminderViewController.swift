@@ -20,7 +20,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     weak var newPickerDelegate: PickerCellDelegate?
     
     var newPickerData: [String] = []
-    var newPickerDataIndex: Int = 0
+    var newPickerDataIndex: Int = -1
     
     var selectedDate: Date?
     
@@ -71,7 +71,6 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap
-//            print("User chose Yes. Proceeding with the action.")
             if let db = getConnection() {
                 let remindersTable = Table("reminders")
                 let description = Expression<String?>("description")
@@ -98,7 +97,6 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
         let noAction = UIAlertAction(title: "No", style: .cancel) { _ in
             // Handle "No" tap
-//            print("User chose No. Canceling the action.")
             self.navigationController?.popViewController(animated: true)
         }
     

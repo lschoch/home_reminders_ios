@@ -45,7 +45,6 @@ class RemindersViewController: UIViewController {
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap
-//            print("User chose Yes. Proceeding with the action.")
             if self.tableRow ?? -1 < 0 {
                 print("Please select a reminder to save.")
                 return
@@ -64,7 +63,6 @@ class RemindersViewController: UIViewController {
                         if let safeTableRow = self.tableRow  {
                             self.reminders[safeTableRow].dateNext = self.calculatedDateNext
                             let myId = self.reminders[safeTableRow].id
-    //                        print(safeTableRow, myId)
                             let reminderToSave = remindersTable.filter(id == myId)
                             try db.run(reminderToSave.update(
                                 description <- self.reminders[safeTableRow].description,
@@ -92,7 +90,6 @@ class RemindersViewController: UIViewController {
     
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             // Handle "Cancel" tap
-//            print("User chose Cancel. Canceling the action.")
         }
     
         alertController.addAction(yesAction)
@@ -112,7 +109,6 @@ class RemindersViewController: UIViewController {
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap
-//            print("User chose Yes. Proceeding with the action.")
             if let db = getConnection() {
                 let remindersTable = Table("reminders")
                 let id = Expression<Int64>("id")
@@ -136,7 +132,6 @@ class RemindersViewController: UIViewController {
     
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             // Handle "Cancel" tap
-//            print("User chose Cancel. Canceling the action.")
         }
     
         alertController.addAction(yesAction)
@@ -174,9 +169,6 @@ class RemindersViewController: UIViewController {
                         note: try reminder.get(note)
                     )
                     )
-                    if reminders.last!.period == "one-time" {
-                        reminders[reminders.count - 1].frequency = ""
-                    }
                 }
             } catch {
                 print("Error during query: \(error)")
@@ -198,7 +190,6 @@ extension RemindersViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
         
         cell.descriptionField.text = reminder.description
-//        cell.dateLastField.text = reminder.dateLast
         cell.datePicker.date = DF.dateFormatter.date(from: reminder.dateLast) ?? Date()
         cell.dateNextField.text = reminder.dateNext
         cell.frequencyField.text = reminder.frequency
@@ -206,7 +197,6 @@ extension RemindersViewController: UITableViewDataSource {
         cell.customCellDelegate = self
         cell.pickerDelegate = self
         cell.textCalculationDelegate = self // VERY IMPORTANT!
-//        cell.dateLastField.delegate = cell // Ensure the text field delegate is set to the cell
         
         // To initialize picker with data from the database
         if let index = pickerData.firstIndex(of: reminder.period) {
@@ -249,8 +239,6 @@ extension RemindersViewController: CustomCellDelegate {
         switch textField!.tag {
         case 1: // description
             reminders[tableRow ?? -1].description = textField?.text ?? "no text"
-//        case 2: // dateLast
-//            reminders[tableRow ?? -1].dateLast = textField?.text ?? "no text"
         case 4: // frequency
             reminders[tableRow ?? -1].frequency = textField?.text ?? "no text"
         case 5: // note
@@ -263,7 +251,6 @@ extension RemindersViewController: CustomCellDelegate {
     
     func didTapElementInCell(_ cell: CustomCell) {
         if let indexPath = tableView.indexPath(for: cell) {
-//            print("Tapped cell at \(indexPath)")
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
         }
@@ -271,7 +258,6 @@ extension RemindersViewController: CustomCellDelegate {
     
     func pickerValueDidChange(inCell cell: CustomCell, withText text: String) {
             // Handle the received text from the custom cell
-//            print("Received text from picker in cell: \(text)")
             // Update UI or perform other actions in the view controller
             calculatedDateNext = text
         }
