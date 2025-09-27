@@ -16,6 +16,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     @IBOutlet weak var descriptionField: UITextField!
     @IBOutlet weak var frequencyField: UITextField!
     @IBOutlet weak var noteField: UITextField!
+    @IBOutlet weak var saveButton: UIButton!
     
     weak var newPickerDelegate: PickerCellDelegate?
     
@@ -52,8 +53,22 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             datePicker.tintColor = .black
             datePicker.addTarget(self, action: #selector(datePickerTapped), for: .primaryActionTriggered)
             
-            // Add a target to respond to value changes
+            // Add a target to respond to datePicker value changes
             datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+            
+            // Set initial frequency to zero (because intial period is "one-time"
+            frequencyField.text = "0"
+            
+            // Add target to frequency field to set frequancy = zero if period is "one-time"
+            frequencyField.addTarget(self, action: #selector(frequencyFieldChanged(_:)), for: .editingChanged)
+            
+            saveButton.isHidden = true
+        }
+    }
+    
+    @objc func frequencyFieldChanged(_ textField: UITextField) {
+        if newPicker.selectedRow(inComponent: 0) == 0 {
+            frequencyField.text = "0"
         }
     }
     
@@ -84,7 +99,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     try db.run(remindersTable.insert(
                         description <- self.descriptionField.text,
                         frequency <- self.frequencyField.text,
-                        period <- self.newPickerData[self.newPickerDataIndex],
+                        period <- self.newPickerData[self.newPicker.selectedRow(inComponent: 0)],   //self.newPickerData[self.newPickerDataIndex],
                         note <- self.noteField.text,
                         dateLast <- DF.dateFormatter.string(from: self.selectedDate ?? Date()),
                         dateNext <- self.calculateDateNext()))
@@ -112,7 +127,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
     
     func calculateDateNext() -> String {
-        let period = newPickerData[newPickerDataIndex]
+        let period = newPickerData[newPicker.selectedRow(inComponent: 0)]
         let frequency = frequencyField.text
         let dateLast = selectedDate ?? Date()
         
@@ -166,6 +181,10 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         newPickerDataIndex = row
+        
+        if newPicker.selectedRow(inComponent: 0) == 0 {
+            frequencyField.text = "0"
+        }
     }
 
 }

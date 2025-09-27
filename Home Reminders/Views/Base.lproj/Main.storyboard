@@ -192,6 +192,7 @@
                         <outlet property="frequencyField" destination="1Fx-D5-ckq" id="KcA-hb-g4U"/>
                         <outlet property="newPicker" destination="mKp-87-cdD" id="pch-yi-ISv"/>
                         <outlet property="noteField" destination="z1I-ou-bmM" id="tzi-PL-rpv"/>
+                        <outlet property="saveButton" destination="sny-a0-j3e" id="Yan-ub-I6R"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mcn-MQ-Sti" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
