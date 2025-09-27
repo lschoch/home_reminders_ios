@@ -51,10 +51,17 @@ class RemindersViewController: UIViewController {
         loadReminders()
         tableView.reloadData()
         
-        // On return from New Reminder, select the previously selected row.
-        if let indexPath = selectedIndexPath {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-        }
+        // On return from New Reminder, select the first row.
+        //        if let indexPath = selectedIndexPath {
+        //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        //        }
+        
+        //        if let row = reminders.firstIndex(where: { $0.description == "pool maintenance" }) {
+        //            let indexPath = IndexPath(row: row, section: 0) // Assuming a single section
+        //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+        //        }
+        let indexPath = IndexPath(row: 0, section: 0)
+        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
     }
     
     @objc func hideKeyboard() {
@@ -66,7 +73,7 @@ class RemindersViewController: UIViewController {
     }
     
     func showSaveConfirmationAlert() {
-        let alertController = UIAlertController(title: "Update Reminder?", message: "Are you sure you want to save this reminder?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Update Reminder?", message: "Are you sure you want to update this reminder?", preferredStyle: .alert)
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap
@@ -100,7 +107,9 @@ class RemindersViewController: UIViewController {
                         }
                         self.loadReminders()
                         self.tableView.reloadData()
-                        let ac = UIAlertController(title: "Updated!", message: "Your reminder has been updated.", preferredStyle: .alert)
+                        
+                        // Alert notification that the update was successful.
+                        let ac = UIAlertController(title: "Updated", message: "Your reminder has been updated.", preferredStyle: .alert)
                         ac.addAction(UIAlertAction(title: "OK", style: .default))
                         self.present(ac, animated: true)
                     } catch {
@@ -130,7 +139,7 @@ class RemindersViewController: UIViewController {
     }
     
     func showDeleteConfirmationAlert() {
-        let alertController = UIAlertController(title: "Delete Reminder?", message: "Are you sue you want to delete this reminder?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Delete Reminder?", message: "Are you sure you want to delete this reminder?", preferredStyle: .alert)
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap
@@ -146,6 +155,12 @@ class RemindersViewController: UIViewController {
                     self.loadReminders()
                     self.tableView.reloadData()
                     self.tableView.selectRow(at: [0, safeTableRow], animated: true, scrollPosition: .none)
+                    
+                    // Alert notification that delete was successful.
+                    let ac = UIAlertController(title: "Deleted", message: "The reminder has been deleted.", preferredStyle: .alert)
+                    ac.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(ac, animated: true)
+                    
                 } else {
                     print("No row to delete.")
                 }
