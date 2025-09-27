@@ -16,6 +16,7 @@ class RemindersViewController: UIViewController {
     var tableRow: Int?
     let pickerData = ["one-time", "days", "weeks", "months", "years"]
     var calculatedDateNext: String = ""
+    var selectedIndexPath: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,13 +46,16 @@ class RemindersViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-
-            loadReminders()
-            tableView.reloadData()
+        super.viewWillAppear(animated)
+        
+        loadReminders()
+        tableView.reloadData()
+        
+        // On return from New Reminder, select the previously selected row.
+        if let indexPath = selectedIndexPath {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         }
-    
-    override func view
+    }
     
     @objc func hideKeyboard() {
             view.endEditing(true)
@@ -251,6 +255,16 @@ extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = indexPath.row
         tableRow = row
+        selectedIndexPath = indexPath
+        
+        // Deselect any previously selected row
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedIndexPath, animated: true)
+        }
+        
+        // Select the newly tapped row
+        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        
     }
 }
 

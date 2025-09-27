@@ -63,8 +63,16 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             frequencyField.addTarget(self, action: #selector(frequencyFieldChanged(_:)), for: .editingChanged)
             
             saveButton.isHidden = true
+            
+            // Dismiss keyboard when tapping outside text field.
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+                    view.addGestureRecognizer(tapGesture)
         }
     }
+    
+    @objc func hideKeyboard() {
+            view.endEditing(true)
+        }
     
     @objc func frequencyFieldChanged(_ textField: UITextField) {
         if newPicker.selectedRow(inComponent: 0) == 0 {
@@ -108,6 +116,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
                 }
             }
             self.navigationController?.popViewController(animated: true)
+
         }
     
         let noAction = UIAlertAction(title: "No", style: .cancel) { _ in
