@@ -25,6 +25,10 @@ class RemindersViewController: UIViewController {
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
         tableView.rowHeight = 160
         
+        // Dismiss keyboard when tapping outside text field.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+                view.addGestureRecognizer(tapGesture)
+        
         loadReminders()
         
         // Select first row after loading.
@@ -45,6 +49,12 @@ class RemindersViewController: UIViewController {
 
             loadReminders()
             tableView.reloadData()
+        }
+    
+    override func view
+    
+    @objc func hideKeyboard() {
+            view.endEditing(true)
         }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
