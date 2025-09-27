@@ -46,8 +46,8 @@ class CustomCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Shift description field text left (so that it's not at the very edge of the container)
-        let paddingView1: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-        let paddingView2: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 25, height: 20))
+        let paddingView1: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 2, height: 20))
+        let paddingView2: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 2, height: 20))
         descriptionField.leftView = paddingView1;
         descriptionField.leftViewMode = .always;
         noteField.leftView = paddingView2;

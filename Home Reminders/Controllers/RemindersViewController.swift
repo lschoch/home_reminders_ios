@@ -27,6 +27,17 @@ class RemindersViewController: UIViewController {
         
         loadReminders()
         
+        // Select first row after loading.
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: 0, section: 0)
+            // Check if there are any rows in the table before attempting to select one
+            if self.tableView.numberOfRows(inSection: 0) > 0 {
+                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+            } else {
+                self.tableView.reloadData( )
+                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
