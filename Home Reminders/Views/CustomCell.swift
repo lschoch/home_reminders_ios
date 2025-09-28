@@ -58,8 +58,15 @@ class CustomCell: UITableViewCell {
         frequencyField.borderStyle = .bezel
         noteField.borderStyle = .bezel
         
-        frequencyField.keyboardType = .numberPad
-        
+//        frequencyField.keyboardType = .numberPad
+//        
+//        // Create "Done" item in keyboard
+//        let toolbar = UIToolbar()
+//        toolbar.sizeToFit() // Adjusts the toolbar's size to fit its content
+//        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(UITextField.resignFirstResponder))
+//        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+//        toolbar.items = [flexibleSpace, doneButton]
+//        frequencyField.inputAccessoryView = toolbar
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
@@ -72,6 +79,10 @@ class CustomCell: UITableViewCell {
         picker.delegate = self
         picker.dataSource = self
         pickerData = ["one-time", "days", "weeks", "months", "years"]
+        
+        descriptionField.delegate = self
+        frequencyField.delegate = self
+        noteField.delegate = self
         
         // Configure the date picker
         datePicker.datePickerMode = .date // Can also be .time, .dateAndTime, .countDownTimer
@@ -203,6 +214,7 @@ extension CustomCell: UIPickerViewDelegate {
         // If period is "one-time", set frequency to zero and notify RemindersViewController of the change.
         if picker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
+            frequencyField.resignFirstResponder()
             textFieldDidChange(frequencyField)
         }
         
@@ -222,8 +234,16 @@ extension CustomCell: UITextFieldDelegate {
         // If period is "one-time", set frequency to zero and trigger alert.
         if picker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
-            customCellDelegate?.customCellFrequencyAlert(self)
+            // Trigger frequency alert if the call to this function is from the frequency field.
+            if textField.tag == 4 {
+                customCellDelegate?.customCellFrequencyAlert(self)
+            }
         }
         customCellDelegate?.customCell(self, didUpdateText: textField)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

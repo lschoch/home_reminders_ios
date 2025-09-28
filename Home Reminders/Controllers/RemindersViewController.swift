@@ -27,8 +27,8 @@ class RemindersViewController: UIViewController {
         tableView.rowHeight = 160
         
         // Dismiss keyboard when tapping outside text field.
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-                view.addGestureRecognizer(tapGesture)
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+//                view.addGestureRecognizer(tapGesture)
         
         loadReminders()
         
