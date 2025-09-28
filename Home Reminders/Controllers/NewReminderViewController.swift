@@ -59,6 +59,8 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             // Set initial frequency to zero (because intial period is "one-time"
             frequencyField.text = "0"
             
+            frequencyField.keyboardType = .numberPad
+            
             // Add target to frequency field to set frequancy = zero if period is "one-time"
             frequencyField.addTarget(self, action: #selector(frequencyFieldChanged(_:)), for: .editingChanged)
             
@@ -77,6 +79,12 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     @objc func frequencyFieldChanged(_ textField: UITextField) {
         if newPicker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
+            
+            // Alert notification re: frequency when period is "one-time."
+            let ac = UIAlertController(title: "one-time", message: "Frequency must be zero for 'one-time'.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(ac, animated: true)
+            
         }
     }
     

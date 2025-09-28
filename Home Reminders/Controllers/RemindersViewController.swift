@@ -311,6 +311,13 @@ extension RemindersViewController: CustomCellDelegate {
             // Update UI or perform other actions in the view controller
             calculatedDateNext = text
         }
+    
+    func customCellFrequencyAlert(_ cell: CustomCell) {
+        // Alert notification re: frequency when period is "one-time."
+        let ac = UIAlertController(title: "one-time", message: "Frequency must be zero for 'one-time'.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(ac, animated: true)
+    }
 
 }
 

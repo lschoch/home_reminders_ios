@@ -11,6 +11,7 @@ protocol CustomCellDelegate: AnyObject {
         func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?)
         func didTapElementInCell(_ cell: CustomCell)
         func pickerValueDidChange(inCell cell: CustomCell, withText text: String)
+        func customCellFrequencyAlert(_ cell: CustomCell)
     }
 
 protocol PickerCellDelegate: AnyObject {
@@ -56,6 +57,8 @@ class CustomCell: UITableViewCell {
         descriptionField.borderStyle = .bezel
         frequencyField.borderStyle = .bezel
         noteField.borderStyle = .bezel
+        
+        frequencyField.keyboardType = .numberPad
         
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
@@ -197,7 +200,7 @@ extension CustomCell: UIPickerViewDelegate {
         // The parameters named row and component represent what was selected.
         pickerDataIndex = row
         
-        // picker.selectedRow(inComponent: 0) == 0: corresponds to "one-time"
+        // If period is "one-time", set frequency to zero and notify RemindersViewController of the change.
         if picker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
             textFieldDidChange(frequencyField)
@@ -216,10 +219,11 @@ extension CustomCell: UITextFieldDelegate {
     @objc func textFieldDidChange(_ textField: UITextField) {
         // Recalculate next date when there is a change in last date or frequency
         dateNextField.text = calculateDateNext(row: pickerDataIndex)
+        // If period is "one-time", set frequency to zero and trigger alert.
         if picker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
+            customCellDelegate?.customCellFrequencyAlert(self)
         }
         customCellDelegate?.customCell(self, didUpdateText: textField)
-                
     }
 }
