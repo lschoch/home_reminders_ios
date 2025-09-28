@@ -296,17 +296,18 @@ extension RemindersViewController: UITableViewDelegate {
 //MARK: - CustomCellDelegate Implementation
 extension RemindersViewController: CustomCellDelegate {
     func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?) {
-        switch textField!.tag {
+        guard let textField, let tableRow else { return }
+        switch textField.tag {
         case 1: // description
-            reminders[tableRow ?? -1].description = textField?.text ?? "no text"
+            reminders[tableRow].description = textField.text ?? "no text"
         case 4: // frequency
-            reminders[tableRow ?? -1].frequency = textField?.text ?? "no text"
+            reminders[tableRow].frequency = textField.text ?? "no text"
         case 5: // note
-            reminders[tableRow ?? -1].note = textField?.text ?? "no text"
+            reminders[tableRow].note = textField.text ?? "no text"
         default:
             print("unknown")
         }
-        reminders[tableRow ?? -1].dateNext = calculatedDateNext
+        reminders[tableRow].dateNext = calculatedDateNext
     }
     
     func didTapElementInCell(_ cell: CustomCell) {
