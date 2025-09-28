@@ -21,6 +21,16 @@ class RemindersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let navBar = navigationController?.navigationBar {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .brandLightBlue // nav bar color
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.brandLightYellow] // center title
+            
+            navBar.standardAppearance = appearance
+            navBar.scrollEdgeAppearance = appearance
+        }
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
