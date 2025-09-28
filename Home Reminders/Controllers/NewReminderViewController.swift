@@ -68,13 +68,18 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             
             // Dismiss keyboard when tapping outside text field.
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-                    view.addGestureRecognizer(tapGesture)
+            view.addGestureRecognizer(tapGesture)
         }
     }
     
     @objc func hideKeyboard() {
             view.endEditing(true)
         }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
     
     @objc func frequencyFieldChanged(_ textField: UITextField) {
         if newPicker.selectedRow(inComponent: 0) == 0 {

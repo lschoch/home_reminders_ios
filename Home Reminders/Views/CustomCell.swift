@@ -92,7 +92,7 @@ class CustomCell: UITableViewCell {
         // Add a target to dismiss calendar when date is selected
         datePicker.addTarget(self, action: #selector(datePickerTapped), for: .primaryActionTriggered)
         
-        // Add a target to respond to value changes
+        // Add a target to respond to datePicker value changes
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         
     }
