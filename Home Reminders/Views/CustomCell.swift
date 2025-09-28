@@ -209,10 +209,13 @@ extension CustomCell: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         // This method is triggered whenever the user makes a change to the picker selection.
         // The parameters named row and component represent what was selected.
+        
+        // Call didTapElementInCell to select the tableView row which sets tableRow (needed downstream).
+        customCellDelegate?.didTapElementInCell(self)
         pickerDataIndex = row
         
         // If period is "one-time", set frequency to zero and notify RemindersViewController of the change.
-        if picker.selectedRow(inComponent: 0) == 0 {
+        if picker.selectedRow(inComponent: 0) == 0, frequencyField.text != "0" {
             frequencyField.text = "0"
             frequencyField.resignFirstResponder()
             textFieldDidChange(frequencyField)
