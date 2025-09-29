@@ -8,7 +8,7 @@
 import UIKit
 import SQLite
 
-class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
 
     @IBOutlet weak var newPicker: UIPickerView!
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -46,6 +46,10 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             newPicker.delegate = self
             newPicker.dataSource = self
             newPickerData = ["one-time", "days", "weeks", "months", "years"]
+            
+            descriptionField.delegate = self
+            frequencyField.delegate = self
+            noteField.delegate = self
             
             // Configure the date picker
             datePicker.datePickerMode = .date // Can also be .time, .dateAndTime, .countDownTimer
@@ -114,7 +118,13 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
         }
     
     @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
-        showConfirmationAlert()
+        // Reminders must have a description. If the description field is blank, don't offer to save the reminder.
+        if descriptionField.text != "" {
+            showConfirmationAlert()
+        }
+        else {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     func showConfirmationAlert() {
