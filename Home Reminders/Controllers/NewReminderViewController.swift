@@ -95,11 +95,6 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             view.endEditing(true)
         }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
     @objc func frequencyFieldChanged(_ textField: UITextField) {
         if newPicker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
@@ -235,6 +230,12 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
         if newPicker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
         }
+    }
+    
+    //MARK: - TextFieldDelegate Implementation
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 
 }
