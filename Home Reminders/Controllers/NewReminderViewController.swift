@@ -61,6 +61,21 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             
             frequencyField.keyboardType = .numberPad
             
+//            descriptionField.borderStyle = .bezel
+            descriptionField.layer.cornerRadius = 8.0
+            descriptionField.layer.borderWidth = 1.0
+            descriptionField.clipsToBounds = true
+            
+//            frequencyField.borderStyle = .bezel
+            frequencyField.layer.cornerRadius = 8.0
+            frequencyField.layer.borderWidth = 1.0
+            frequencyField.clipsToBounds = true
+            
+//            noteField.borderStyle = .bezel
+            noteField.layer.cornerRadius = 8.0
+            noteField.layer.borderWidth = 1.0
+            noteField.clipsToBounds = true
+            
             // Add target to frequency field to set frequancy = zero if period is "one-time"
             frequencyField.addTarget(self, action: #selector(frequencyFieldChanged(_:)), for: .editingChanged)
             

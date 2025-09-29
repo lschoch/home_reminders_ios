@@ -54,19 +54,30 @@ class CustomCell: UITableViewCell {
         noteField.leftView = paddingView2;
         noteField.leftViewMode = .always;
         
-        descriptionField.borderStyle = .bezel
-        frequencyField.borderStyle = .bezel
-        noteField.borderStyle = .bezel
+        //            descriptionField.borderStyle = .bezel
+        descriptionField.layer.cornerRadius = 8.0
+        descriptionField.layer.borderWidth = 1.0
+        descriptionField.clipsToBounds = true
         
-//        frequencyField.keyboardType = .numberPad
-//        
-//        // Create "Done" item in keyboard
-//        let toolbar = UIToolbar()
-//        toolbar.sizeToFit() // Adjusts the toolbar's size to fit its content
-//        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(UITextField.resignFirstResponder))
-//        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-//        toolbar.items = [flexibleSpace, doneButton]
-//        frequencyField.inputAccessoryView = toolbar
+        //            frequencyField.borderStyle = .bezel
+        frequencyField.layer.cornerRadius = 8.0
+        frequencyField.layer.borderWidth = 1.0
+        frequencyField.clipsToBounds = true
+        
+        //            noteField.borderStyle = .bezel
+        noteField.layer.cornerRadius = 8.0
+        noteField.layer.borderWidth = 1.0
+        noteField.clipsToBounds = true
+        
+        //        frequencyField.keyboardType = .numberPad
+        //
+        //        // Create "Done" item in keyboard
+        //        let toolbar = UIToolbar()
+        //        toolbar.sizeToFit() // Adjusts the toolbar's size to fit its content
+        //        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(UITextField.resignFirstResponder))
+        //        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        //        toolbar.items = [flexibleSpace, doneButton]
+        //        frequencyField.inputAccessoryView = toolbar
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
