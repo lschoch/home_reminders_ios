@@ -91,46 +91,11 @@ class RemindersViewController: UIViewController {
                 print("Please select a reminder to save.")
                 return
             } else {
-                if let db = getConnection() {
-                    let remindersTable = Table("reminders")
-                    let id = Expression<Int64>("id")
-                    let description = Expression<String>("description")
-                    let frequency = Expression<String>("frequency")
-                    let period = Expression<String>("period")
-                    let dateLast = Expression<String>("date_last")
-                    let dateNext = Expression<String>("date_next")
-                    let note = Expression<String>("note")
-                    
-                    do {
-                        if let safeTableRow = self.tableRow  {
-                            self.reminders[safeTableRow].dateNext = self.calculatedDateNext
-                            let myId = self.reminders[safeTableRow].id
-                            let reminderToSave = remindersTable.filter(id == myId)
-                            try db.run(reminderToSave.update(
-                                description <- self.reminders[safeTableRow].description,
-                                frequency <- self.reminders[safeTableRow].frequency,
-                                period <- self.reminders[safeTableRow].period,
-                                dateLast <- self.reminders[safeTableRow].dateLast,
-                                dateNext <- self.reminders[safeTableRow].dateNext,
-                                note <- self.reminders[safeTableRow].note
-                            ))
-                        }
-                        self.loadReminders()
-                        self.tableView.reloadData()
-                        
-                        // Alert notification that the update was successful.
-                        let ac = UIAlertController(title: "Updated", message: "Your reminder has been updated.", preferredStyle: .alert)
-                        ac.addAction(UIAlertAction(title: "OK", style: .default))
-                        self.present(ac, animated: true)
-                    } catch {
-                        print("Error saving reminder: \(error)")
-                    }
-                } else {
-                    print("Error: Could not open database.")
-                }
+                self.saveReminder(self.tableRow)
             }
-            
         }
+        
+        
     
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             // Handle "Cancel" tap
@@ -141,9 +106,7 @@ class RemindersViewController: UIViewController {
         
         present(alertController, animated: true, completion: nil)
     }
-        
-        
-    
+
     @IBAction func deleteButtonPressed(_ sender: UIButton) {
         showDeleteConfirmationAlert()
     }
@@ -227,7 +190,49 @@ class RemindersViewController: UIViewController {
             print("Could not open database")
         }
     }
+    
+    func saveReminder(_ row: Int?) {
+        if let db = getConnection() {
+            let remindersTable = Table("reminders")
+            let id = Expression<Int64>("id")
+            let description = Expression<String>("description")
+            let frequency = Expression<String>("frequency")
+            let period = Expression<String>("period")
+            let dateLast = Expression<String>("date_last")
+            let dateNext = Expression<String>("date_next")
+            let note = Expression<String>("note")
+            
+            do {
+                if let safeRow = row  {
+                    self.reminders[safeRow].dateNext = self.calculatedDateNext
+                    let myId = self.reminders[safeRow].id
+                    let reminderToSave = remindersTable.filter(id == myId)
+                    try db.run(reminderToSave.update(
+                        description <- self.reminders[safeRow].description,
+                        frequency <- self.reminders[safeRow].frequency,
+                        period <- self.reminders[safeRow].period,
+                        dateLast <- self.reminders[safeRow].dateLast,
+                        dateNext <- self.reminders[safeRow].dateNext,
+                        note <- self.reminders[safeRow].note
+                    ))
+                }
+                self.loadReminders()
+                self.tableView.reloadData()
+                
+                // Alert notification that the update was successful.
+//                let ac = UIAlertController(title: "Saved", message: "Your reminder has been saved.", preferredStyle: .alert)
+//                ac.addAction(UIAlertAction(title: "OK", style: .default))
+//                self.present(ac, animated: true)
+            } catch {
+                print("Error saving reminder: \(error)")
+            }
+        } else {
+            print("Error: Could not open database.")
+        }
+    }
 }
+
+
 
 //MARK: - UITableViewDataSource Implementation
 extension RemindersViewController: UITableViewDataSource {
@@ -277,6 +282,44 @@ extension RemindersViewController: UITableViewDataSource {
 
 //MARK: - UITableViewDelegate Implementation
 extension RemindersViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        // Get the currently selected row (if any)
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            // Retrieve the data model for the currently selected row
+            let selectedRowData = reminders[selectedIndexPath.row]
+
+            // Check if the selectedRowData has "changed" based on your application's logic
+            // For example, if a text field in the cell was edited and not saved
+            if selectedRowData.hasUnsavedChanges {
+                // Present an alert or prompt the user to save/discard changes
+                // If the user chooses to stay on the current row, return nil
+                // If the user confirms to proceed, handle saving/discarding and then return indexPath
+                // For demonstration, let's assume a simple alert
+                let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before selecting another row?", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
+                    // Save changes for selectedRowData
+                    self.saveReminder(selectedIndexPath.row)
+                    // Then, proceed with selecting the new row
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                }))
+//                alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
+//                    // Discard changes for selectedRowData
+//                    // Then, proceed with selecting the new row
+//                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+//                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                    // Do not select the new row
+                }))
+                self.present(alert, animated: true, completion: nil)
+
+                return nil // Prevent the new row from being selected immediately
+            }
+        }
+
+        // If no row is selected or no changes were detected, allow the selection
+        return indexPath
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = indexPath.row
         tableRow = row
@@ -289,7 +332,6 @@ extension RemindersViewController: UITableViewDelegate {
         
         // Select the newly tapped row
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-        
     }
 }
 
@@ -299,15 +341,16 @@ extension RemindersViewController: CustomCellDelegate {
         guard let textField, let tableRow else { return }
         switch textField.tag {
         case 1: // description
-            reminders[tableRow].description = textField.text ?? "no text"
+            reminders[tableRow].description = textField.text ?? ""
         case 4: // frequency
-            reminders[tableRow].frequency = textField.text ?? "no text"
+            reminders[tableRow].frequency = textField.text ?? ""
         case 5: // note
-            reminders[tableRow].note = textField.text ?? "no text"
+            reminders[tableRow].note = textField.text ?? ""
         default:
             print("unknown")
         }
         reminders[tableRow].dateNext = calculatedDateNext
+        reminders[tableRow].hasUnsavedChanges = true
     }
     
     func didTapElementInCell(_ cell: CustomCell) {

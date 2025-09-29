@@ -15,4 +15,5 @@ struct Reminder {
     var dateLast: String
     var dateNext: String
     var note: String
+    var hasUnsavedChanges: Bool = false
 }
