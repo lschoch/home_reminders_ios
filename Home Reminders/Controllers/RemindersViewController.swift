@@ -369,7 +369,7 @@ extension RemindersViewController: CustomCellDelegate {
     
     func customCellFrequencyAlert(_ cell: CustomCell) {
         // Alert notification re: frequency when period is "one-time."
-        let ac = UIAlertController(title: "one-time", message: "Frequency must be zero for 'one-time'.", preferredStyle: .alert)
+        let ac = UIAlertController(title: "one-time", message: "Frequency is set to zero for 'one-time'.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(ac, animated: true)
         
@@ -377,6 +377,7 @@ extension RemindersViewController: CustomCellDelegate {
     
     func datePickerValueDidChange(inCell cell: CustomCell, withDate date: Date) {
         guard let selectedIndexPath else { print("selectedIndexPath is nil"); return }
+        reminders[selectedIndexPath.row].dateLast = DF.dateFormatter.string(from: date)
         reminders[selectedIndexPath.row].hasUnsavedChanges = true
     }
 

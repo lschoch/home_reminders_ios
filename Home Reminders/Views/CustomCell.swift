@@ -127,7 +127,7 @@ class CustomCell: UITableViewCell {
         customCellDelegate?.didTapElementInCell(self)   
     }
     
-    @IBAction func dateLastTapped(_ sender: UITextField) {
+    @IBAction func dateLastTapped(_ sender: UIDatePicker) {
         customCellDelegate?.didTapElementInCell(self)
     }
     

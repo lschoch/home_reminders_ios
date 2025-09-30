@@ -100,7 +100,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             frequencyField.text = "0"
             
             // Alert notification re: frequency when period is "one-time."
-            let ac = UIAlertController(title: "one-time", message: "Frequency must be zero for 'one-time'.", preferredStyle: .alert)
+            let ac = UIAlertController(title: "one-time", message: "Frequency is set to zero for 'one-time'.", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(ac, animated: true)
             
