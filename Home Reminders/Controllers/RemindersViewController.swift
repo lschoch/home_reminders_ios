@@ -308,7 +308,8 @@ extension RemindersViewController: UITableViewDelegate {
 //                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
 //                }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-                    // Do not select the new row
+                    // Do not select the new row when "Discard" is active
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                 }))
                 self.present(alert, animated: true, completion: nil)
 
@@ -371,6 +372,12 @@ extension RemindersViewController: CustomCellDelegate {
         let ac = UIAlertController(title: "one-time", message: "Frequency must be zero for 'one-time'.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(ac, animated: true)
+        
+    }
+    
+    func datePickerValueDidChange(inCell cell: CustomCell, withDate date: Date) {
+        guard let selectedIndexPath else { print("selectedIndexPath is nil"); return }
+        reminders[selectedIndexPath.row].hasUnsavedChanges = true
     }
 
 }
@@ -381,7 +388,7 @@ extension RemindersViewController: PickerCellDelegate {
         if let indexPath = tableView.indexPath(for: cell) {
             // Update tableRow directly
             tableRow = indexPath.row
-            
+            reminders[indexPath.row].hasUnsavedChanges = true
             reminders[indexPath.row].period = pickerData[row]
             reminders[indexPath.row].dateNext = calculatedDateNext
             tableView.reloadRows(at: [indexPath], with: .none)

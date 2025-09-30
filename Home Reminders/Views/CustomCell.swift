@@ -12,6 +12,7 @@ protocol CustomCellDelegate: AnyObject {
         func didTapElementInCell(_ cell: CustomCell)
         func pickerValueDidChange(inCell cell: CustomCell, withText text: String)
         func customCellFrequencyAlert(_ cell: CustomCell)
+        func datePickerValueDidChange(inCell cell: CustomCell, withDate date: Date)
     }
 
 protocol PickerCellDelegate: AnyObject {
@@ -115,9 +116,11 @@ class CustomCell: UITableViewCell {
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
-        // Perform actions with the selected date, e.g., update a label,
-        // send data to another component, etc.
-        dateNextField.text = calculateDateNext(row: pickerDataIndex)
+        let pickerRow = picker.selectedRow(inComponent: 0)
+        // Perform actions with the selected date, e.g., update a label, send data to another component, etc.
+        dateNextField.text = calculateDateNext(row: pickerRow)
+        customCellDelegate?.datePickerValueDidChange(inCell: self, withDate: selectedDate ?? Date())
+        textCalculationDelegate?.didCalculateText(calculateDateNext(row: pickerRow))
     }
     
     @IBAction func descriptionTapped(_ sender: UITextField) {
