@@ -87,6 +87,10 @@ class CustomCell: UITableViewCell {
         dateNextField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         
+        // Create and set the custom selection background view
+        let customSelectedBackgroundView = UIView()
+        customSelectedBackgroundView.backgroundColor = .brandLightYellow
+        selectedBackgroundView = customSelectedBackgroundView
         
         picker.delegate = self
         picker.dataSource = self
@@ -246,8 +250,17 @@ extension CustomCell: UIPickerViewDelegate {
 //MARK: - UITextFieldDelegate Implementation
 extension CustomCell: UITextFieldDelegate {
     @objc func textFieldDidChange(_ textField: UITextField) {
-        // Recalculate next date when there is a change in last date or frequency
-        dateNextField.text = calculateDateNext(row: pickerDataIndex)
+        // If this is the frequency text field, update the date next calculation and send it to RemindersViewController.
+        // (Description and note fields have no effect on date next.)
+        let pickerIndex = picker.selectedRow(inComponent: 0)
+        let calculatedDateNext = calculateDateNext(row: pickerIndex)
+        if textField.tag == 4 {
+            dateNextField.text = calculatedDateNext
+        }
+        
+        // Send calculatedDateNext to RemindersViewController.
+        textCalculationDelegate?.didCalculateText(calculatedDateNext)
+        
         // If period is "one-time", set frequency to zero and trigger alert.
         if picker.selectedRow(inComponent: 0) == 0 {
             frequencyField.text = "0"
@@ -256,9 +269,11 @@ extension CustomCell: UITextFieldDelegate {
                 customCellDelegate?.customCellFrequencyAlert(self)
             }
         }
+        // Send changed textField to RemindersViewController
         customCellDelegate?.customCell(self, didUpdateText: textField)
     }
     
+    // Dismiss keyboard when "Return" key is tapped.
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

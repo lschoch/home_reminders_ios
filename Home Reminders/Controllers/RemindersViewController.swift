@@ -43,16 +43,16 @@ class RemindersViewController: UIViewController {
         loadReminders()
         
         // Select first row after loading.
-        DispatchQueue.main.async {
-            let indexPath = IndexPath(row: 0, section: 0)
-            // Check if there are any rows in the table before attempting to select one
-            if self.tableView.numberOfRows(inSection: 0) > 0 {
-                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
-            } else {
-                self.tableView.reloadData( )
-                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
-            }
-        }
+//        DispatchQueue.main.async {
+//            let indexPath = IndexPath(row: 0, section: 0)
+//            // Check if there are any rows in the table before attempting to select one
+//            if self.tableView.numberOfRows(inSection: 0) > 0 {
+//                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+//            } else {
+//                self.tableView.reloadData( )
+//                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+//            }
+//        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,8 +70,8 @@ class RemindersViewController: UIViewController {
         //            let indexPath = IndexPath(row: row, section: 0) // Assuming a single section
         //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
         //        }
-        let indexPath = IndexPath(row: 0, section: 0)
-        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+//        let indexPath = IndexPath(row: 0, section: 0)
+//        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
     }
     
     @objc func hideKeyboard() {
@@ -83,27 +83,21 @@ class RemindersViewController: UIViewController {
     }
     
     func showSaveConfirmationAlert() {
+        guard self.tableRow != nil else {
+            self.notificationAlert(title: "Save", message: "No reminder selected to save.")
+            return
+        }
         let alertController = UIAlertController(title: "Update Reminder?", message: "Are you sure you want to update this reminder?", preferredStyle: .alert)
-        
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap
-            if self.tableRow ?? -1 < 0 {
-                print("Please select a reminder to save.")
-                return
-            } else {
-                self.saveReminder(self.tableRow)
-            }
+            self.saveReminder(self.tableRow)
         }
-        
-        
-    
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             // Handle "Cancel" tap
+            return
         }
-    
         alertController.addAction(yesAction)
         alertController.addAction(cancelAction)
-        
         present(alertController, animated: true, completion: nil)
     }
 
@@ -112,6 +106,12 @@ class RemindersViewController: UIViewController {
     }
     
     func showDeleteConfirmationAlert() {
+        guard let selectedIndexPath = tableView.indexPathForSelectedRow else {
+            print("No reminder selected for deletion.")
+            notificationAlert(title: "Delete Reminder?", message: "No reminder selected for deletion.")
+            return
+        }
+        
         let alertController = UIAlertController(title: "Delete Reminder?", message: "Are you sure you want to delete this reminder?", preferredStyle: .alert)
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
@@ -119,24 +119,19 @@ class RemindersViewController: UIViewController {
             if let db = getConnection() {
                 let remindersTable = Table("reminders")
                 let id = Expression<Int64>("id")
-                if let safeTableRow = self.tableRow  {
-                    let myId = self.reminders[self.tableRow ?? 0].id
-                    let reminderToDelete = remindersTable.filter(id == myId)
-                    try! db.run(reminderToDelete.delete())
-                    // Empty the reminders array to avoid duplication.
-                    self.reminders = []
-                    self.loadReminders()
-                    self.tableView.reloadData()
-                    self.tableView.selectRow(at: [0, safeTableRow], animated: true, scrollPosition: .none)
-                    
-                    // Alert notification that delete was successful.
-                    let ac = UIAlertController(title: "Deleted", message: "The reminder has been deleted.", preferredStyle: .alert)
-                    ac.addAction(UIAlertAction(title: "OK", style: .default))
-                    self.present(ac, animated: true)
-                    
-                } else {
-                    print("No row to delete.")
-                }
+                let myId = self.reminders[self.tableRow ?? 0].id
+                let reminderToDelete = remindersTable.filter(id == myId)
+                try! db.run(reminderToDelete.delete())
+                // Empty the reminders array to avoid duplication.
+                self.reminders = []
+                self.loadReminders()
+                self.tableView.reloadData()
+                self.tableView.selectRow(at: [0, selectedIndexPath.row], animated: true, scrollPosition: .none)
+                
+                // Alert notification that delete was successful.
+                let ac = UIAlertController(title: "Deleted", message: "The reminder has been deleted.", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(ac, animated: true)
             } else {
                 print("Error: Could not open database.")
             }
@@ -151,6 +146,12 @@ class RemindersViewController: UIViewController {
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true, completion: nil)
+    }
+    
+    func notificationAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
     //MARK: - Data Manipulation Methods
@@ -218,11 +219,7 @@ class RemindersViewController: UIViewController {
                 }
                 self.loadReminders()
                 self.tableView.reloadData()
-                
-                // Alert notification that the update was successful.
-//                let ac = UIAlertController(title: "Saved", message: "Your reminder has been saved.", preferredStyle: .alert)
-//                ac.addAction(UIAlertAction(title: "OK", style: .default))
-//                self.present(ac, animated: true)
+        
             } catch {
                 print("Error saving reminder: \(error)")
             }
@@ -230,6 +227,8 @@ class RemindersViewController: UIViewController {
             print("Error: Could not open database.")
         }
     }
+    
+    
 }
 
 
@@ -253,6 +252,8 @@ extension RemindersViewController: UITableViewDataSource {
         cell.pickerDelegate = self
         cell.textCalculationDelegate = self // VERY IMPORTANT!
         
+        cell.isSelected = false
+        
         // To initialize picker with data from the database
         if let index = pickerData.firstIndex(of: reminder.period) {
             cell.picker.selectRow(index, inComponent: 0, animated: false)
@@ -271,10 +272,10 @@ extension RemindersViewController: UITableViewDataSource {
 //            cell.contentView.backgroundColor = .white
 //        }
         
-        // Create and set the custom selection background view
-        let customSelectedBackgroundView = UIView()
-        customSelectedBackgroundView.backgroundColor = .brandLightYellow
-        cell.selectedBackgroundView = customSelectedBackgroundView
+//        // Create and set the custom selection background view
+//        let customSelectedBackgroundView = UIView()
+//        customSelectedBackgroundView.backgroundColor = .brandLightYellow
+//        cell.selectedBackgroundView = customSelectedBackgroundView
 
         return cell
     }
@@ -327,8 +328,8 @@ extension RemindersViewController: UITableViewDelegate {
         selectedIndexPath = indexPath
         
         // Deselect any previously selected row
-        if let selectedIndexPath = tableView.indexPathForSelectedRow {
-            tableView.deselectRow(at: selectedIndexPath, animated: true)
+        if let selIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selIndexPath, animated: true)
         }
         
         // Select the newly tapped row

@@ -7,6 +7,7 @@
 
 import Foundation
 import SQLite
+import UIKit
 
 func copyFileToDocumentsFolder(nameForFile: String, extForFile: String) {
 
@@ -41,5 +42,6 @@ func getConnection() -> Connection? {
         return nil
     }
 }
+
 
 
