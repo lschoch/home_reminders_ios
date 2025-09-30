@@ -140,6 +140,7 @@ class RemindersViewController: UIViewController {
     
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             // Handle "Cancel" tap
+            return
         }
     
         alertController.addAction(yesAction)
@@ -228,10 +229,7 @@ class RemindersViewController: UIViewController {
         }
     }
     
-    
 }
-
-
 
 //MARK: - UITableViewDataSource Implementation
 extension RemindersViewController: UITableViewDataSource {
@@ -327,13 +325,13 @@ extension RemindersViewController: UITableViewDelegate {
         tableRow = row
         selectedIndexPath = indexPath
         
-        // Deselect any previously selected row
-        if let selIndexPath = tableView.indexPathForSelectedRow {
-            tableView.deselectRow(at: selIndexPath, animated: true)
-        }
-        
-        // Select the newly tapped row
-        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+//        // Deselect any previously selected row
+//        if let selIndexPath = tableView.indexPathForSelectedRow {
+//            tableView.deselectRow(at: selIndexPath, animated: true)
+//        }
+//        
+//        // Select the newly tapped row
+//        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
     }
 }
 
