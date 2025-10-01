@@ -113,6 +113,12 @@ class CustomCell: UITableViewCell {
         
     }
     
+    override func setSelected(_ selected: Bool, animated: Bool) {
+            super.setSelected(selected, animated: animated)
+            picker.isUserInteractionEnabled = selected
+            picker.alpha = selected ? 1.0 : 0.5
+        }
+    
     @objc func datePickerTapped() {
             self.datePicker.preferredDatePickerStyle = .wheels
             self.datePicker.preferredDatePickerStyle = .automatic
