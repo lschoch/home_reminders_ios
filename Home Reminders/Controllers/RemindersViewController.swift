@@ -274,23 +274,19 @@ extension RemindersViewController: UITableViewDataSource {
         }
         
         // Modify cell background color as a function of due date in relation to today's date
-//        let DF.dateFormatter = DateFormatter()
-//        DF.dateFormatter.dateFormat = "yyyy-MM-dd"
-//        let today = Date.now
-//        let dateNext = DF.dateFormatter.date(from: reminder.dateNext)
-//        if dateNext! < today {
-//            cell.contentView.backgroundColor = .yellow
-//        } else if dateNext! == today {
-//            cell.contentView.backgroundColor = .green
-//        } else {
-//            cell.contentView.backgroundColor = .white
-//        }
+        let today = Date()
+        let dateNext = DF.dateFormatter.date(from: reminder.dateNext)
+        if dateNext ?? Date() < today {
+            // Compare dateNext and today ignoring times (.day granularity)
+            if Calendar.current.isDate(dateNext!, equalTo: today, toGranularity: .day) {
+                cell.backgroundColor = .brandLightGreen
+            } else {
+                cell.backgroundColor = .brandPink
+            }
+        } else {
+            cell.backgroundColor = .white
+        }
         
-//        // Create and set the custom selection background view
-//        let customSelectedBackgroundView = UIView()
-//        customSelectedBackgroundView.backgroundColor = .brandLightYellow
-//        cell.selectedBackgroundView = customSelectedBackgroundView
-
         return cell
     }
 }
@@ -333,8 +329,8 @@ extension RemindersViewController: UITableViewDelegate {
                     tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-                    // Do not select the new row when "Discard" is active
-                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    // Do not select the new row
+                    return
                 }))
                 self.present(alert, animated: true, completion: nil)
 
@@ -350,15 +346,8 @@ extension RemindersViewController: UITableViewDelegate {
         let row = indexPath.row
         tableRow = row
         selectedIndexPath = indexPath
-        
-//        // Deselect any previously selected row
-//        if let selIndexPath = tableView.indexPathForSelectedRow {
-//            tableView.deselectRow(at: selIndexPath, animated: true)
-//        }
-//        
-//        // Select the newly tapped row
-//        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
     }
+    
 }
 
 //MARK: - CustomCellDelegate Implementation
