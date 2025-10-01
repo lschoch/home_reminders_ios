@@ -13,6 +13,7 @@ class RemindersViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var reminders: [Reminder] = []
+    var remindersOriginal: [Reminder] = []
     var tableRow: Int?
     let pickerData = ["one-time", "days", "weeks", "months", "years"]
     var calculatedDateNext: String = ""
@@ -173,6 +174,7 @@ class RemindersViewController: UIViewController {
                 let note = Expression<String>("note")
                 
                 reminders = []
+                remindersOriginal = []
                 for reminder in try db.prepare(remindersTable.order(date_next.asc)) {
                     reminders.append(Reminder(
                         id: Int64(try reminder.get(id)),
@@ -184,6 +186,18 @@ class RemindersViewController: UIViewController {
                         note: try reminder.get(note)
                     )
                     )
+                    
+                    remindersOriginal.append(Reminder(
+                        id: Int64(try reminder.get(id)),
+                        description: try reminder.get(description),
+                        frequency: try reminder.get(frequency),
+                        period: try reminder.get(period),
+                        dateLast: try reminder.get(date_last),
+                        dateNext: try reminder.get(date_next),
+                        note: try reminder.get(note)
+                    )
+                    )
+                    
                 }
             } catch {
                 print("Error during query: \(error)")
@@ -193,7 +207,7 @@ class RemindersViewController: UIViewController {
         }
     }
     
-    func saveReminder(_ row: Int?) {
+    func saveReminder(_ row: Int?, saveDateNext: Bool = true) {
         if let db = getConnection() {
             let remindersTable = Table("reminders")
             let id = Expression<Int64>("id")
@@ -205,8 +219,10 @@ class RemindersViewController: UIViewController {
             let note = Expression<String>("note")
             
             do {
-                if let safeRow = row  {
-                    self.reminders[safeRow].dateNext = self.calculatedDateNext
+                if let safeRow = row {
+                    if saveDateNext {
+                        self.reminders[safeRow].dateNext = self.calculatedDateNext
+                    }
                     let myId = self.reminders[safeRow].id
                     let reminderToSave = remindersTable.filter(id == myId)
                     try db.run(reminderToSave.update(
@@ -301,11 +317,21 @@ extension RemindersViewController: UITableViewDelegate {
                     // Then, proceed with selecting the new row
                     tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                 }))
-//                alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
-//                    // Discard changes for selectedRowData
-//                    // Then, proceed with selecting the new row
-//                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-//                }))
+                alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
+                    // Discard changes for selectedRowData
+                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
+                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
+                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
+                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
+                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
+                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
+                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
+                    self.saveReminder(selectedIndexPath.row, saveDateNext: false)
+                    tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+                    
+                    // Then, proceed with selecting the new row
+                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
                     // Do not select the new row when "Discard" is active
                     tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
