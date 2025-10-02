@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Home Reminders-->
+        <!--Reminders View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="RemindersViewController" customModule="Home_Reminders" customModuleProvider="target" sceneMemberID="viewController">
@@ -72,7 +72,10 @@
                             <constraint firstItem="lkm-lS-iyJ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="vYH-4l-bL0"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Home Reminders" id="ecz-1n-oNE">
+                    <navigationItem key="navigationItem" id="ecz-1n-oNE">
+                        <barButtonItem key="leftBarButtonItem" title="Item" style="done" id="izB-5T-dza">
+                            <color key="tintColor" name="BrandLightYellow"/>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="DYg-MH-xiq">
                             <color key="tintColor" name="BrandLightYellow"/>
                             <connections>
@@ -81,6 +84,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="dateButton" destination="izB-5T-dza" id="Arf-RK-khQ"/>
                         <outlet property="tableView" destination="lkm-lS-iyJ" id="sVR-vT-Bo4"/>
                     </connections>
                 </viewController>

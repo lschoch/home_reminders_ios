@@ -11,6 +11,7 @@ import SQLite
 class RemindersViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var dateButton: UIBarButtonItem!
     
     var reminders: [Reminder] = []
     var remindersOriginal: [Reminder] = []
@@ -22,6 +23,7 @@ class RemindersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Configure navbar
         if let navBar = navigationController?.navigationBar {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
@@ -32,52 +34,67 @@ class RemindersViewController: UIViewController {
             navBar.scrollEdgeAppearance = appearance
         }
         
+        // Observe for significant time changes (e.g., midnight) so that date dependent items can be updated as needed.
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleSignificantTimeChange),
+                                               name: UIApplication.significantTimeChangeNotification,
+                                               object: nil)
+        
+        // Configure dateButton
+        dateButton.target = nil
+        dateButton.action = nil
+        dateButton.style = .done
+        dateButton.tintColor = .brandLightYellow
+        updateDateButtonDate()
+    
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
         tableView.rowHeight = 160
         
-        // Dismiss keyboard when tapping outside text field.
+//        // Dismiss keyboard when tapping outside text field.
 //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
 //                view.addGestureRecognizer(tapGesture)
         
         loadReminders()
-        
-        // Select first row after loading.
-//        DispatchQueue.main.async {
-//            let indexPath = IndexPath(row: 0, section: 0)
-//            // Check if there are any rows in the table before attempting to select one
-//            if self.tableView.numberOfRows(inSection: 0) > 0 {
-//                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
-//            } else {
-//                self.tableView.reloadData( )
-//                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
-//            }
-//        }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         loadReminders()
         tableView.reloadData()
-        
-        // On return from New Reminder, select the first row.
-        //        if let indexPath = selectedIndexPath {
-        //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-        //        }
-        
-        //        if let row = reminders.firstIndex(where: { $0.description == "pool maintenance" }) {
-        //            let indexPath = IndexPath(row: row, section: 0) // Assuming a single section
-        //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
-        //        }
-//        let indexPath = IndexPath(row: 0, section: 0)
-//        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .top)
+    }
+    
+    deinit {
+        // Remove observer when the object is deallocated
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIApplication.significantTimeChangeNotification,
+                                                  object: nil)
+    }
+    
+    func updateDateButtonDate() {
+        // Create a DateFormatter to format the date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        // Get the current date
+        let currentDate = Date()
+        // Format the date into a string
+        let dateString = dateFormatter.string(from: currentDate)
+        dateButton.title? = dateString
+    }
+    
+    @objc func handleSignificantTimeChange() {
+        print("Significant time change notification received! Updating UI/data.")
+        updateDateButtonDate()
+        // Reload data to reset date-dependent cell background color changes
+        loadReminders()
+        tableView.reloadData()
     }
     
     @objc func hideKeyboard() {
-            view.endEditing(true)
-        }
+        view.endEditing(true)
+    }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         showSaveConfirmationAlert()
