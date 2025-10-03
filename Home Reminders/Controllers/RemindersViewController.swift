@@ -323,7 +323,6 @@ extension RemindersViewController: UITableViewDelegate {
                 // Present an alert or prompt the user to save/discard changes
                 // If the user chooses to stay on the current row, return nil
                 // If the user confirms to proceed, handle saving/discarding and then return indexPath
-                // For demonstration, let's assume a simple alert
                 let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before selecting another row?", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     // Save changes for selectedRowData
@@ -333,7 +332,7 @@ extension RemindersViewController: UITableViewDelegate {
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
-                    // Reset calculatedDateNext so previous value of dateNext can be restored.
+                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
                     self.calculatedDateNext = ""
                     self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
                     self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
