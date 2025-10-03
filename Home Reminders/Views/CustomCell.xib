@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" usesAttributedText="YES" borderStyle="bezel" placeholder="Description" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="j53-aq-Z9h">
-                        <rect key="frame" x="5" y="4" width="401" height="34"/>
+                        <rect key="frame" x="0.0" y="0.0" width="411" height="34"/>
                         <color key="backgroundColor" systemColor="systemGray5Color"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -32,19 +32,19 @@
                         </connections>
                     </textField>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date Last:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fPp-Hd-Eih">
-                        <rect key="frame" x="16" y="56" width="62" height="16"/>
+                        <rect key="frame" x="16" y="52" width="62" height="16"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date Next:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jn-Ix-QKN">
-                        <rect key="frame" x="16" y="88" width="64" height="16"/>
+                        <rect key="frame" x="16" y="84" width="64" height="16"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repeats" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vnn-pX-SpZ">
-                        <rect key="frame" x="205" y="48" width="60" height="16"/>
+                        <rect key="frame" x="205" y="44" width="60" height="16"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="MRj-M4-aZj"/>
                             <constraint firstAttribute="height" constant="16" id="Mgt-59-LzW"/>
@@ -74,7 +74,7 @@
                         </connections>
                     </textField>
                     <textField opaque="NO" tag="4" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MRY-KU-hkA">
-                        <rect key="frame" x="265" y="47" width="36" height="34"/>
+                        <rect key="frame" x="265" y="43" width="36" height="34"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -88,7 +88,7 @@
                         </connections>
                     </textField>
                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iu9-N7-F5Z">
-                        <rect key="frame" x="295" y="42" width="107" height="45"/>
+                        <rect key="frame" x="295" y="38" width="107" height="45"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="107" id="fka-b0-raT"/>
@@ -96,7 +96,7 @@
                         </constraints>
                     </pickerView>
                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="P1m-fr-TCO">
-                        <rect key="frame" x="78" y="51" width="109" height="27"/>
+                        <rect key="frame" x="78" y="47" width="109" height="27"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="27" id="v8R-oZ-bzB"/>
@@ -108,7 +108,7 @@
                         </connections>
                     </datePicker>
                     <textField opaque="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="248" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="272-le-tie">
-                        <rect key="frame" x="88" y="86" width="4" height="18.666666666666671"/>
+                        <rect key="frame" x="88" y="82" width="4" height="18.666666666666671"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
                         <connections>
@@ -116,7 +116,7 @@
                         </connections>
                     </textField>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="every:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Gb-JT-tmW">
-                        <rect key="frame" x="205" y="64" width="52" height="17"/>
+                        <rect key="frame" x="205" y="60" width="52" height="17"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="52" id="tnY-3Y-J2L"/>
                         </constraints>
@@ -134,16 +134,16 @@
                     <constraint firstItem="P1m-fr-TCO" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="78" id="EzF-OH-CRi"/>
                     <constraint firstItem="fPp-Hd-Eih" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="18" id="HqZ-CV-HFe"/>
                     <constraint firstItem="MRY-KU-hkA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="265" id="LaF-0E-npz"/>
-                    <constraint firstItem="j53-aq-Z9h" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="MOe-QI-1Rz"/>
+                    <constraint firstItem="j53-aq-Z9h" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="MOe-QI-1Rz"/>
                     <constraint firstItem="7jn-Ix-QKN" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Qcp-Tr-RuJ"/>
                     <constraint firstAttribute="trailing" secondItem="UUw-bv-h7A" secondAttribute="trailing" constant="5" id="RpX-4b-S21"/>
-                    <constraint firstAttribute="trailing" secondItem="j53-aq-Z9h" secondAttribute="trailing" constant="5" id="U5Z-bk-pFD"/>
+                    <constraint firstAttribute="trailing" secondItem="j53-aq-Z9h" secondAttribute="trailing" id="U5Z-bk-pFD"/>
                     <constraint firstItem="P1m-fr-TCO" firstAttribute="leading" secondItem="fPp-Hd-Eih" secondAttribute="leading" constant="62" id="Vie-to-gVg"/>
                     <constraint firstItem="EZD-NK-KRt" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Z7o-3U-yQ2"/>
                     <constraint firstItem="MRY-KU-hkA" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="9" id="ZFJ-JH-iHq"/>
                     <constraint firstItem="P1m-fr-TCO" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="13" id="aZc-t4-5n5"/>
                     <constraint firstItem="272-le-tie" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="88" id="agP-rs-FDJ"/>
-                    <constraint firstItem="j53-aq-Z9h" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="4" id="c7w-qV-1k9"/>
+                    <constraint firstItem="j53-aq-Z9h" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="c7w-qV-1k9"/>
                     <constraint firstItem="UUw-bv-h7A" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="kBh-5q-Ihj"/>
                     <constraint firstAttribute="bottom" secondItem="EZD-NK-KRt" secondAttribute="bottom" constant="2" id="kdZ-eA-lBL"/>
                     <constraint firstItem="7jn-Ix-QKN" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="50" id="oNZ-mH-Sah"/>
@@ -172,7 +172,7 @@
             <color red="0.20000000000000001" green="0.62745098039215685" blue="0.87450980392156863" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
