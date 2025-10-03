@@ -81,10 +81,10 @@ class CustomCell: UITableViewCell {
         //        frequencyField.inputAccessoryView = toolbar
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+//        dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         noteField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-        dateNextField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
+//        dateNextField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         frequencyField.addTarget(self, action: #selector(calculateAndSendText), for: .editingChanged)
         
         // Create and set the custom selection background view
@@ -154,9 +154,9 @@ class CustomCell: UITableViewCell {
     }
     
     @objc private func calculateAndSendText() {
-        let calculatedResult = calculateDateNext(row: pickerDataIndex)
+        let calculatedDateNext = calculateDateNext(row: pickerDataIndex)
         // Call the delegate
-        textCalculationDelegate?.didCalculateText(calculatedResult)
+        textCalculationDelegate?.didCalculateText(calculatedDateNext)
     }
     
     // Calculate next date as a function of last date, frequency and period
