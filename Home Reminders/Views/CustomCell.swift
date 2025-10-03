@@ -128,9 +128,10 @@ class CustomCell: UITableViewCell {
         selectedDate = sender.date
         let pickerRow = picker.selectedRow(inComponent: 0)
         // Perform actions with the selected date, e.g., update a label, send data to another component, etc.
-        dateNextField.text = calculateDateNext(row: pickerRow)
+        let calculatedDateNext = calculateDateNext(row: pickerRow)
+        dateNextField.text = calculatedDateNext
         customCellDelegate?.datePickerValueDidChange(inCell: self, withDate: selectedDate ?? Date())
-        textCalculationDelegate?.didCalculateText(calculateDateNext(row: pickerRow))
+        textCalculationDelegate?.didCalculateText(calculatedDateNext)
     }
     
     @IBAction func descriptionTapped(_ sender: UITextField) {

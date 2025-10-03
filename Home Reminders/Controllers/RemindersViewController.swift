@@ -224,7 +224,7 @@ class RemindersViewController: UIViewController {
         }
     }
     
-    func saveReminder(_ row: Int?, saveDateNext: Bool = true) {
+    func saveReminder(_ row: Int?) {
         if let db = getConnection() {
             let remindersTable = Table("reminders")
             let id = Expression<Int64>("id")
@@ -237,9 +237,10 @@ class RemindersViewController: UIViewController {
             
             do {
                 if let safeRow = row {
-                    if saveDateNext {
-                        self.reminders[safeRow].dateNext = self.calculatedDateNext
-                    }
+//                    if saveDateNext {
+//                        self.reminders[safeRow].dateNext = self.calculatedDateNext
+//                    }
+                    if !calculatedDateNext.isEmpty { self.reminders[safeRow].dateNext = self.calculatedDateNext }
                     let myId = self.reminders[safeRow].id
                     let reminderToSave = remindersTable.filter(id == myId)
                     try db.run(reminderToSave.update(
@@ -332,6 +333,8 @@ extension RemindersViewController: UITableViewDelegate {
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
+                    // Reset calculatedDateNext so previous value of dateNext can be restored.
+                    self.calculatedDateNext = ""
                     self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
                     self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
                     self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
@@ -339,7 +342,7 @@ extension RemindersViewController: UITableViewDelegate {
                     self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
                     self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
                     self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
-                    self.saveReminder(selectedIndexPath.row, saveDateNext: false)
+                    self.saveReminder(selectedIndexPath.row)
                     tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
                     
                     // Then, proceed with selecting the new row
