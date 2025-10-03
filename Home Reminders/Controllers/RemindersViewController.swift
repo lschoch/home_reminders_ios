@@ -105,18 +105,7 @@ class RemindersViewController: UIViewController {
             self.notificationAlert(title: "Save", message: "No reminder selected to save.")
             return
         }
-        let alertController = UIAlertController(title: "Update Reminder?", message: "Are you sure you want to update this reminder?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
-            // Handle "Yes" tap
-            self.saveReminder(self.tableRow)
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            // Handle "Cancel" tap
-            return
-        }
-        alertController.addAction(yesAction)
-        alertController.addAction(cancelAction)
-        present(alertController, animated: true, completion: nil)
+        self.saveReminderWithOptionToDiscardChanges()
     }
 
     @IBAction func deleteButtonPressed(_ sender: UIButton) {
@@ -261,6 +250,48 @@ class RemindersViewController: UIViewController {
         } else {
             print("Error: Could not open database.")
         }
+    }
+    
+    func saveReminderWithOptionToDiscardChanges() {
+        // Get the currently selected row (if any)
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            // Retrieve the data model for the currently selected row
+            let selectedRowData = reminders[selectedIndexPath.row]
+
+            // Check if the selectedRowData has "changed" based on your application's logic
+            // For example, if a text field in the cell was edited and not saved
+            if selectedRowData.hasUnsavedChanges {
+                // Present an alert or prompt the user to save/discard changes
+                // If the user chooses to stay on the current row, return nil
+                // If the user confirms to proceed, handle saving/discarding and then return indexPath
+                let alert = UIAlertController(title: "Save", message: "Are you sure you want to save this reminder?", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
+                    self.saveReminder(selectedIndexPath.row)
+                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                }))
+                alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
+                    // Discard changes for selectedRowData
+                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
+                    self.calculatedDateNext = ""
+                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
+                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
+                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
+                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
+                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
+                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
+                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
+                    self.saveReminder(selectedIndexPath.row)
+                    self.tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                    return
+                }))
+                self.present(alert, animated: true, completion: nil)
+                return
+            } // end: "if selectedRowData.hasUnsavedChanges"
+        } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
     }
     
 }
