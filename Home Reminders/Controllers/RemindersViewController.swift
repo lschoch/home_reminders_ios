@@ -354,12 +354,12 @@ extension RemindersViewController: UITableViewDelegate {
                 self.present(alert, animated: true, completion: nil)
 
                 return nil // Prevent the new row from being selected immediately
-            }
-        }
+            } // end: "if selectedRowData.hasUnsavedChanges"
+        } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
 
         // If no row is selected or no changes were detected, allow the selection
         return indexPath
-    }
+    } // end: func
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = indexPath.row
