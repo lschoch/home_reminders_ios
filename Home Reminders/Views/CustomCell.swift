@@ -55,10 +55,10 @@ class CustomCell: UITableViewCell {
         noteField.leftView = paddingView2;
         noteField.leftViewMode = .always;
         
-//        descriptionField.borderStyle = .bezell (bezel borderStyle not compatible with corner radius)
+        descriptionField.borderStyle = .bezel // (bezel borderStyle not compatible with corner radius)
 //        descriptionField.layer.cornerRadius = 8.0
-//        descriptionField.layer.borderWidth = 1.0
-//        descriptionField.clipsToBounds = true
+        descriptionField.layer.borderWidth = 1.0
+        descriptionField.clipsToBounds = true
         
 //        frequencyField.borderStyle = .bezel
         frequencyField.layer.cornerRadius = 8.0

@@ -329,6 +329,7 @@ extension RemindersViewController: UITableViewDataSource {
             // Compare dateNext and today ignoring times (.day granularity)
             if Calendar.current.isDate(dateNext!, equalTo: today, toGranularity: .day) {
                 cell.backgroundColor = .brandLightGreen
+                
             } else {
                 cell.backgroundColor = .brandPink
             }
