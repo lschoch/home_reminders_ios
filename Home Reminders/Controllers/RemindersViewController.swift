@@ -322,19 +322,20 @@ extension RemindersViewController: UITableViewDataSource {
             cell.picker.selectRow(index, inComponent: 0, animated: false)
         }
         
-        // Modify cell background color as a function of due date in relation to today's date
+        // Modify descriptionField background color as a function of due date in relation to today's date
+        guard cell.dateNextField.text != "" else { return cell }
         let today = Date()
         let dateNext = DF.dateFormatter.date(from: reminder.dateNext)
         if dateNext ?? Date() < today {
             // Compare dateNext and today ignoring times (.day granularity)
             if Calendar.current.isDate(dateNext!, equalTo: today, toGranularity: .day) {
-                cell.backgroundColor = .brandLightGreen
+                cell.descriptionField.backgroundColor = .brandLightGreen
                 
             } else {
-                cell.backgroundColor = .brandPink
+                cell.descriptionField.backgroundColor = .brandPink
             }
         } else {
-            cell.backgroundColor = .white
+            cell.descriptionField.backgroundColor = .systemGray5
         }
         
         return cell
