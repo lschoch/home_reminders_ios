@@ -337,7 +337,9 @@ class RemindersViewController: UIViewController {
                 }))
                 self.present(alert, animated: true, completion: nil)
                 return
-            } // end: "if selectedRowData.hasUnsavedChanges"
+            } else {
+                notificationAlert(title: "Save", message: "No changes to save.")
+            }// end: "if selectedRowData.hasUnsavedChanges"
         } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
     }
     
@@ -382,7 +384,7 @@ extension RemindersViewController: UITableViewDataSource {
                 cell.descriptionField.backgroundColor = .brandPink
             }
         } else {
-            cell.descriptionField.backgroundColor = .systemGray5
+            cell.descriptionField.backgroundColor = .white // .systemGray5
         }
         
         return cell
@@ -467,12 +469,12 @@ extension RemindersViewController: CustomCellDelegate {
         reminders[tableRow].hasUnsavedChanges = true
     }
     
-    func didTapElementInCell(_ cell: CustomCell) {
-        if let indexPath = tableView.indexPath(for: cell) {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
-        }
-    }
+//    func didTapElementInCell(_ cell: CustomCell) {
+//        if let indexPath = tableView.indexPath(for: cell) {
+//            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+//            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
+//        }
+//    }
     
     func pickerValueDidChange(inCell cell: CustomCell, withText text: String) {
             // Handle the received text from the custom cell

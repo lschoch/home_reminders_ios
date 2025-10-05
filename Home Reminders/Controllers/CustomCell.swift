@@ -9,7 +9,7 @@ import UIKit
 
 protocol CustomCellDelegate: AnyObject {
         func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?)
-        func didTapElementInCell(_ cell: CustomCell)
+//        func didTapElementInCell(_ cell: CustomCell)
         func pickerValueDidChange(inCell cell: CustomCell, withText text: String)
         func customCellFrequencyAlert(_ cell: CustomCell)
         func datePickerValueDidChange(inCell cell: CustomCell, withDate date: Date)
@@ -17,7 +17,7 @@ protocol CustomCellDelegate: AnyObject {
 
 protocol PickerCellDelegate: AnyObject {
     func picker(cell: CustomCell, didSelectRow row: Int)
-    func didTapElementInCell(_ cell: CustomCell)
+//    func didTapElementInCell(_ cell: CustomCell)
 }
 
 protocol TextCalculationDelegate: AnyObject {
@@ -55,9 +55,9 @@ class CustomCell: UITableViewCell {
         noteField.leftView = paddingView2;
         noteField.leftViewMode = .always;
         
-        descriptionField.borderStyle = .bezel // (bezel borderStyle not compatible with corner radius)
+        descriptionField.borderStyle = .none // (bezel borderStyle not compatible with corner radius)
 //        descriptionField.layer.cornerRadius = 8.0
-        descriptionField.layer.borderWidth = 1.0
+//        descriptionField.layer.borderWidth = 1.0
         descriptionField.clipsToBounds = true
         
 //        frequencyField.borderStyle = .bezel
@@ -65,9 +65,9 @@ class CustomCell: UITableViewCell {
         frequencyField.layer.borderWidth = 1.0
         frequencyField.clipsToBounds = true
         
-//        noteField.borderStyle = .bezel
-        noteField.layer.cornerRadius = 8.0
-        noteField.layer.borderWidth = 1.0
+        noteField.borderStyle = .none
+//        noteField.layer.cornerRadius = 8.0
+//        noteField.layer.borderWidth = 1.0
         noteField.clipsToBounds = true
         
         frequencyField.keyboardType = .numberPad
@@ -134,25 +134,25 @@ class CustomCell: UITableViewCell {
         textCalculationDelegate?.didCalculateText(calculatedDateNext)
     }
     
-    @IBAction func descriptionTapped(_ sender: UITextField) {
-        customCellDelegate?.didTapElementInCell(self)   
-    }
-    
-    @IBAction func dateLastTapped(_ sender: UIDatePicker) {
-        customCellDelegate?.didTapElementInCell(self)
-    }
-    
-    @IBAction func dateNextTapped(_ sender: UITextField) {
-        customCellDelegate?.didTapElementInCell(self)
-    }
-    
-    @IBAction func frequencyTapped(_ sender: UITextField) {
-        customCellDelegate?.didTapElementInCell(self)
-    }
-    
-    @IBAction func noteTapped(_ sender: UITextField) {
-        customCellDelegate?.didTapElementInCell(self)
-    }
+//    @IBAction func descriptionTapped(_ sender: UITextField) {
+//        customCellDelegate?.didTapElementInCell(self)   
+//    }
+//    
+//    @IBAction func dateLastTapped(_ sender: UIDatePicker) {
+//        customCellDelegate?.didTapElementInCell(self)
+//    }
+//    
+//    @IBAction func dateNextTapped(_ sender: UITextField) {
+//        customCellDelegate?.didTapElementInCell(self)
+//    }
+//    
+//    @IBAction func frequencyTapped(_ sender: UITextField) {
+//        customCellDelegate?.didTapElementInCell(self)
+//    }
+//    
+//    @IBAction func noteTapped(_ sender: UITextField) {
+//        customCellDelegate?.didTapElementInCell(self)
+//    }
     
     @objc private func calculateAndSendText() {
         let calculatedDateNext = calculateDateNext(row: pickerDataIndex)
@@ -236,7 +236,7 @@ extension CustomCell: UIPickerViewDelegate {
         // The parameters named row and component represent what was selected.
         
         // Call didTapElementInCell to select the tableView row which sets tableRow (needed downstream).
-        customCellDelegate?.didTapElementInCell(self)
+//        customCellDelegate?.didTapElementInCell(self)
         pickerDataIndex = row
         
         // If period is "one-time", set frequency to zero and notify RemindersViewController of the change.
@@ -250,7 +250,7 @@ extension CustomCell: UIPickerViewDelegate {
         let calculatedDateNext = calculateDateNext(row: pickerDataIndex)
         customCellDelegate?.pickerValueDidChange(inCell: self, withText: calculatedDateNext)
         pickerDelegate?.picker(cell: self, didSelectRow: row)
-        pickerDelegate?.didTapElementInCell(self)
+//        pickerDelegate?.didTapElementInCell(self)
     }
 }
 
