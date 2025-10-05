@@ -52,9 +52,9 @@ class RemindersViewController: UIViewController {
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
         tableView.rowHeight = 160
         
-//        // Dismiss keyboard when tapping outside text field.
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-//                view.addGestureRecognizer(tapGesture)
+        // Dismiss keyboard when tapping outside text field.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+                view.addGestureRecognizer(tapGesture)
         
         loadReminders()
 
@@ -65,6 +65,53 @@ class RemindersViewController: UIViewController {
         loadReminders()
         tableView.reloadData()
     }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        // Get the currently selected row (if any)
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            // Retrieve the data model for the currently selected row
+            let selectedRowData = reminders[selectedIndexPath.row]
+
+            // Check if the selectedRowData has "changed" based on your application's logic
+            // For example, if a text field in the cell was edited and not saved
+            if identifier == "NewReminderSegue" && selectedRowData.hasUnsavedChanges {
+//                let indexPath = tableView.indexPathForSelectedRow
+                // Present an alert or prompt the user to save/discard changes
+                let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before leaving?", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
+                    // Save changes for selectedRowData
+                    self.saveReminder(selectedIndexPath.row)
+                    // Then, proceed with selecting the new row
+                    self.performSegue(withIdentifier: identifier, sender: sender) // Manually perform the segue
+                }))
+                alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
+                    // Discard changes for selectedRowData
+                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
+                    self.calculatedDateNext = ""
+                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
+                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
+                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
+                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
+                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
+                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
+                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
+                    self.saveReminder(selectedIndexPath.row)
+                    self.tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+                    
+                    // Then, proceed with seque
+                    self.performSegue(withIdentifier: identifier, sender: sender) // Manually perform the segue
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                    // Do perform the seque
+                    return
+                }))
+                self.present(alert, animated: true, completion: nil)
+
+                return false // Prevent the segue from performing automatically
+            } // end: "identifier == "NewRemincerSegue" && selectedRowData.hasUnsavedChanges"
+        } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
+        return true // Allow other segues to perform normally, or if no unsaved changes
+    } // end: function
     
     deinit {
         // Remove observer when the object is deallocated

@@ -79,7 +79,7 @@
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="DYg-MH-xiq">
                             <color key="tintColor" name="BrandLightYellow"/>
                             <connections>
-                                <segue destination="NUt-DV-aUr" kind="show" id="JhE-VC-gD5"/>
+                                <segue destination="NUt-DV-aUr" kind="show" identifier="NewReminderSegue" id="JhE-VC-gD5"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
