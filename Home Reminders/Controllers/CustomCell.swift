@@ -70,15 +70,15 @@ class CustomCell: UITableViewCell {
         noteField.layer.borderWidth = 1.0
         noteField.clipsToBounds = true
         
-        //        frequencyField.keyboardType = .numberPad
-        //
-        //        // Create "Done" item in keyboard
-        //        let toolbar = UIToolbar()
-        //        toolbar.sizeToFit() // Adjusts the toolbar's size to fit its content
-        //        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(UITextField.resignFirstResponder))
-        //        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        //        toolbar.items = [flexibleSpace, doneButton]
-        //        frequencyField.inputAccessoryView = toolbar
+        frequencyField.keyboardType = .numberPad
+        
+        // Create "Done" item in keyboard
+//        let toolbar = UIToolbar()
+//        toolbar.sizeToFit() // Adjusts the toolbar's size to fit its content
+//        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(UITextField.resignFirstResponder))
+//        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+//        toolbar.items = [flexibleSpace, doneButton]
+//        frequencyField.inputAccessoryView = toolbar
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
 //        dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
