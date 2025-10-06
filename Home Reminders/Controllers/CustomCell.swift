@@ -37,6 +37,8 @@ class CustomCell: UITableViewCell {
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var picker: UIPickerView!
     
+    @IBOutlet weak var arrowDown: UIImageView!
+    
     weak var customCellDelegate: CustomCellDelegate?
     weak var pickerDelegate: PickerCellDelegate?
     weak var textCalculationDelegate: TextCalculationDelegate?
@@ -130,6 +132,7 @@ class CustomCell: UITableViewCell {
         dateNextField.isUserInteractionEnabled = selected
 //        dateNextField.alpha = selected ? 1.0 : 0.5
         datePicker.isHidden = !selected
+        arrowDown.isHidden = !selected
     }
     
     @objc func datePickerTapped() {
@@ -298,5 +301,12 @@ extension CustomCell: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+    // Select all on tapping text field
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField.tag == 4 {
+            textField.selectAll(nil)
+        }
     }
 }

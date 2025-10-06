@@ -528,3 +528,4 @@ extension RemindersViewController: TextCalculationDelegate {
         calculatedDateNext = text
     }
 }
+
