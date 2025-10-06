@@ -53,8 +53,8 @@ class RemindersViewController: UIViewController {
         tableView.rowHeight = 160
         
         // Dismiss keyboard when tapping outside text field.
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-                view.addGestureRecognizer(tapGesture)
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+//                view.addGestureRecognizer(tapGesture)
         
         loadReminders()
 
@@ -181,6 +181,7 @@ class RemindersViewController: UIViewController {
                 self.loadReminders()
                 self.tableView.reloadData()
                 self.tableView.selectRow(at: [0, selectedIndexPath.row], animated: true, scrollPosition: .none)
+                self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 
                 // Alert notification that delete was successful.
                 let ac = UIAlertController(title: "Deleted", message: "The reminder has been deleted.", preferredStyle: .alert)
@@ -315,6 +316,7 @@ class RemindersViewController: UIViewController {
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     self.saveReminder(selectedIndexPath.row)
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
@@ -330,9 +332,11 @@ class RemindersViewController: UIViewController {
                     self.saveReminder(selectedIndexPath.row)
                     self.tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                     return
                 }))
                 self.present(alert, animated: true, completion: nil)
@@ -357,6 +361,7 @@ extension RemindersViewController: UITableViewDataSource {
         
         cell.descriptionField.text = reminder.description
         cell.datePicker.date = DF.dateFormatter.date(from: reminder.dateLast) ?? Date()
+        cell.dateLastField.text = reminder.dateLast
         cell.dateNextField.text = reminder.dateNext
         cell.frequencyField.text = reminder.frequency
         cell.noteField.text = reminder.note
@@ -384,9 +389,8 @@ extension RemindersViewController: UITableViewDataSource {
                 cell.descriptionField.backgroundColor = .brandPink
             }
         } else {
-            cell.descriptionField.backgroundColor = .white // .systemGray5
+            cell.descriptionField.backgroundColor = .clear // .systemGray5
         }
-        
         return cell
     }
 }
@@ -411,6 +415,7 @@ extension RemindersViewController: UITableViewDelegate {
                     self.saveReminder(selectedIndexPath.row)
                     // Then, proceed with selecting the new row
                     tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
@@ -428,6 +433,7 @@ extension RemindersViewController: UITableViewDelegate {
                     
                     // Then, proceed with selecting the new row
                     tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                    tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
                     // Do not select the new row
@@ -511,6 +517,7 @@ extension RemindersViewController: PickerCellDelegate {
             
             // Programmatically select the row
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
         }
     }
 }

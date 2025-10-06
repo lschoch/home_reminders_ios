@@ -86,8 +86,8 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             saveButton.isHidden = true
             
             // Dismiss keyboard when tapping outside text field.
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-            view.addGestureRecognizer(tapGesture)
+//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+//            view.addGestureRecognizer(tapGesture)
         }
     }
     

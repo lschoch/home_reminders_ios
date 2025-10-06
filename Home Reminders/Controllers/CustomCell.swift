@@ -48,8 +48,8 @@ class CustomCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Shift description field text left (so that it's not at the very edge of the container)
-        let paddingView1: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 2, height: 20))
-        let paddingView2: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 2, height: 20))
+        let paddingView1: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 20))
+        let paddingView2: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 20))
         descriptionField.leftView = paddingView1;
         descriptionField.leftViewMode = .always;
         noteField.leftView = paddingView2;
@@ -66,9 +66,12 @@ class CustomCell: UITableViewCell {
         frequencyField.clipsToBounds = true
         
         noteField.borderStyle = .none
-//        noteField.layer.cornerRadius = 8.0
+        noteField.layer.cornerRadius = 8.0
 //        noteField.layer.borderWidth = 1.0
         noteField.clipsToBounds = true
+        
+        dateNextField.textColor = .black
+        noteField.backgroundColor = .clear
         
         frequencyField.keyboardType = .numberPad
         
@@ -114,10 +117,20 @@ class CustomCell: UITableViewCell {
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
-            super.setSelected(selected, animated: animated)
-            picker.isUserInteractionEnabled = selected
-            picker.alpha = selected ? 1.0 : 0.5
-        }
+        super.setSelected(selected, animated: animated)
+        picker.isUserInteractionEnabled = selected
+//        picker.alpha = selected ? 1.0 : 0.5
+    
+        descriptionField.isUserInteractionEnabled = selected
+//        descriptionField.alpha = selected ? 1.0 : 0.5
+        frequencyField.isUserInteractionEnabled = selected
+//        frequencyField.alpha = selected ? 1.0 : 0.5
+        noteField.isUserInteractionEnabled = selected
+//        noteField.alpha = selected ? 1.0 : 0.5
+        dateNextField.isUserInteractionEnabled = selected
+//        dateNextField.alpha = selected ? 1.0 : 0.5
+        datePicker.isHidden = !selected
+    }
     
     @objc func datePickerTapped() {
             self.datePicker.preferredDatePickerStyle = .wheels
@@ -128,13 +141,14 @@ class CustomCell: UITableViewCell {
         selectedDate = sender.date
         let pickerRow = picker.selectedRow(inComponent: 0)
         // Perform actions with the selected date, e.g., update a label, send data to another component, etc.
+        dateLastField.text = DF.dateFormatter.string(from: selectedDate ?? Date())
         let calculatedDateNext = calculateDateNext(row: pickerRow)
         dateNextField.text = calculatedDateNext
         customCellDelegate?.datePickerValueDidChange(inCell: self, withDate: selectedDate ?? Date())
         textCalculationDelegate?.didCalculateText(calculatedDateNext)
     }
     
-//    @IBAction func descriptionTapped(_ sender: UITextField) {
+    //    @IBAction func descriptionTapped(_ sender: UITextField) {
 //        customCellDelegate?.didTapElementInCell(self)   
 //    }
 //    
