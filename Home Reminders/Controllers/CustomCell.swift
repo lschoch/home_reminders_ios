@@ -121,6 +121,8 @@ class CustomCell: UITableViewCell {
             UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
         ]
         keypadToolbar.sizeToFit()
+        keypadToolbar.barStyle = .default
+        keypadToolbar.tintColor = .brandLightBlue
         // add a toolbar with a done button above the number pad
         textField.inputAccessoryView = keypadToolbar
     }//addDoneToKeyPad
