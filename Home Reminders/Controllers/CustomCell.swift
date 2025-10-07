@@ -75,9 +75,11 @@ class CustomCell: UITableViewCell {
         dateNextField.textColor = .black
         noteField.backgroundColor = .clear
         
-        frequencyField.keyboardType = .numberPad
+        frequencyField.keyboardType = .decimalPad
         
         // Create "Done" item in keyboard
+        addDoneButtonOnNumpad(textField: frequencyField)
+        
 //        let toolbar = UIToolbar()
 //        toolbar.sizeToFit() // Adjusts the toolbar's size to fit its content
 //        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(UITextField.resignFirstResponder))
@@ -117,6 +119,20 @@ class CustomCell: UITableViewCell {
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         
     }
+    
+    func addDoneButtonOnNumpad(textField: UITextField) {
+            
+            let keypadToolbar: UIToolbar = UIToolbar()
+            
+            // add a done button to the numberpad
+            keypadToolbar.items=[
+                UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: textField, action: #selector(UITextField.resignFirstResponder)),
+                UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
+            ]
+            keypadToolbar.sizeToFit()
+            // add a toolbar with a done button above the number pad
+            textField.inputAccessoryView = keypadToolbar
+        }//addDoneToKeyPad
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
