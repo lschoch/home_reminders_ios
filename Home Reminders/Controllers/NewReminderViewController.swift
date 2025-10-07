@@ -124,6 +124,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     func showConfirmationAlert() {
         let alertController = UIAlertController(title: "Save Reminder?", message: "Do you want to save this reminder?", preferredStyle: .alert)
+        alertController.view.tintColor = .black
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap

@@ -78,6 +78,7 @@ class RemindersViewController: UIViewController {
 //                let indexPath = tableView.indexPathForSelectedRow
                 // Present an alert or prompt the user to save/discard changes
                 let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before leaving?", preferredStyle: .alert)
+                alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     // Save changes for selectedRowData
                     self.saveReminder(selectedIndexPath.row)
@@ -167,6 +168,7 @@ class RemindersViewController: UIViewController {
         }
         
         let alertController = UIAlertController(title: "Delete Reminder?", message: "Are you sure you want to delete this reminder?", preferredStyle: .alert)
+        alertController.view.tintColor = .black
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
             // Handle "Yes" tap
@@ -206,6 +208,7 @@ class RemindersViewController: UIViewController {
     
     func notificationAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.tintColor = .black
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
@@ -313,6 +316,7 @@ class RemindersViewController: UIViewController {
                 // If the user chooses to stay on the current row, return nil
                 // If the user confirms to proceed, handle saving/discarding and then return indexPath
                 let alert = UIAlertController(title: "Save", message: "Are you sure you want to save this reminder?", preferredStyle: .alert)
+                alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     self.saveReminder(selectedIndexPath.row)
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
@@ -410,6 +414,7 @@ extension RemindersViewController: UITableViewDelegate {
                 // If the user chooses to stay on the current row, return nil
                 // If the user confirms to proceed, handle saving/discarding and then return indexPath
                 let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before selecting another row?", preferredStyle: .alert)
+                alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     // Save changes for selectedRowData
                     self.saveReminder(selectedIndexPath.row)
