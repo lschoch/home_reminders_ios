@@ -75,17 +75,10 @@ class CustomCell: UITableViewCell {
         dateNextField.textColor = .black
         noteField.backgroundColor = .clear
         
-        frequencyField.keyboardType = .decimalPad
+        frequencyField.keyboardType = .numberPad
         
         // Create "Done" item in keyboard
         addDoneButtonOnNumpad(textField: frequencyField)
-        
-//        let toolbar = UIToolbar()
-//        toolbar.sizeToFit() // Adjusts the toolbar's size to fit its content
-//        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(UITextField.resignFirstResponder))
-//        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-//        toolbar.items = [flexibleSpace, doneButton]
-//        frequencyField.inputAccessoryView = toolbar
         
         descriptionField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
 //        dateNextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
@@ -121,18 +114,16 @@ class CustomCell: UITableViewCell {
     }
     
     func addDoneButtonOnNumpad(textField: UITextField) {
-            
-            let keypadToolbar: UIToolbar = UIToolbar()
-            
-            // add a done button to the numberpad
-            keypadToolbar.items=[
-                UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: textField, action: #selector(UITextField.resignFirstResponder)),
-                UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
-            ]
-            keypadToolbar.sizeToFit()
-            // add a toolbar with a done button above the number pad
-            textField.inputAccessoryView = keypadToolbar
-        }//addDoneToKeyPad
+        let keypadToolbar: UIToolbar = UIToolbar()
+        // add a done button to the numberpad
+        keypadToolbar.items=[
+            UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: textField, action: #selector(UITextField.resignFirstResponder)),
+            UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
+        ]
+        keypadToolbar.sizeToFit()
+        // add a toolbar with a done button above the number pad
+        textField.inputAccessoryView = keypadToolbar
+    }//addDoneToKeyPad
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
