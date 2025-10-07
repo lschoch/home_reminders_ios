@@ -206,6 +206,14 @@ class RemindersViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    @IBAction func deselectButtonPressed(_ sender: UIButton) {
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedIndexPath, animated: true)
+        } else {
+            notificationAlert(title: "Deselect", message: "No row is selected.")
+        }
+    }
+    
     func notificationAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = .black
