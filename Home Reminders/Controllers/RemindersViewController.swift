@@ -19,6 +19,7 @@ class RemindersViewController: UIViewController {
     let pickerData = ["one-time", "days", "weeks", "months", "years"]
     var calculatedDateNext: String = ""
     var selectedIndexPath: IndexPath?
+    var activeTextField: UITextField?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -262,7 +263,6 @@ class RemindersViewController: UIViewController {
                         note: try reminder.get(note)
                     )
                     )
-                    
                 }
             } catch {
                 print("Error during query: \(error)")
@@ -410,6 +410,8 @@ extension RemindersViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate Implementation
 extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        // Currently active text field needs to resign first responder so that didEndEditing will fire.
+        activeTextField?.resignFirstResponder()
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
@@ -495,6 +497,29 @@ extension RemindersViewController: CustomCellDelegate {
 //        }
 //    }
     
+    func customCell(_ cell: CustomCell, didEndEditingWithField textField: UITextField) {
+        guard let tableRow else { return }
+        switch textField.tag {
+        case 1: // description
+            reminders[tableRow].description = textField.text ?? ""
+        case 2: // dateLast
+            reminders[tableRow].dateLast = textField.text ?? ""
+        case 3: // dateNext
+            reminders[tableRow].dateNext = textField.text ?? ""
+        case 4: // frequency
+            reminders[tableRow].frequency = textField.text ?? ""
+        case 5: // note
+            reminders[tableRow].note = textField.text ?? ""
+        default:
+            print("unknown")
+        }
+        reminders[tableRow].hasUnsavedChanges = true
+    }
+    
+    func customCell(_ cell: CustomCell, didStartEditingWithField textField: UITextField) {
+        activeTextField = textField
+    }
+    
     func pickerValueDidChange(inCell cell: CustomCell, withText text: String) {
             // Handle the received text from the custom cell
             // Update UI or perform other actions in the view controller
@@ -526,6 +551,10 @@ extension RemindersViewController: PickerCellDelegate {
             reminders[indexPath.row].hasUnsavedChanges = true
             reminders[indexPath.row].period = pickerData[row]
             reminders[indexPath.row].dateNext = calculatedDateNext
+            
+            if pickerData[row] == "one-time" {
+                reminders[indexPath.row].frequency = "0"
+            }
             tableView.reloadRows(at: [indexPath], with: .none)
             
             // Programmatically select the row

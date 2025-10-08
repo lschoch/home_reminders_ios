@@ -18,7 +18,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
     @IBOutlet weak var noteField: UITextField!
     @IBOutlet weak var saveButton: UIButton!
     
-    weak var newPickerDelegate: PickerCellDelegate?
+//    weak var newPickerDelegate: PickerCellDelegate?
     
     var newPickerData: [String] = []
     var newPickerDataIndex: Int = -1

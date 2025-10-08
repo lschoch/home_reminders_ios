@@ -99,7 +99,7 @@
                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="16"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
-                    <textField opaque="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="248" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2025-10-05" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dvF-fF-Uy3">
+                    <textField opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="248" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2025-10-05" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dvF-fF-Uy3">
                         <rect key="frame" x="66" y="88" width="79" height="19"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
@@ -175,7 +175,7 @@
                 <outlet property="dateNextField" destination="272-le-tie" id="ifM-US-gXl"/>
                 <outlet property="datePicker" destination="P1m-fr-TCO" id="TUC-iX-79F"/>
                 <outlet property="descriptionField" destination="j53-aq-Z9h" id="6Pk-iQ-pGY"/>
-                <outlet property="frequencyField" destination="MRY-KU-hkA" id="8EC-hR-tAp"/>
+                <outlet property="frequencyField" destination="MRY-KU-hkA" id="RwA-6G-eqc"/>
                 <outlet property="noteField" destination="UUw-bv-h7A" id="eAc-NZ-Jla"/>
                 <outlet property="picker" destination="iu9-N7-F5Z" id="VJo-D0-j95"/>
             </connections>
