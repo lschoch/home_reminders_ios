@@ -53,6 +53,11 @@ class CustomCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.layer.borderColor = UIColor.black.cgColor
+        self.layer.borderWidth = 1.0
+        self.layer.cornerRadius = 8.0
+        
+        
         // Shift description field text left (so that it's not at the very edge of the container)
         let paddingView1: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 20))
         let paddingView2: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 20))
@@ -61,19 +66,19 @@ class CustomCell: UITableViewCell {
         noteField.leftView = paddingView2;
         noteField.leftViewMode = .always;
         
-        descriptionField.borderStyle = .none // (bezel borderStyle not compatible with corner radius)
-//        descriptionField.layer.cornerRadius = 8.0
-//        descriptionField.layer.borderWidth = 1.0
+        descriptionField.borderStyle = .bezel // (bezel borderStyle not compatible with corner radius)
+        descriptionField.layer.cornerRadius = 8.0
+        descriptionField.layer.borderWidth = 1.0
         descriptionField.clipsToBounds = true
         
-        frequencyField.borderStyle = .none
-//        frequencyField.layer.cornerRadius = 8.0
-//        frequencyField.layer.borderWidth = 1.0
+        frequencyField.borderStyle = .bezel
+        frequencyField.layer.cornerRadius = 8.0
+        frequencyField.layer.borderWidth = 1.0
         frequencyField.clipsToBounds = true
         
-        noteField.borderStyle = .none
-//        noteField.layer.cornerRadius = 8.0
-//        noteField.layer.borderWidth = 1.0
+        noteField.borderStyle = .bezel
+        noteField.layer.cornerRadius = 8.0
+        noteField.layer.borderWidth = 1.0
         noteField.clipsToBounds = true
         
         dateNextField.textColor = .black

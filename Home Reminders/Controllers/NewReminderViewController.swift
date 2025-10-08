@@ -151,6 +151,7 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             }
             self.navigationController?.popViewController(animated: true)
             let ac = UIAlertController(title: "Saved", message: "Your new reminder has been saved.", preferredStyle: .alert)
+            ac.view.tintColor = .black
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(ac, animated: true)
 
