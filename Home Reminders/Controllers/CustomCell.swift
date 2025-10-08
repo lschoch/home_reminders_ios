@@ -9,18 +9,15 @@ import UIKit
 
 protocol CustomCellDelegate: AnyObject {
     func customCell(_ cell: CustomCell, didUpdateText textField: UITextField?)
-//    func didTapElementInCell(_ cell: CustomCell)
     func pickerValueDidChange(inCell cell: CustomCell, withText text: String)
     func customCellFrequencyAlert(_ cell: CustomCell)
     func datePickerValueDidChange(inCell cell: CustomCell, withDate date: Date)
-//    func customCell(_ cell: CustomCell, didEndEditingWithText text: String)
     func customCell(_ cell: CustomCell, didEndEditingWithField field: UITextField)
     func customCell(_ cell: CustomCell, didStartEditingWithField field: UITextField)
 }
 
 protocol PickerCellDelegate: AnyObject {
     func picker(cell: CustomCell, didSelectRow row: Int)
-//    func didTapElementInCell(_ cell: CustomCell)
 }
 
 protocol TextCalculationDelegate: AnyObject {
@@ -31,7 +28,6 @@ class CustomCell: UITableViewCell {
     @IBOutlet weak var customCell: UIView!
 
     @IBOutlet weak var noteField: UITextField!
-//    @IBOutlet weak var periodField: UITextField!
     @IBOutlet weak var frequencyField: UITextField!
     @IBOutlet weak var descriptionField: UITextField!
     @IBOutlet weak var dateNextField: UITextField!
@@ -58,7 +54,7 @@ class CustomCell: UITableViewCell {
         self.layer.cornerRadius = 8.0
         
         
-        // Shift description field text left (so that it's not at the very edge of the container)
+        // Shift text field text right (so that it's not at the very edge of the container)
         let paddingView1: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 20))
         let paddingView2: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 20))
         descriptionField.leftView = paddingView1;
@@ -101,9 +97,6 @@ class CustomCell: UITableViewCell {
         frequencyField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingDidEnd)
         noteField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingDidEnd)
         
-//        dateNextField.addTarget(self, action: #selector(calculateAndSendText), for: .editingDidEnd)
-//        frequencyField.addTarget(self, action: #selector(calculateAndSendText), for: .editingDidEnd)
-        
         // Create and set the custom selection background view
         let customSelectedBackgroundView = UIView()
         customSelectedBackgroundView.backgroundColor = .brandLightYellow
@@ -134,7 +127,6 @@ class CustomCell: UITableViewCell {
     
     func addDoneButtonOnNumpad(textField: UITextField) {
         let keypadToolbar: UIToolbar = UIToolbar()
-        // add a done button to the numberpad
         keypadToolbar.items=[
             UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: textField, action: #selector(UITextField.resignFirstResponder)),
             UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
@@ -142,7 +134,6 @@ class CustomCell: UITableViewCell {
         keypadToolbar.sizeToFit()
         keypadToolbar.barStyle = .default
         keypadToolbar.tintColor = .brandLightBlue
-        // add a toolbar with a done button above the number pad
         textField.inputAccessoryView = keypadToolbar
     }//addDoneToKeyPad
     
@@ -150,24 +141,22 @@ class CustomCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         picker.isUserInteractionEnabled = selected
-//        picker.alpha = selected ? 1.0 : 0.5
         descriptionField.isUserInteractionEnabled = selected
-//        descriptionField.alpha = selected ? 1.0 : 0.5
         frequencyField.isUserInteractionEnabled = selected
-//        frequencyField.alpha = selected ? 1.0 : 0.5
         noteField.isUserInteractionEnabled = selected
-//        noteField.alpha = selected ? 1.0 : 0.5
         dateNextField.isUserInteractionEnabled = selected
-//        dateNextField.alpha = selected ? 1.0 : 0.5
+        // Hide datePicker and down arrow when cell is not selected
         datePicker.isHidden = !selected
         arrowDown.isHidden = !selected
     }
     
+    // Target to dismiss calendar when date is selected
     @objc func datePickerTapped() {
             self.datePicker.preferredDatePickerStyle = .wheels
             self.datePicker.preferredDatePickerStyle = .automatic
         }
     
+    // Target to respond to datePicker value changes
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
         let pickerRow = picker.selectedRow(inComponent: 0)
@@ -179,33 +168,14 @@ class CustomCell: UITableViewCell {
         textCalculationDelegate?.didCalculateText(calculatedDateNext)
     }
     
-//    @IBAction func descriptionTapped(_ sender: UITextField) {
-//        customCellDelegate?.didTapElementInCell(self)
-//    }
-//    
-//    @IBAction func dateLastTapped(_ sender: UIDatePicker) {
-//        customCellDelegate?.didTapElementInCell(self)
-//    }
-//    
-//    @IBAction func dateNextTapped(_ sender: UITextField) {
-//        customCellDelegate?.didTapElementInCell(self)
-//    }
-//    
-//    @IBAction func frequencyTapped(_ sender: UITextField) {
-//        customCellDelegate?.didTapElementInCell(self)
-//    }
-//    
-//    @IBAction func noteTapped(_ sender: UITextField) {
-//        customCellDelegate?.didTapElementInCell(self)
-//    }
-    
+    // Calculate dateNext and send to view controller
     @objc private func calculateAndSendText() {
         let calculatedDateNext = calculateDateNext(row: pickerDataIndex)
         // Call the delegate
         textCalculationDelegate?.didCalculateText(calculatedDateNext)
     }
     
-    // Calculate next date as a function of last date, frequency and period
+    // Calculate dateNext as a function of dateLast, frequency and period
     func calculateDateNext(row: Int) -> String {
         var nextDate: Date
         
@@ -213,7 +183,7 @@ class CustomCell: UITableViewCell {
         let lastDate = datePicker.date
         let lastDateString = DF.dateFormatter.string(from: lastDate)
         
-        // If frequency is nil or zero, set return last date
+        // If frequency is nil or zero, return last date
         guard let frequency = frequencyField.text! as String? else { return lastDateString }
         
         if frequency == "0" { return lastDateString }
@@ -284,7 +254,6 @@ extension CustomCell: UIPickerViewDelegate {
         let calculatedDateNext = calculateDateNext(row: row)
         textCalculationDelegate?.didCalculateText(calculatedDateNext)
         pickerDelegate?.picker(cell: self, didSelectRow: row)
-        
     }
 }
 
@@ -297,6 +266,7 @@ extension CustomCell: UITextFieldDelegate {
         let calculatedDateNext = calculateDateNext(row: pickerIndex)
         dateNextField.text = calculatedDateNext
         if textField.tag == 4 {
+            let pickerIndex = picker.selectedRow(inComponent: 0)
             let calculatedDateNext = calculateDateNext(row: pickerIndex)
             dateNextField.text = calculatedDateNext
         }
@@ -312,8 +282,6 @@ extension CustomCell: UITextFieldDelegate {
                 customCellDelegate?.customCellFrequencyAlert(self)
             }
         }
-        // Send changed textField to RemindersViewController
-//        customCellDelegate?.customCell(self, didUpdateText: textField)
     }
     
     // Dismiss keyboard when "Return" key is tapped.
@@ -338,4 +306,5 @@ extension CustomCell: UITextFieldDelegate {
         }
         customCellDelegate?.customCell(self, didEndEditingWithField: textField)
     }
+    
 }
