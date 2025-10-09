@@ -260,19 +260,15 @@ extension CustomCell: UIPickerViewDelegate {
 //MARK: - UITextFieldDelegate Implementation
 extension CustomCell: UITextFieldDelegate {
     @objc func textFieldDidChange(_ textField: UITextField) {
-        // If this is the frequency text field, update the date next calculation and send it to RemindersViewController.
-        // (Description and note fields have no effect on date next.)
-        let pickerIndex = picker.selectedRow(inComponent: 0)
-        let calculatedDateNext = calculateDateNext(row: pickerIndex)
-        dateNextField.text = calculatedDateNext
+        // If this is the frequency text field, update the dateNext calculation and send it to RemindersViewController.
+        // Calculation of dateNext after period and dateLast changes is handled elsewhere.
         if textField.tag == 4 {
             let pickerIndex = picker.selectedRow(inComponent: 0)
             let calculatedDateNext = calculateDateNext(row: pickerIndex)
             dateNextField.text = calculatedDateNext
+            // Send calculatedDateNext to RemindersViewController.
+            textCalculationDelegate?.didCalculateText(calculatedDateNext)
         }
-        
-        // Send calculatedDateNext to RemindersViewController.
-        textCalculationDelegate?.didCalculateText(calculatedDateNext)
         
         // If period is "one-time", set frequency to zero and trigger alert.
         if picker.selectedRow(inComponent: 0) == 0 {
@@ -295,7 +291,7 @@ extension CustomCell: UITextFieldDelegate {
         if textField.tag == 4 {
             textField.selectAll(nil)
         }
-        // Set the activeTextField in RemindersViewControllerd
+        // Set the activeTextField property in RemindersViewController
         customCellDelegate?.customCell(self, didStartEditingWithField: textField)
     }
     

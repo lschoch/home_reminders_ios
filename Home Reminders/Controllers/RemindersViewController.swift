@@ -68,6 +68,8 @@ class RemindersViewController: UIViewController {
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        // Currently active text field needs to resign first responder so that didEndEditing will fire.
+        activeTextField?.resignFirstResponder()
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
@@ -208,10 +210,52 @@ class RemindersViewController: UIViewController {
     }
     
     @IBAction func deselectButtonPressed(_ sender: UIButton) {
+        // Check for unsaved changes
+        // Currently active text field needs to resign first responder so that didEndEditing will fire.
+        activeTextField?.resignFirstResponder()
+        
+        // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
-            tableView.deselectRow(at: selectedIndexPath, animated: true)
+            // Retrieve the data model for the currently selected row
+            let selectedRowData = reminders[selectedIndexPath.row]
+
+            // Check if the selectedRowData has "changed" based on your application's logic
+            // For example, if a text field in the cell was edited and not saved
+            if selectedRowData.hasUnsavedChanges {
+                // Present an alert or prompt the user to save/discard changes
+                // If the user chooses to stay on the current row, return nil
+                // If the user confirms to proceed, handle saving/discarding and then return indexPath
+                let alert = UIAlertController(title: "Deselect", message: "Save changes before deselecting?", preferredStyle: .alert)
+                alert.view.tintColor = .black
+                alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
+                    self.saveReminder(selectedIndexPath.row)
+                    self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                }))
+                alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
+                    // Discard changes for selectedRowData
+                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
+                    self.calculatedDateNext = ""
+                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
+                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
+                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
+                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
+                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
+                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
+                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
+                    self.saveReminder(selectedIndexPath.row)
+                    self.tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+                    self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                    return
+                }))
+                self.present(alert, animated: true, completion: nil)
+                return
+            } else {
+                notificationAlert(title: "Save", message: "No changes to save.")
+            }// end: "if selectedRowData.hasUnsavedChanges"
         } else {
-            notificationAlert(title: "Deselect", message: "No row is selected.")
+            notificationAlert(title: "Deselect", message: "No row is selected.") // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
         }
     }
     
@@ -312,6 +356,8 @@ class RemindersViewController: UIViewController {
     }
     
     func saveReminderWithOptionToDiscardChanges() {
+        // Currently active text field needs to resign first responder so that didEndEditing will fire.
+        activeTextField?.resignFirstResponder()
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
