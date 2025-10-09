@@ -78,7 +78,6 @@ class RemindersViewController: UIViewController {
             // Check if the selectedRowData has "changed" based on your application's logic
             // For example, if a text field in the cell was edited and not saved
             if identifier == "NewReminderSegue" && selectedRowData.hasUnsavedChanges {
-//                let indexPath = tableView.indexPathForSelectedRow
                 // Present an alert or prompt the user to save/discard changes
                 let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before leaving?", preferredStyle: .alert)
                 alert.view.tintColor = .black
@@ -125,13 +124,10 @@ class RemindersViewController: UIViewController {
     }
     
     func updateDateButtonDate() {
-        // Create a DateFormatter to format the date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
         // Get the current date
         let currentDate = Date()
         // Format the date into a string
-        let dateString = dateFormatter.string(from: currentDate)
+        let dateString = DF.dateFormatter.string(from: currentDate)
         dateButton.title? = dateString
     }
     
@@ -210,17 +206,17 @@ class RemindersViewController: UIViewController {
     }
     
     @IBAction func deselectButtonPressed(_ sender: UIButton) {
-        // Check for unsaved changes
         // Currently active text field needs to resign first responder so that didEndEditing will fire.
         activeTextField?.resignFirstResponder()
+        
+        // Check for unsaved changes
         
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
             let selectedRowData = reminders[selectedIndexPath.row]
 
-            // Check if the selectedRowData has "changed" based on your application's logic
-            // For example, if a text field in the cell was edited and not saved
+            // Check if the selectedRowData has "changed"
             if selectedRowData.hasUnsavedChanges {
                 // Present an alert or prompt the user to save/discard changes
                 // If the user chooses to stay on the current row, return nil
@@ -252,7 +248,7 @@ class RemindersViewController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
                 return
             } else {
-                notificationAlert(title: "Save", message: "No changes to save.")
+                self.tableView.deselectRow(at: selectedIndexPath, animated: true)
             }// end: "if selectedRowData.hasUnsavedChanges"
         } else {
             notificationAlert(title: "Deselect", message: "No row is selected.") // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
@@ -329,9 +325,6 @@ class RemindersViewController: UIViewController {
             
             do {
                 if let safeRow = row {
-//                    if saveDateNext {
-//                        self.reminders[safeRow].dateNext = self.calculatedDateNext
-//                    }
                     if !calculatedDateNext.isEmpty { self.reminders[safeRow].dateNext = self.calculatedDateNext }
                     let myId = self.reminders[safeRow].id
                     let reminderToSave = remindersTable.filter(id == myId)
@@ -536,13 +529,6 @@ extension RemindersViewController: CustomCellDelegate {
         reminders[tableRow].hasUnsavedChanges = true
     }
     
-//    func didTapElementInCell(_ cell: CustomCell) {
-//        if let indexPath = tableView.indexPath(for: cell) {
-//            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-//            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
-//        }
-//    }
-    
     func customCell(_ cell: CustomCell, didEndEditingWithField textField: UITextField) {
         guard let tableRow else { return }
         switch textField.tag {
@@ -567,8 +553,6 @@ extension RemindersViewController: CustomCellDelegate {
     }
     
     func pickerValueDidChange(inCell cell: CustomCell, withText text: String) {
-            // Handle the received text from the custom cell
-            // Update UI or perform other actions in the view controller
             calculatedDateNext = text
         }
     
