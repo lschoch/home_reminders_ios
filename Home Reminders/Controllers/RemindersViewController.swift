@@ -20,6 +20,7 @@ class RemindersViewController: UIViewController {
     var calculatedDateNext: String = ""
     var selectedIndexPath: IndexPath?
     var activeTextField: UITextField?
+    let cellSpacingHeight: CGFloat = 5.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -387,13 +388,37 @@ class RemindersViewController: UIViewController {
 
 //MARK: - UITableViewDataSource Implementation
 extension RemindersViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return self.reminders.count
+    }
+    
+    // There is just one row in every section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return reminders.count
+        return 1
+    }
+    
+    // Set the spacing between sections
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return cellSpacingHeight
+    }
+    
+    // Make the background color show through
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = UIColor.clear
+        return headerView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let reminder = reminders[indexPath.row]
+        let reminder = reminders[indexPath.section]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
+        
+        // add border and color
+        cell.backgroundColor = UIColor.white
+        cell.layer.borderColor = UIColor.black.cgColor
+        cell.layer.borderWidth = 1
+        cell.layer.cornerRadius = 8
+        cell.clipsToBounds = true
         
         cell.descriptionField.text = reminder.description
         cell.datePicker.date = DF.dateFormatter.date(from: reminder.dateLast) ?? Date()

@@ -78,7 +78,7 @@ class CustomCell: UITableViewCell {
         noteField.clipsToBounds = true
         
         dateNextField.textColor = .black
-        noteField.backgroundColor = .clear
+        noteField.backgroundColor = .white
         
         frequencyField.keyboardType = .numberPad
         
