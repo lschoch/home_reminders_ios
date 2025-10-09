@@ -89,23 +89,13 @@ class RemindersViewController: UIViewController {
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
-                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
-                    self.calculatedDateNext = ""
-                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
-                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
-                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
-                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
-                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
-                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
-                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
-                    self.saveReminder(selectedIndexPath.row)
-                    self.tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+                    self.discardChangesForSelectedRowData(selectedIndexPath)
                     
                     // Then, proceed with seque
                     self.performSegue(withIdentifier: identifier, sender: sender) // Manually perform the segue
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-                    // Do perform the seque
+                    // Do not perform the seque
                     return
                 }))
                 self.present(alert, animated: true, completion: nil)
@@ -229,17 +219,7 @@ class RemindersViewController: UIViewController {
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
-                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
-                    self.calculatedDateNext = ""
-                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
-                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
-                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
-                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
-                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
-                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
-                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
-                    self.saveReminder(selectedIndexPath.row)
-                    self.tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+                    self.discardChangesForSelectedRowData(selectedIndexPath)
                     self.tableView.deselectRow(at: selectedIndexPath, animated: true)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
@@ -371,17 +351,7 @@ class RemindersViewController: UIViewController {
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
-                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
-                    self.calculatedDateNext = ""
-                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
-                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
-                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
-                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
-                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
-                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
-                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
-                    self.saveReminder(selectedIndexPath.row)
-                    self.tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
+                    self.discardChangesForSelectedRowData(selectedIndexPath)
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
                     self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
@@ -396,6 +366,21 @@ class RemindersViewController: UIViewController {
                 notificationAlert(title: "Save", message: "No changes to save.")
             }// end: "if selectedRowData.hasUnsavedChanges"
         } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
+    }
+    
+    func discardChangesForSelectedRowData(_ selectedIndexPath: IndexPath) {
+        // Discard changes for selectedRowData
+        // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
+        self.calculatedDateNext = ""
+        self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
+        self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
+        self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
+        self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
+        self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
+        self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
+        self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
+        self.saveReminder(selectedIndexPath.row)
+        tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
     }
     
 }
@@ -456,10 +441,9 @@ extension RemindersViewController: UITableViewDelegate {
             // Retrieve the data model for the currently selected row
             let selectedRowData = reminders[selectedIndexPath.row]
 
-            // Check if the selectedRowData has "changed" based on your application's logic
-            // For example, if a text field in the cell was edited and not saved
+            // Check if the selectedRowData has changed.
             if selectedRowData.hasUnsavedChanges {
-                // Present an alert or prompt the user to save/discard changes
+                // Prompt the user to save/discard changes
                 // If the user chooses to stay on the current row, return nil
                 // If the user confirms to proceed, handle saving/discarding and then return indexPath
                 let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before selecting another row?", preferredStyle: .alert)
@@ -472,19 +456,7 @@ extension RemindersViewController: UITableViewDelegate {
                     tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
-                    // Discard changes for selectedRowData
-                    // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
-                    self.calculatedDateNext = ""
-                    self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
-                    self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
-                    self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
-                    self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
-                    self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
-                    self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
-                    self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
-                    self.saveReminder(selectedIndexPath.row)
-                    tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
-                    
+                    self.discardChangesForSelectedRowData(selectedIndexPath)
                     // Then, proceed with selecting the new row
                     tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                     tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
