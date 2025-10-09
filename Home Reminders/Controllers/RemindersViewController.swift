@@ -425,7 +425,7 @@ extension RemindersViewController: UITableViewDataSource {
                 cell.descriptionField.backgroundColor = .brandPink
             }
         } else {
-            cell.descriptionField.backgroundColor = .clear // .systemGray5
+            cell.descriptionField.backgroundColor = .systemGray5
         }
         return cell
     }
