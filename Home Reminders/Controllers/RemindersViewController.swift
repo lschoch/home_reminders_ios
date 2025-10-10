@@ -20,7 +20,7 @@ class RemindersViewController: UIViewController {
     var calculatedDateNext: String = ""
     var selectedIndexPath: IndexPath?
     var activeTextField: UITextField?
-    let cellSpacingHeight: CGFloat = 5.0
+    let cellSpacingHeight: CGFloat = 10.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +53,7 @@ class RemindersViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
         tableView.rowHeight = 160
+        tableView.sectionHeaderTopPadding = 0
         
         // Dismiss keyboard when tapping outside text field.
 //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
