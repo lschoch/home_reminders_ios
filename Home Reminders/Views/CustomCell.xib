@@ -134,7 +134,6 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="7Gb-JT-tmW" firstAttribute="top" secondItem="vnn-pX-SpZ" secondAttribute="bottom" id="3yB-gA-XMC"/>
-                    <constraint firstItem="MRY-KU-hkA" firstAttribute="leading" secondItem="7Gb-JT-tmW" secondAttribute="trailing" constant="1" id="5vX-aT-OnD"/>
                     <constraint firstItem="fPp-Hd-Eih" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="685-2n-OyD"/>
                     <constraint firstItem="iu9-N7-F5Z" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="4" id="7UM-hk-j3r"/>
                     <constraint firstAttribute="bottom" secondItem="UUw-bv-h7A" secondAttribute="bottom" constant="10" id="AFC-4R-B50"/>
@@ -163,7 +162,6 @@
                     <constraint firstItem="7Gb-JT-tmW" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="190" id="vbD-Qd-koF"/>
                     <constraint firstItem="vnn-pX-SpZ" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="10" id="xZG-Kr-PGm"/>
                     <constraint firstAttribute="trailing" secondItem="EZD-NK-KRt" secondAttribute="trailing" id="yI0-ZY-b3t"/>
-                    <constraint firstItem="272-le-tie" firstAttribute="top" secondItem="MRY-KU-hkA" secondAttribute="bottom" constant="13" id="zkI-IR-3Z6"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
