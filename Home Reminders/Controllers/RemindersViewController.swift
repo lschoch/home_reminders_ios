@@ -177,8 +177,9 @@ class RemindersViewController: UIViewController {
                 self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 
                 // Alert notification that delete was successful.
-                let ac = UIAlertController(title: "Deleted", message: "The reminder has been deleted.", preferredStyle: .alert)
+                let ac = UIAlertController(title: "Delete", message: "The reminder has been deleted.", preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "OK", style: .default))
+                ac.view.tintColor = .black
                 self.present(ac, animated: true)
             } else {
                 print("Error: Could not open database.")
