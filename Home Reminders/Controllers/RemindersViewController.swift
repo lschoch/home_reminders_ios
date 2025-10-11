@@ -573,22 +573,38 @@ extension RemindersViewController: CustomCellDelegate {
 //MARK: - PickerCellDelegate Implementation
 extension RemindersViewController: PickerCellDelegate {
     func picker(cell: CustomCell, didSelectRow row: Int) {
-        if let indexPath = tableView.indexPath(for: cell) {
-            // Update tableRow directly
-            tableRow = indexPath.row
-            reminders[indexPath.row].hasUnsavedChanges = true
-            reminders[indexPath.row].period = pickerData[row]
-            reminders[indexPath.row].dateNext = calculatedDateNext
-            
-            if pickerData[row] == "one-time" {
-                reminders[indexPath.row].frequency = "0"
-            }
-            tableView.reloadRows(at: [indexPath], with: .none)
-            
-            // Programmatically select the row
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let section = indexPath.section     // <- use section, not row
+        tableRow = section
+        reminders[section].hasUnsavedChanges = true
+        reminders[section].period = pickerData[row]
+        reminders[section].dateNext = calculatedDateNext
+        if pickerData[row] == "one-time" {
+            reminders[section].frequency = "0"
         }
+        // reload the single row in that section
+        let reloadIndexPath = IndexPath(row: 0, section: section)
+        tableView.reloadRows(at: [reloadIndexPath], with: .none)
+        
+        tableView.selectRow(at: reloadIndexPath, animated: true, scrollPosition: .none)
+        tableView.delegate?.tableView?(tableView, didSelectRowAt: reloadIndexPath)
+        
+        //        if let indexPath = tableView.indexPath(for: cell) {
+        //            // Update tableRow directly
+        //            tableRow = indexPath.row
+        //            reminders[indexPath.row].hasUnsavedChanges = true
+        //            reminders[indexPath.row].period = pickerData[row]
+        //            reminders[indexPath.row].dateNext = calculatedDateNext
+        //
+        //            if pickerData[row] == "one-time" {
+        //                reminders[indexPath.row].frequency = "0"
+        //            }
+        //            tableView.reloadRows(at: [indexPath], with: .none)
+        //
+        //            // Programmatically select the row
+        //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        //            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
+        //        }
     }
 }
 
