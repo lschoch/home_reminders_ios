@@ -173,7 +173,7 @@ class RemindersViewController: UIViewController {
                 self.reminders = []
                 self.loadReminders()
                 self.tableView.reloadData()
-                self.tableView.selectRow(at: [0, selectedIndexPath.section], animated: true, scrollPosition: .none)
+                self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
                 self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 
                 // Alert notification that delete was successful.
