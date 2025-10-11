@@ -75,7 +75,7 @@ class RemindersViewController: UIViewController {
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
-            let selectedRowData = reminders[selectedIndexPath.row]
+            let selectedRowData = reminders[selectedIndexPath.section]
 
             // Check if the selectedRowData has "changed" based on your application's logic
             // For example, if a text field in the cell was edited and not saved
@@ -85,7 +85,7 @@ class RemindersViewController: UIViewController {
                 alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     // Save changes for selectedRowData
-                    self.saveReminder(selectedIndexPath.row)
+                    self.saveReminder(selectedIndexPath.section)
                     // Then, proceed with selecting the new row
                     self.performSegue(withIdentifier: identifier, sender: sender) // Manually perform the segue
                 }))
@@ -173,7 +173,7 @@ class RemindersViewController: UIViewController {
                 self.reminders = []
                 self.loadReminders()
                 self.tableView.reloadData()
-                self.tableView.selectRow(at: [0, selectedIndexPath.row], animated: true, scrollPosition: .none)
+                self.tableView.selectRow(at: [0, selectedIndexPath.section], animated: true, scrollPosition: .none)
                 self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 
                 // Alert notification that delete was successful.
@@ -206,7 +206,7 @@ class RemindersViewController: UIViewController {
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
-            let selectedRowData = reminders[selectedIndexPath.row]
+            let selectedRowData = reminders[selectedIndexPath.section]
 
             // Check if the selectedRowData has "changed"
             if selectedRowData.hasUnsavedChanges {
@@ -216,7 +216,7 @@ class RemindersViewController: UIViewController {
                 let alert = UIAlertController(title: "Deselect", message: "Save changes before deselecting?", preferredStyle: .alert)
                 alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
-                    self.saveReminder(selectedIndexPath.row)
+                    self.saveReminder(selectedIndexPath.section)
                     self.tableView.deselectRow(at: selectedIndexPath, animated: true)
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
@@ -336,7 +336,7 @@ class RemindersViewController: UIViewController {
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
-            let selectedRowData = reminders[selectedIndexPath.row]
+            let selectedRowData = reminders[selectedIndexPath.section]
 
             // Check if the selectedRowData has "changed" based on your application's logic
             // For example, if a text field in the cell was edited and not saved
@@ -347,7 +347,7 @@ class RemindersViewController: UIViewController {
                 let alert = UIAlertController(title: "Save", message: "Are you sure you want to save this reminder?", preferredStyle: .alert)
                 alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
-                    self.saveReminder(selectedIndexPath.row)
+                    self.saveReminder(selectedIndexPath.section)
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
                     self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
@@ -374,14 +374,14 @@ class RemindersViewController: UIViewController {
         // Discard changes for selectedRowData
         // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
         self.calculatedDateNext = ""
-        self.reminders[selectedIndexPath.row].description = self.remindersOriginal[selectedIndexPath.row].description
-        self.reminders[selectedIndexPath.row].frequency = self.remindersOriginal[selectedIndexPath.row].frequency
-        self.reminders[selectedIndexPath.row].period = self.remindersOriginal[selectedIndexPath.row].period
-        self.reminders[selectedIndexPath.row].note = self.remindersOriginal[selectedIndexPath.row].note
-        self.reminders[selectedIndexPath.row].dateLast = self.remindersOriginal[selectedIndexPath.row].dateLast
-        self.reminders[selectedIndexPath.row].dateNext = self.remindersOriginal[selectedIndexPath.row].dateNext
-        self.reminders[selectedIndexPath.row].hasUnsavedChanges = false
-        self.saveReminder(selectedIndexPath.row)
+        self.reminders[selectedIndexPath.section].description = self.remindersOriginal[selectedIndexPath.section].description
+        self.reminders[selectedIndexPath.section].frequency = self.remindersOriginal[selectedIndexPath.section].frequency
+        self.reminders[selectedIndexPath.section].period = self.remindersOriginal[selectedIndexPath.section].period
+        self.reminders[selectedIndexPath.section].note = self.remindersOriginal[selectedIndexPath.section].note
+        self.reminders[selectedIndexPath.section].dateLast = self.remindersOriginal[selectedIndexPath.section].dateLast
+        self.reminders[selectedIndexPath.section].dateNext = self.remindersOriginal[selectedIndexPath.section].dateNext
+        self.reminders[selectedIndexPath.section].hasUnsavedChanges = false
+        self.saveReminder(selectedIndexPath.section)
         tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
     }
     
@@ -465,7 +465,7 @@ extension RemindersViewController: UITableViewDelegate {
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
-            let selectedRowData = reminders[selectedIndexPath.row]
+            let selectedRowData = reminders[selectedIndexPath.section]
 
             // Check if the selectedRowData has changed.
             if selectedRowData.hasUnsavedChanges {
@@ -476,7 +476,7 @@ extension RemindersViewController: UITableViewDelegate {
                 alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     // Save changes for selectedRowData
-                    self.saveReminder(selectedIndexPath.row)
+                    self.saveReminder(selectedIndexPath.section)
                     // Then, proceed with selecting the new row
                     tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
                     tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
@@ -502,7 +502,7 @@ extension RemindersViewController: UITableViewDelegate {
     } // end: func
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let row = indexPath.row
+        let row = indexPath.section
         tableRow = row
         selectedIndexPath = indexPath
     }
@@ -564,8 +564,8 @@ extension RemindersViewController: CustomCellDelegate {
     
     func datePickerValueDidChange(inCell cell: CustomCell, withDate date: Date) {
         guard let selectedIndexPath else { print("selectedIndexPath is nil"); return }
-        reminders[selectedIndexPath.row].dateLast = DF.dateFormatter.string(from: date)
-        reminders[selectedIndexPath.row].hasUnsavedChanges = true
+        reminders[selectedIndexPath.section].dateLast = DF.dateFormatter.string(from: date)
+        reminders[selectedIndexPath.section].hasUnsavedChanges = true
     }
 
 }
@@ -578,6 +578,7 @@ extension RemindersViewController: PickerCellDelegate {
         tableRow = section
         reminders[section].hasUnsavedChanges = true
         reminders[section].period = pickerData[row]
+        
         reminders[section].dateNext = calculatedDateNext
         if pickerData[row] == "one-time" {
             reminders[section].frequency = "0"
@@ -591,13 +592,13 @@ extension RemindersViewController: PickerCellDelegate {
         
         //        if let indexPath = tableView.indexPath(for: cell) {
         //            // Update tableRow directly
-        //            tableRow = indexPath.row
-        //            reminders[indexPath.row].hasUnsavedChanges = true
-        //            reminders[indexPath.row].period = pickerData[row]
-        //            reminders[indexPath.row].dateNext = calculatedDateNext
+        //            tableRow = indexPath.section
+        //            reminders[indexPath.section].hasUnsavedChanges = true
+        //            reminders[indexPath.section].period = pickerData[row]
+        //            reminders[indexPath.section].dateNext = calculatedDateNext
         //
         //            if pickerData[row] == "one-time" {
-        //                reminders[indexPath.row].frequency = "0"
+        //                reminders[indexPath.section].frequency = "0"
         //            }
         //            tableView.reloadRows(at: [indexPath], with: .none)
         //
