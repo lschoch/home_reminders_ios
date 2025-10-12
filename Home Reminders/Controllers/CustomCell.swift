@@ -128,8 +128,8 @@ class CustomCell: UITableViewCell {
     func addDoneButtonOnNumpad(textField: UITextField) {
         let keypadToolbar: UIToolbar = UIToolbar()
         keypadToolbar.items=[
-            UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: textField, action: #selector(UITextField.resignFirstResponder)),
-            UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
+            UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil),
+            UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: textField, action: #selector(UITextField.resignFirstResponder))
         ]
         keypadToolbar.sizeToFit()
         keypadToolbar.barStyle = .default
