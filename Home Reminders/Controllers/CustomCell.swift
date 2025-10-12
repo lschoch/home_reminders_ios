@@ -146,8 +146,8 @@ class CustomCell: UITableViewCell {
         noteField.isUserInteractionEnabled = selected
         dateNextField.isUserInteractionEnabled = selected
         // Hide datePicker and down arrow when cell is not selected
-        datePicker.isHidden = !selected
-        arrowDown.isHidden = !selected
+//        datePicker.isHidden = !selected
+//        arrowDown.isHidden = !selected
     }
     
     // Target to dismiss calendar when date is selected
