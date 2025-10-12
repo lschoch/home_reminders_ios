@@ -27,7 +27,7 @@
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textField>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xMz-FM-iHS" userLabel="dateLastStack">
-                        <rect key="frame" x="20" y="86" width="151" height="27"/>
+                        <rect key="frame" x="20" y="50" width="156" height="27"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fPp-Hd-Eih">
                                 <rect key="frame" x="0.0" y="0.0" width="46" height="16"/>
@@ -39,11 +39,11 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="P1m-fr-TCO">
-                                <rect key="frame" x="46" y="-11" width="105" height="27"/>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="P1m-fr-TCO">
+                                <rect key="frame" x="46" y="-11" width="110" height="27"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="105" id="AQy-WM-4qZ"/>
+                                    <constraint firstAttribute="width" constant="110" id="AQy-WM-4qZ"/>
                                     <constraint firstAttribute="height" constant="27" id="v8R-oZ-bzB"/>
                                 </constraints>
                                 <locale key="locale" localeIdentifier="en_SE"/>
@@ -54,7 +54,7 @@
                         </constraints>
                     </stackView>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSW-7Q-Gsa" userLabel="dateNextStack">
-                        <rect key="frame" x="47" y="86" width="51" height="27"/>
+                        <rect key="frame" x="47" y="50" width="51" height="27"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Next:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jn-Ix-QKN">
                                 <rect key="frame" x="0.0" y="0.0" width="46" height="16"/>
@@ -110,7 +110,7 @@
                         </constraints>
                     </imageView>
                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Fiv-sU-2I0" userLabel="repeatsHorizontalStack">
-                        <rect key="frame" x="-52" y="50" width="152" height="66"/>
+                        <rect key="frame" x="20" y="84" width="152" height="66"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repeats every:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vnn-pX-SpZ">
                                 <rect key="frame" x="0.0" y="25.333333333333332" width="110" height="15.666666666666668"/>
@@ -129,7 +129,7 @@
                         </subviews>
                     </stackView>
                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iu9-N7-F5Z">
-                        <rect key="frame" x="96" y="44" width="107" height="45"/>
+                        <rect key="frame" x="168" y="77" width="107" height="45"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="107" id="2eN-RJ-wUW"/>
@@ -138,23 +138,23 @@
                     </pickerView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Fiv-sU-2I0" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="50" id="1LV-rg-sPz"/>
+                    <constraint firstItem="Fiv-sU-2I0" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="84" id="1LV-rg-sPz"/>
+                    <constraint firstItem="Fiv-sU-2I0" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="5TD-v3-HFu"/>
                     <constraint firstAttribute="bottom" secondItem="UUw-bv-h7A" secondAttribute="bottom" constant="10" id="AFC-4R-B50"/>
                     <constraint firstItem="EZD-NK-KRt" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="AL3-8a-aqe"/>
                     <constraint firstAttribute="bottom" secondItem="EZD-NK-KRt" secondAttribute="bottom" constant="4" id="EFk-Lm-zf3"/>
                     <constraint firstItem="cCu-jO-laT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="97" id="F3t-gH-VVO"/>
-                    <constraint firstItem="dSW-7Q-Gsa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="86" id="IMy-wM-uEg"/>
+                    <constraint firstItem="dSW-7Q-Gsa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="50" id="IMy-wM-uEg"/>
                     <constraint firstItem="xMz-FM-iHS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Jw8-MW-WdT"/>
                     <constraint firstItem="j53-aq-Z9h" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="MOe-QI-1Rz"/>
                     <constraint firstAttribute="trailing" secondItem="UUw-bv-h7A" secondAttribute="trailing" constant="8" id="RpX-4b-S21"/>
                     <constraint firstAttribute="trailing" secondItem="j53-aq-Z9h" secondAttribute="trailing" constant="8" id="U5Z-bk-pFD"/>
                     <constraint firstItem="j53-aq-Z9h" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="c7w-qV-1k9"/>
                     <constraint firstAttribute="trailing" secondItem="dSW-7Q-Gsa" secondAttribute="trailing" constant="20" id="cc6-3k-GX8"/>
-                    <constraint firstItem="Fiv-sU-2I0" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" constant="-35" id="eEX-3m-57P"/>
-                    <constraint firstItem="iu9-N7-F5Z" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="44" id="gyZ-zf-n5N"/>
+                    <constraint firstItem="iu9-N7-F5Z" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="77" id="gyZ-zf-n5N"/>
                     <constraint firstItem="UUw-bv-h7A" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="kBh-5q-Ihj"/>
                     <constraint firstItem="iu9-N7-F5Z" firstAttribute="leading" secondItem="Fiv-sU-2I0" secondAttribute="trailing" constant="-4" id="pGs-go-ck1"/>
-                    <constraint firstItem="xMz-FM-iHS" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="86" id="t64-R5-Hkc"/>
+                    <constraint firstItem="xMz-FM-iHS" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="50" id="t64-R5-Hkc"/>
                     <constraint firstItem="dvF-fF-Uy3" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="54" id="uUE-l8-RvC"/>
                     <constraint firstAttribute="trailing" secondItem="EZD-NK-KRt" secondAttribute="trailing" id="yI0-ZY-b3t"/>
                 </constraints>
