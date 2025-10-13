@@ -564,9 +564,11 @@ extension RemindersViewController: CustomCellDelegate {
     }
     
     func datePickerValueDidChange(inCell cell: CustomCell, withDate date: Date) {
-        guard let selectedIndexPath else { print("selectedIndexPath is nil"); return }
+        guard let selectedIndexPath = tableView.indexPath(for: cell) else { print("selectedIndexPath is nil"); return }
         reminders[selectedIndexPath.section].dateLast = DF.dateFormatter.string(from: date)
         reminders[selectedIndexPath.section].hasUnsavedChanges = true
+        tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+        self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
     }
 
 }
