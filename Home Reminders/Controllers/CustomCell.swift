@@ -26,7 +26,7 @@ protocol TextCalculationDelegate: AnyObject {
 
 class CustomCell: UITableViewCell {
     @IBOutlet weak var customCell: UIView!
-
+    
     @IBOutlet weak var noteField: UITextField!
     @IBOutlet weak var frequencyField: UITextField!
     @IBOutlet weak var descriptionField: UITextField!
@@ -35,6 +35,14 @@ class CustomCell: UITableViewCell {
     
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var picker: UIPickerView!
+    
+    @IBOutlet weak var dateLastStack: UIStackView!
+    @IBOutlet weak var dateNextStack: UIStackView!
+    @IBOutlet weak var repeatsHorizontalStack: UIStackView!
+    
+    @IBOutlet weak var repeatsEveryLabel: UILabel!
+    @IBOutlet weak var lastLabel: UILabel!
+    @IBOutlet weak var nextLabel: UILabel!
     
     @IBOutlet weak var arrowDown: UIImageView!
     
@@ -46,6 +54,10 @@ class CustomCell: UITableViewCell {
     var pickerData: [String] = []
     var pickerDataIndex: Int = -1
     var selectedDate: Date?
+    
+    // programmatic constraint storage
+    private var pickerLeadingConstraint: NSLayoutConstraint?
+    private var didConfigureConstraints = false
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -123,6 +135,57 @@ class CustomCell: UITableViewCell {
         // Add a target to respond to datePicker value changes
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         
+        // Ensure these views use Auto Layout
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        frequencyField.translatesAutoresizingMaskIntoConstraints = false
+        dateNextStack.translatesAutoresizingMaskIntoConstraints = false
+        descriptionField.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Only create and activate the constraints once
+        guard !didConfigureConstraints else { return }
+        didConfigureConstraints = true
+        
+        // Picker: place roughly where the XIB expected it; expose leading constant to update later
+        pickerLeadingConstraint = picker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 168)
+        let pickerCenterY = picker.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 70)
+        let pickerW = picker.widthAnchor.constraint(equalToConstant: 108)
+        let pickerH = picker.heightAnchor.constraint(equalToConstant: 56)
+        
+        // Frequency field left of picker
+        let freqLeading = frequencyField.leadingAnchor.constraint(equalTo: repeatsEveryLabel.trailingAnchor, constant: 5)
+        let freqTop = frequencyField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 84)
+        let freqW = frequencyField.widthAnchor.constraint(equalToConstant: 50)
+        
+        // Description at top, full width with insets
+        let descTop = descriptionField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10)
+        let descLeading = descriptionField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8)
+        let descTrailing = descriptionField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
+        
+        // dateNextStack below description
+        let stackTop = dateNextStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50)
+        let stackTrailing = dateNextStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
+        let stackH = dateNextStack.heightAnchor.constraint(equalToConstant: 27)
+        
+        NSLayoutConstraint.activate([
+            pickerLeadingConstraint!, pickerCenterY, pickerW, pickerH,
+            freqLeading, freqTop, freqW,
+            descTop, descLeading, descTrailing,
+            stackTop, stackTrailing, stackH
+        ])
+        
+        // Small layout pass to apply constraints immediately
+        contentView.setNeedsLayout()
+        contentView.layoutIfNeeded()
+    }
+    
+    // Helper to update picker leading from the controller without recreating constraints
+    func setPickerLeading(_ constant: CGFloat, animated: Bool = false) {
+        pickerLeadingConstraint?.constant = constant
+        if animated {
+            UIView.animate(withDuration: 0.2) { self.contentView.layoutIfNeeded() }
+        } else {
+            contentView.layoutIfNeeded()
+        }
     }
     
     func addDoneButtonOnNumpad(textField: UITextField) {
@@ -146,15 +209,15 @@ class CustomCell: UITableViewCell {
         noteField.isUserInteractionEnabled = selected
         dateNextField.isUserInteractionEnabled = selected
         // Hide datePicker and down arrow when cell is not selected
-//        datePicker.isHidden = !selected
-//        arrowDown.isHidden = !selected
+        //        datePicker.isHidden = !selected
+        //        arrowDown.isHidden = !selected
     }
     
     // Target to dismiss calendar when date is selected
     @objc func datePickerTapped() {
-            self.datePicker.preferredDatePickerStyle = .wheels
-            self.datePicker.preferredDatePickerStyle = .automatic
-        }
+        self.datePicker.preferredDatePickerStyle = .wheels
+        self.datePicker.preferredDatePickerStyle = .automatic
+    }
     
     // Target to respond to datePicker value changes
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -215,11 +278,11 @@ class CustomCell: UITableViewCell {
         } else {
             label = UILabel()
         }
-
+        
         label.font = UIFont(name: "Helvetica Neue", size: 16) // Customize font name and size
         label.text = pickerData[row]
         label.textAlignment = .center
-
+        
         return label
     }
     
@@ -248,9 +311,9 @@ extension CustomCell: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         // This method is triggered whenever the user makes a change to the picker selection.
         // The parameters named row and component represent what was selected.
-        if pickerData[row] == "one-time" {
-            customCellDelegate?.customCellFrequencyAlert(self)
-        }
+        //        if pickerData[row] == "one-time" {
+        //            customCellDelegate?.customCellFrequencyAlert(self)
+        //        }
         let calculatedDateNext = calculateDateNext(row: row)
         textCalculationDelegate?.didCalculateText(calculatedDateNext)
         pickerDelegate?.picker(cell: self, didSelectRow: row)
@@ -271,13 +334,13 @@ extension CustomCell: UITextFieldDelegate {
         }
         
         // If period is "one-time", set frequency to zero and trigger alert.
-        if picker.selectedRow(inComponent: 0) == 0 {
-            frequencyField.text = "0"
-            // Trigger frequency alert if the call to this function is from the frequency field.
-            if textField.tag == 4 {
-                customCellDelegate?.customCellFrequencyAlert(self)
-            }
-        }
+        //        if picker.selectedRow(inComponent: 0) == 0 {
+        //            frequencyField.text = "0"
+        //            // Trigger frequency alert if the call to this function is from the frequency field.
+        //            if textField.tag == 4 {
+        //                customCellDelegate?.customCellFrequencyAlert(self)
+        //            }
+        //        }
     }
     
     // Dismiss keyboard when "Return" key is tapped.
