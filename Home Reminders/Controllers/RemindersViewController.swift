@@ -59,6 +59,11 @@ class RemindersViewController: UIViewController {
 //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
 //                view.addGestureRecognizer(tapGesture)
         
+        // add long-press recognizer to tableView to deselect a selected cell
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        longPress.minimumPressDuration = 0.6
+        tableView.addGestureRecognizer(longPress)
+        
         loadReminders()
 
     }
@@ -129,6 +134,23 @@ class RemindersViewController: UIViewController {
         // Reload data to reset date-dependent cell background color changes
         loadReminders()
         tableView.reloadData()
+    }
+    
+    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        let point = gesture.location(in: tableView)
+        guard let indexPath = tableView.indexPathForRow(at: point) else { return }
+
+        // If the long-pressed row is currently selected, run the existing deselect flow
+        if let selected = tableView.indexPathForSelectedRow, selected == indexPath {
+            // reuse your existing deselect logic (shows alerts / saves as implemented)
+            deselectButtonPressed(UIButton())
+            //        } else {
+            //            // otherwise select the long-pressed row
+            //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            //            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+            //        }
+        }
     }
     
     @objc func hideKeyboard() {
@@ -348,14 +370,14 @@ class RemindersViewController: UIViewController {
                 alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     self.saveReminder(selectedIndexPath.section)
-                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
-                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
+//                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+//                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
                     self.discardChangesForSelectedRowData(selectedIndexPath)
-                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
-                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
+//                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+//                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
