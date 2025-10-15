@@ -140,7 +140,7 @@ class RemindersViewController: UIViewController {
     }
     
     func showSaveConfirmationAlert() {
-        guard self.tableRow != nil else {
+        guard tableView.indexPathForSelectedRow != nil else {
             self.notificationAlert(title: "Save", message: "No reminder selected to save.")
             return
         }
@@ -153,7 +153,6 @@ class RemindersViewController: UIViewController {
     
     func showDeleteConfirmationAlert() {
         guard let selectedIndexPath = tableView.indexPathForSelectedRow else {
-            print("No reminder selected for deletion.")
             notificationAlert(title: "Delete Reminder?", message: "No reminder selected for deletion.")
             return
         }
