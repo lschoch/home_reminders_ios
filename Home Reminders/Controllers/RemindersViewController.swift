@@ -194,8 +194,9 @@ class RemindersViewController: UIViewController {
                 self.reminders = []
                 self.loadReminders()
                 self.tableView.reloadData()
-                self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
-                self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
+//                // Select the row below the deleted row.
+//                self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+//                self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 
                 // Alert notification that delete was successful.
                 let ac = UIAlertController(title: "Delete", message: "The reminder has been deleted.", preferredStyle: .alert)
