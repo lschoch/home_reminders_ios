@@ -442,13 +442,13 @@ extension RemindersViewController: UITableViewDataSource {
             cell.dateNextStack.isHidden = true
             cell.lastLabel.text = "Due:"
             cell.repeatsEveryLabel.text = "Frequency:"
-            cell.setPickerLeading(97)
+            cell.setPickerLeading(101)
         } else {
             cell.frequencyField.isHidden = false
             cell.dateNextStack.isHidden = false
             cell.lastLabel.text = "Last:"
             cell.repeatsEveryLabel.text = "Repeats every:"
-            cell.setPickerLeading(178)
+            cell.setPickerLeading(185)
         }
         
         // Modify descriptionField background color as a function of due date in relation to today's date

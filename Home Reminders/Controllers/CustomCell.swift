@@ -146,8 +146,8 @@ class CustomCell: UITableViewCell {
         didConfigureConstraints = true
         
         // Picker: place roughly where the XIB expected it; expose leading constant to update later
-        pickerLeadingConstraint = picker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 168)
-        let pickerCenterY = picker.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 70)
+        pickerLeadingConstraint = picker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 186)
+        let pickerTop = picker.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 70)
         let pickerW = picker.widthAnchor.constraint(equalToConstant: 108)
         let pickerH = picker.heightAnchor.constraint(equalToConstant: 56)
         
@@ -167,7 +167,7 @@ class CustomCell: UITableViewCell {
         let stackH = dateNextStack.heightAnchor.constraint(equalToConstant: 27)
         
         NSLayoutConstraint.activate([
-            pickerLeadingConstraint!, pickerCenterY, pickerW, pickerH,
+            pickerLeadingConstraint!, pickerTop, pickerW, pickerH,
             freqLeading, freqTop, freqW,
             descTop, descLeading, descTrailing,
             stackTop, stackTrailing, stackH
