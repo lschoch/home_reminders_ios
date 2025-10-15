@@ -496,6 +496,8 @@ extension RemindersViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate Implementation
 extension RemindersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard (indexPath != selectedIndexPath) || (selectedIndexPath == nil) else { return selectedIndexPath }
+        
         // Currently active text field needs to resign first responder so that didEndEditing will fire.
         activeTextField?.resignFirstResponder()
         // Get the currently selected row (if any)
