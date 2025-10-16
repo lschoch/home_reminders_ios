@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		462B802A2EA0A77800533034 /* GoogleAPIClientForRESTCore in Frameworks */ = {isa = PBXBuildFile; productRef = 462B80292EA0A77800533034 /* GoogleAPIClientForRESTCore */; };
+		462B802C2EA0A77800533034 /* GoogleAPIClientForREST_Calendar in Frameworks */ = {isa = PBXBuildFile; productRef = 462B802B2EA0A77800533034 /* GoogleAPIClientForREST_Calendar */; };
+		462B802F2EA0A7A900533034 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 462B802E2EA0A7A900533034 /* GoogleSignIn */; };
 		46700ECB2E6C5F50009E2785 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 46700ECA2E6C5F50009E2785 /* SQLite */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +72,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				462B802A2EA0A77800533034 /* GoogleAPIClientForRESTCore in Frameworks */,
+				462B802F2EA0A7A900533034 /* GoogleSignIn in Frameworks */,
+				462B802C2EA0A77800533034 /* GoogleAPIClientForREST_Calendar in Frameworks */,
 				46700ECB2E6C5F50009E2785 /* SQLite in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,6 +137,9 @@
 			name = "Home Reminders";
 			packageProductDependencies = (
 				46700ECA2E6C5F50009E2785 /* SQLite */,
+				462B80292EA0A77800533034 /* GoogleAPIClientForRESTCore */,
+				462B802B2EA0A77800533034 /* GoogleAPIClientForREST_Calendar */,
+				462B802E2EA0A7A900533034 /* GoogleSignIn */,
 			);
 			productName = "Home Reminders";
 			productReference = 46700E952E6C5DEF009E2785 /* Home Reminders.app */;
@@ -217,6 +226,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				46700EC92E6C5F50009E2785 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+				462B80282EA0A77800533034 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */,
+				462B802D2EA0A7A900533034 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 46700E962E6C5DEF009E2785 /* Products */;
@@ -307,6 +318,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -335,6 +347,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -587,6 +600,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		462B80282EA0A77800533034 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/google-api-objectivec-client-for-rest.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		462B802D2EA0A7A900533034 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 		46700EC92E6C5F50009E2785 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
@@ -598,6 +627,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		462B80292EA0A77800533034 /* GoogleAPIClientForRESTCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 462B80282EA0A77800533034 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */;
+			productName = GoogleAPIClientForRESTCore;
+		};
+		462B802B2EA0A77800533034 /* GoogleAPIClientForREST_Calendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 462B80282EA0A77800533034 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */;
+			productName = GoogleAPIClientForREST_Calendar;
+		};
+		462B802E2EA0A7A900533034 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 462B802D2EA0A7A900533034 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
 		46700ECA2E6C5F50009E2785 /* SQLite */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 46700EC92E6C5F50009E2785 /* XCRemoteSwiftPackageReference "SQLite.swift" */;

@@ -6,11 +6,20 @@
 //
 
 import UIKit
+import GoogleSignIn
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        // Initialize GIDSignIn (Google calendar)
+        GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: "734646280736-rurau5btqrjmmd3o5jcmmmj10aa34gfp.apps.googleusercontent.com")
         return true
+    }
+    
+    // Handle the URL scheme (Google calendar)
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return GIDSignIn.sharedInstance.handle(url)
     }
 
     // MARK: UISceneSession Lifecycle

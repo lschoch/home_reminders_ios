@@ -7,6 +7,9 @@
 
 import UIKit
 import SQLite
+import GoogleAPIClientForRESTCore
+import GTMSessionFetcherCore
+import GoogleSignIn
 
 class RemindersViewController: UIViewController {
     
@@ -144,7 +147,7 @@ class RemindersViewController: UIViewController {
         // If the long-pressed row is currently selected, run the existing deselect flow
         if let selected = tableView.indexPathForSelectedRow, selected == indexPath {
             // reuse your existing deselect logic (shows alerts / saves as implemented)
-            deselectButtonPressed(UIButton())
+            deselectReminder()
             //        } else {
             //            // otherwise select the long-pressed row
             //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
@@ -220,7 +223,29 @@ class RemindersViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    @IBAction func deselectButtonPressed(_ sender: UIButton) {
+    @IBAction func calendarButtonPressed(_ sender: UIButton) {
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { user, error in
+            if let error = error {
+                // Handle sign-in error
+                print("Google Sign-In Error: \(error.localizedDescription)")
+                return
+            }
+            guard let user = user else { return }
+            // User successfully signed in, you can access user.profile and user.authentication
+            print("Signed in as: \(user.user)")
+            // Proceed with your app's logic, e.g., navigate to a different screen
+            
+        }
+    }
+    
+    func notificationAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.tintColor = .black
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func deselectReminder() {
         // Currently active text field needs to resign first responder so that didEndEditing will fire.
         activeTextField?.resignFirstResponder()
         
@@ -258,13 +283,6 @@ class RemindersViewController: UIViewController {
         } else {
             notificationAlert(title: "Deselect", message: "No row is selected.") // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
         }
-    }
-    
-    func notificationAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.view.tintColor = .black
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
     }
     
     //MARK: - Data Manipulation Methods
