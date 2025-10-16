@@ -174,7 +174,7 @@ class RemindersViewController: UIViewController {
     }
     
     func showDeleteConfirmationAlert() {
-        guard let selectedIndexPath = tableView.indexPathForSelectedRow else {
+        guard tableView.indexPathForSelectedRow != nil else {
             notificationAlert(title: "Delete Reminder?", message: "No reminder selected for deletion.")
             return
         }
