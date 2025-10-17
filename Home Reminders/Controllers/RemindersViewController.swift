@@ -7,7 +7,9 @@
 
 import UIKit
 import SQLite
-import GoogleAPIClientForRESTCore
+import AppAuth
+// import GoogleAPIClientForRESTCore
+import GoogleAPIClientForREST_Calendar
 import GTMSessionFetcherCore
 import GoogleSignIn
 
@@ -24,6 +26,9 @@ class RemindersViewController: UIViewController {
     var selectedIndexPath: IndexPath?
     var activeTextField: UITextField?
     let cellSpacingHeight: CGFloat = 10.0
+    
+    private let service = GTLRCalendarService()
+    // var authState: OIDAuthState?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -224,19 +229,88 @@ class RemindersViewController: UIViewController {
     }
     
     @IBAction func calendarButtonPressed(_ sender: UIButton) {
-        GIDSignIn.sharedInstance.signIn(withPresenting: self) { user, error in
+        // Request Calendar scope and sign in
+        let additionalScopes = "https://www.googleapis.com/auth/calendar.events" // or full calendar scope
+        GIDSignIn.sharedInstance.signIn(withPresenting: self, hint: additionalScopes) { signInResult, error in
             if let error = error {
-                // Handle sign-in error
-                print("Google Sign-In Error: \(error.localizedDescription)")
+                self.notificationAlert(title: "Google Sign-In Error", message: error.localizedDescription)
                 return
             }
-            guard let user = user else { return }
-            // User successfully signed in, you can access user.profile and user.authentication
-            print("Signed in as: \(user.user)")
-            // Proceed with your app's logic, e.g., navigate to a different screen
+            guard let user = signInResult?.user else {
+                self.notificationAlert(title: "Sign-In", message: "No user returned")
+                return
+            }
             
+            // Provide credentials to the GTLR service
+            self.service.authorizer = user.fetcherAuthorizer
+            
+            // Build a GTLRCalendar_Eventd
+            let allDayEvent = GTLRCalendar_Event()
+            allDayEvent.summary = "Test event"
+            let allDayStart = GTLRCalendar_EventDateTime()
+            allDayStart.date = GTLRDateTime(date: Date()) // "2025-10-17"   // local date string
+            allDayEvent.start = allDayStart
+
+            let allDayEnd = GTLRCalendar_EventDateTime()
+            let allDayEndDate = DF.dateFormatter.date(from: "2025-10-18")
+            allDayEnd.date = GTLRDateTime(date: allDayEndDate!)     // exclusive end date
+            allDayEvent.end = allDayEnd
+            
+            
+            // Insert the event
+            let query = GTLRCalendarQuery_EventsInsert.query(withObject: allDayEvent, calendarId: "primary")
+            self.service.executeQuery(query) { ticket, object, error in
+                if let error = error {
+                    self.notificationAlert(title: "Calendar Error", message: error.localizedDescription)
+                } else {
+                    self.notificationAlert(title: "Success", message: "Event created")
+                }
+            }
         }
     }
+    
+    func addEventoToGoogleCalendar(summary : String, description :String, startTime : String, endTime : String) {
+        let calendarEvent = GTLRCalendar_Event()
+
+        calendarEvent.summary = "\(summary)"
+        calendarEvent.descriptionProperty = "\(description)"
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy HH:mm"
+        let startDate = dateFormatter.date(from: startTime)
+        let endDate = dateFormatter.date(from: endTime)
+
+        guard let toBuildDateStart = startDate else {
+            print("Error getting start date")
+            return
+        }
+        guard let toBuildDateEnd = endDate else {
+            print("Error getting end date")
+            return
+        }
+        calendarEvent.start = buildDate(date: toBuildDateStart)
+        calendarEvent.end = buildDate(date: toBuildDateEnd)
+
+        let insertQuery = GTLRCalendarQuery_EventsInsert.query(withObject: calendarEvent, calendarId: "primary")
+
+        service.executeQuery(insertQuery) { (ticket, object, error) in
+            if error == nil {
+                print("Event inserted")
+            } else {
+                print(error ?? "Error not specified, but someting went wrong.")
+            }
+        }
+    }
+
+    // Helper to build date
+    func buildDate(date: Date) -> GTLRCalendar_EventDateTime {
+        let datetime = GTLRDateTime(date: date)
+        let dateObject = GTLRCalendar_EventDateTime()
+        dateObject.dateTime = datetime
+        return dateObject
+    }
+
+    
     
     func notificationAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)

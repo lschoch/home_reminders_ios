@@ -14,12 +14,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Initialize GIDSignIn (Google calendar)
         GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: "734646280736-rurau5btqrjmmd3o5jcmmmj10aa34gfp.apps.googleusercontent.com")
+        
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            if error != nil || user == nil {
+                // Show the app's signed-out state.
+//                self.notificationAlert(title: "Sign In", message: "Please sign in to access your calendar.")
+                print("Please sign in to access your calendar.")
+            } else {
+                // Show the app's signed-in state.
+//                self.notificationAlert(title: "Signed In", message: "You are already signed in.")
+                print("You are already signed in.")
+            }
+        }
         return true
     }
     
+    func notificationAlert(title: String, message: String) {
+        let RVC = RemindersViewController()
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.view.tintColor = .black
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        RVC.present(alert, animated: true, completion: nil)
+    }
+    
+    
     // Handle the URL scheme (Google calendar)
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return GIDSignIn.sharedInstance.handle(url)
+    func application(
+      _ app: UIApplication,
+      open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+    ) -> Bool {
+      var handled: Bool
+
+      handled = GIDSignIn.sharedInstance.handle(url)
+      if handled {
+        return true
+      }
+
+      // Handle other custom URL types.
+
+      // If not handled by this app, return false.
+      return false
     }
 
     // MARK: UISceneSession Lifecycle
