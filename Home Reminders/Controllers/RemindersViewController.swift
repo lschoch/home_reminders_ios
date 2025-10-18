@@ -28,7 +28,6 @@ class RemindersViewController: UIViewController {
     let cellSpacingHeight: CGFloat = 10.0
     
     private let service = GTLRCalendarService()
-    // var authState: OIDAuthState?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -229,89 +228,84 @@ class RemindersViewController: UIViewController {
     }
     
     @IBAction func calendarButtonPressed(_ sender: UIButton) {
-        // Request Calendar scope and sign in
-        let additionalScopes = "https://www.googleapis.com/auth/calendar.events" // or full calendar scope
-        GIDSignIn.sharedInstance.signIn(withPresenting: self, hint: additionalScopes) { signInResult, error in
-            if let error = error {
-                self.notificationAlert(title: "Google Sign-In Error", message: error.localizedDescription)
-                return
-            }
-            guard let user = signInResult?.user else {
-                self.notificationAlert(title: "Sign-In", message: "No user returned")
-                return
-            }
+        // Confirm that a reminder is selected.
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            // Request Calendar scope and sign in if needed.
+            let additionalScopes = "https://www.googleapis.com/auth/calendar.events" // or full calendar scope
             
-            // Provide credentials to the GTLR service
-            self.service.authorizer = user.fetcherAuthorizer
-            
-            // Build a GTLRCalendar_Eventd
-            let allDayEvent = GTLRCalendar_Event()
-            allDayEvent.summary = "Test event"
-            let allDayStart = GTLRCalendar_EventDateTime()
-            allDayStart.date = GTLRDateTime(date: Date()) // "2025-10-17"   // local date string
-            allDayEvent.start = allDayStart
-
-            let allDayEnd = GTLRCalendar_EventDateTime()
-            let allDayEndDate = DF.dateFormatter.date(from: "2025-10-18")
-            allDayEnd.date = GTLRDateTime(date: allDayEndDate!)     // exclusive end date
-            allDayEvent.end = allDayEnd
-            
-            
-            // Insert the event
-            let query = GTLRCalendarQuery_EventsInsert.query(withObject: allDayEvent, calendarId: "primary")
-            self.service.executeQuery(query) { ticket, object, error in
-                if let error = error {
-                    self.notificationAlert(title: "Calendar Error", message: error.localizedDescription)
+            // Check whether user is already signed in.
+            GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                if error != nil || user == nil {
+                    // Show the app's signed-out state.
+                    //                self.notificationAlert(title: "Sign In", message: "Please sign in to access your calendar.")
+                    print("Please sign in to access your calendar.")
+                    GIDSignIn.sharedInstance.signIn(withPresenting: self, hint: additionalScopes) { signInResult, error in
+                        if let error = error {
+                            self.notificationAlert(title: "Google Sign-In Error", message: error.localizedDescription)
+                            return
+                        }
+                        guard (signInResult?.user) != nil else {
+                            self.notificationAlert(title: "Sign-In", message: "No user returned")
+                            return
+                        }
+                        // Provide credentials to the GTLR service
+                        self.service.authorizer = signInResult?.user.fetcherAuthorizer
+                        DispatchQueue.main.async {
+                            self.createAllDayEvent(selectedIndexPath)
+                        }
+                    }
                 } else {
-                    self.notificationAlert(title: "Success", message: "Event created")
+                    // Show the app's signed-in state.
+                    //                self.notificationAlert(title: "Signed In", message: "You are already signed in.")
+                    print("You are already signed in.")
+                    self.service.authorizer = user!.fetcherAuthorizer
+                    DispatchQueue.main.async {
+                        self.createAllDayEvent(selectedIndexPath)
+                    }
                 }
             }
-        }
-    }
+        } else {
+            notificationAlert(title: "Calendar", message: "No reminder selected.")
+        } // end "if let selectedIndexPath = tableView.indexPathForSelectedRow"
+    } // end "calendarButtonPressed
     
-    func addEventoToGoogleCalendar(summary : String, description :String, startTime : String, endTime : String) {
-        let calendarEvent = GTLRCalendar_Event()
-
-        calendarEvent.summary = "\(summary)"
-        calendarEvent.descriptionProperty = "\(description)"
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd/MM/yyyy HH:mm"
-        let startDate = dateFormatter.date(from: startTime)
-        let endDate = dateFormatter.date(from: endTime)
-
-        guard let toBuildDateStart = startDate else {
-            print("Error getting start date")
-            return
-        }
-        guard let toBuildDateEnd = endDate else {
-            print("Error getting end date")
-            return
-        }
-        calendarEvent.start = buildDate(date: toBuildDateStart)
-        calendarEvent.end = buildDate(date: toBuildDateEnd)
-
-        let insertQuery = GTLRCalendarQuery_EventsInsert.query(withObject: calendarEvent, calendarId: "primary")
-
-        service.executeQuery(insertQuery) { (ticket, object, error) in
-            if error == nil {
-                print("Event inserted")
-            } else {
-                print(error ?? "Error not specified, but someting went wrong.")
+    // Build and send a GTLRCalendar_Event
+    func createAllDayEvent(_ selectedIndexPath: IndexPath) {
+        let allDayEvent = GTLRCalendar_Event()
+        allDayEvent.summary = "HR: " + reminders[selectedIndexPath.section].description
+//        allDayEvent.description = reminders[selectedIndexPath.section].note
+        
+        // TODO: check whether there is already an event with same summary and date.
+        // TODO: Alert: "Create event in your Google Calendar?"
+        // TODO: make the event description = the note property of the reminder
+        
+        // Use dateLast as the event date.
+        let startString = reminders[selectedIndexPath.section].dateLast
+        let startDate = DF.dateFormatter.date(from: startString)!
+        // For all day event, end date is the day after the start date.
+        let endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
+        // Convert end date to string.
+        let endString   = DF.dateFormatter.string(from: endDate) // exclusive
+        
+        let startDT = GTLRCalendar_EventDateTime()
+        // For all day event, use date property, not dateTime.
+        startDT.date = GTLRDateTime(rfc3339String: startString)
+        allDayEvent.start = startDT
+        let endDT = GTLRCalendar_EventDateTime()
+        endDT.date = GTLRDateTime(rfc3339String: endString)
+        allDayEvent.end = endDT
+        
+        let query = GTLRCalendarQuery_EventsInsert.query(withObject: allDayEvent, calendarId: "primary")
+        service.executeQuery(query) { ticket, object, error in
+            if let error = error {
+                self.notificationAlert(title: "Calendar Error", message: error.localizedDescription)
+                return
             }
+            self.notificationAlert(title: "Success", message: "Event created")
         }
+        
     }
 
-    // Helper to build date
-    func buildDate(date: Date) -> GTLRCalendar_EventDateTime {
-        let datetime = GTLRDateTime(date: date)
-        let dateObject = GTLRCalendar_EventDateTime()
-        dateObject.dateTime = datetime
-        return dateObject
-    }
-
-    
-    
     func notificationAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = .black

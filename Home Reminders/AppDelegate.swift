@@ -15,17 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Initialize GIDSignIn (Google calendar)
         GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: "734646280736-rurau5btqrjmmd3o5jcmmmj10aa34gfp.apps.googleusercontent.com")
         
-        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-            if error != nil || user == nil {
-                // Show the app's signed-out state.
-//                self.notificationAlert(title: "Sign In", message: "Please sign in to access your calendar.")
-                print("Please sign in to access your calendar.")
-            } else {
-                // Show the app's signed-in state.
-//                self.notificationAlert(title: "Signed In", message: "You are already signed in.")
-                print("You are already signed in.")
-            }
-        }
         return true
     }
     
