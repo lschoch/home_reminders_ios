@@ -273,11 +273,10 @@ class RemindersViewController: UIViewController {
     func createAllDayEvent(_ selectedIndexPath: IndexPath) {
         let allDayEvent = GTLRCalendar_Event()
         allDayEvent.summary = "HR: " + reminders[selectedIndexPath.section].description
-//        allDayEvent.description = reminders[selectedIndexPath.section].note
+        allDayEvent.descriptionProperty = reminders[selectedIndexPath.section].note
         
         // TODO: check whether there is already an event with same summary and date.
         // TODO: Alert: "Create event in your Google Calendar?"
-        // TODO: make the event description = the note property of the reminder
         
         // Use dateLast as the event date.
         let startString = reminders[selectedIndexPath.section].dateLast
