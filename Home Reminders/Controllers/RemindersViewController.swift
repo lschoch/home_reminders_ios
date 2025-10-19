@@ -55,7 +55,7 @@ class RemindersViewController: UIViewController {
         dateButton.style = .done
         dateButton.tintColor = .brandLightYellow
         updateDateButtonDate()
-    
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: "CustomCell", bundle: nil), forCellReuseIdentifier: "CustomCell")
@@ -63,8 +63,8 @@ class RemindersViewController: UIViewController {
         tableView.sectionHeaderTopPadding = 0
         
         // Dismiss keyboard when tapping outside text field.
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-//                view.addGestureRecognizer(tapGesture)
+        //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        //                view.addGestureRecognizer(tapGesture)
         
         // add long-press recognizer to tableView to deselect a selected cell
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
@@ -72,7 +72,7 @@ class RemindersViewController: UIViewController {
         tableView.addGestureRecognizer(longPress)
         
         loadReminders()
-
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -88,7 +88,7 @@ class RemindersViewController: UIViewController {
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
             let selectedRowData = reminders[selectedIndexPath.section]
-
+            
             // Check if the selectedRowData has "changed" based on your application's logic
             // For example, if a text field in the cell was edited and not saved
             if identifier == "NewReminderSegue" && selectedRowData.hasUnsavedChanges {
@@ -113,7 +113,7 @@ class RemindersViewController: UIViewController {
                     return
                 }))
                 self.present(alert, animated: true, completion: nil)
-
+                
                 return false // Prevent the segue from performing automatically
             } // end: "identifier == "NewRemincerSegue" && selectedRowData.hasUnsavedChanges"
         } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
@@ -147,7 +147,7 @@ class RemindersViewController: UIViewController {
         guard gesture.state == .began else { return }
         let point = gesture.location(in: tableView)
         guard let indexPath = tableView.indexPathForRow(at: point) else { return }
-
+        
         // If the long-pressed row is currently selected, run the existing deselect flow
         if let selected = tableView.indexPathForSelectedRow, selected == indexPath {
             // reuse your existing deselect logic (shows alerts / saves as implemented)
@@ -175,18 +175,18 @@ class RemindersViewController: UIViewController {
         }
         self.saveReminderWithOptionToDiscardChanges()
     }
-
+    
     @IBAction func deleteButtonPressed(_ sender: UIButton) {
         showDeleteConfirmationAlert()
     }
     
     func showDeleteConfirmationAlert() {
         guard tableView.indexPathForSelectedRow != nil else {
-            notificationAlert(title: "Delete Reminder?", message: "No reminder selected for deletion.")
+            notificationAlert(title: "Delete Reminder", message: "No reminder selected for deletion.")
             return
         }
         
-        let alertController = UIAlertController(title: "Delete Reminder?", message: "Are you sure you want to delete this reminder?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Delete Reminder", message: "Are you sure you want to delete this reminder?", preferredStyle: .alert)
         alertController.view.tintColor = .black
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
@@ -201,9 +201,9 @@ class RemindersViewController: UIViewController {
                 self.reminders = []
                 self.loadReminders()
                 self.tableView.reloadData()
-//                // Select the row below the deleted row.
-//                self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
-//                self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
+                //                // Select the row below the deleted row.
+                //                self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                //                self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 
                 // Alert notification that delete was successful.
                 let ac = UIAlertController(title: "Delete", message: "The reminder has been deleted.", preferredStyle: .alert)
@@ -215,12 +215,12 @@ class RemindersViewController: UIViewController {
             }
             self.navigationController?.popViewController(animated: true)
         }
-    
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
             // Handle "Cancel" tap
             return
         }
-    
+        
         alertController.addAction(yesAction)
         alertController.addAction(cancelAction)
         
@@ -228,147 +228,36 @@ class RemindersViewController: UIViewController {
     }
     
     @IBAction func calendarButtonPressed(_ sender: UIButton) {
-        // Confirm that a reminder is selected.
-        if let selectedIndexPath = tableView.indexPathForSelectedRow {
-            // Request Calendar scopes and sign in if needed.
-            let additionalScopes = "https://www.googleapis.com/auth/calendar.events" // or full calendar scope
-            
-            // Check whether user is already signed in.
-            GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-                if error != nil || user == nil {
-                    // Show the app's signed-out state.
-                    //                self.notificationAlert(title: "Sign In", message: "Please sign in to access your calendar.")
-                    print("Please sign in to access your calendar.")
-                    GIDSignIn.sharedInstance.signIn(withPresenting: self, hint: additionalScopes) { signInResult, error in
-                        if let error = error {
-                            self.notificationAlert(title: "Google Sign-In Error", message: error.localizedDescription)
-                            return
-                        }
-                        guard (signInResult?.user) != nil else {
-                            self.notificationAlert(title: "Sign-In", message: "No user returned")
-                            return
-                        }
-                        // Provide credentials to the GTLR service
-                        self.service.authorizer = signInResult?.user.fetcherAuthorizer
-                        DispatchQueue.main.async {
-                            self.createAllDayEvent(selectedIndexPath)
-                        }
-                    }
-                } else {
-                    // Show the app's signed-in state.
-                    //                self.notificationAlert(title: "Signed In", message: "You are already signed in.")
-                    print("You are already signed in.")
-                    self.service.authorizer = user!.fetcherAuthorizer
-                    DispatchQueue.main.async {
-                        self.createAllDayEvent(selectedIndexPath)
-                    }
-                }
-            }
-        } else {
-            notificationAlert(title: "Calendar", message: "No reminder selected.")
-        } // end "if let selectedIndexPath = tableView.indexPathForSelectedRow"
-    } // end "calendarButtonPressed
+        showCalendarConfirmationAlert()
+    }
     
-    // Build and send a GTLRCalendar_Event
-    func createAllDayEvent(_ selectedIndexPath: IndexPath) {
+    func showCalendarConfirmationAlert() {
+        guard tableView.indexPathForSelectedRow != nil else {
+            notificationAlert(title: "Create Calendar Event", message: "No reminder selected.")
+            return
+        }
         
-        // Check for an existing Google Calendar event with same summary and date as the selected reminder.
-        let selectedReminder = reminders[selectedIndexPath.row]
-        let targetDateString = selectedReminder.dateLast
-        let targetDate = DF.dateFormatter.date(from: targetDateString)
+        let alertController = UIAlertController(title: "Create Calendar Event", message: "Create calendar event for this reminder?", preferredStyle: .alert)
+        alertController.view.tintColor = .black
         
-        let query = GTLRCalendarQuery_EventsList.query(withCalendarId: "primary")
-        
-        // Set timeMin and timeMax to filter events for the specific date
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // Adjust as needed
-        
-        // Assuming 'targetDate' is the Date object representing the day you're checking
-        let startOfDay = Calendar.current.startOfDay(for: targetDate!)
-        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
-        
-        query.timeMin = GTLRDateTime(date: startOfDay)
-        query.timeMax = GTLRDateTime(date: endOfDay)
-        query.singleEvents = true // Important for recurring events
-        
-        service.executeQuery(query) { (ticket, response, error) in
-            if let error = error {
-                print("Error listing events: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let eventList = response as? GTLRCalendar_Events else {
-                print("Invalid response type.")
-                return
-            }
-            
-            // Inside the completion handler of the events.list query:
-            let targetSummary = selectedReminder.description
-            
-            var eventFound = false
-            for event in eventList.items ?? [] {
-                print(event.summary ?? "Missing summary")
-                if event.summary == "HR: " + targetSummary {
-                    // Further check the date. For all-day events, 'start.date' is used.
-                    // For timed events, 'start.dateTime' is used.
-                    // You'll need to handle both cases or ensure your 'targetDate' aligns with the event's start type.
-                    
-                    let eventStartDate: Date?
-                    if let dateTime = event.start?.dateTime?.date {
-                        eventStartDate = dateTime
-                    } else if let date = event.start?.date?.date {
-                        eventStartDate = date
-                    } else {
-                        eventStartDate = nil
-                    }
-                    
-                    if let eventStartDate = eventStartDate, Calendar.current.isDate(eventStartDate, inSameDayAs: targetDate!) {
-                        print("Found an event with matching summary and date: \(event.summary ?? "")")
-                        eventFound = true
-                        self.notificationAlert(title: "Create Event", message: "Cancelled - found an event with matching summary and date.")
-                        break // Exit loop once a match is found
-                    }
-                }
-            }
-            
-            if !eventFound {
-                print("No event found with matching summary and date.")
-                // Proceed to create the new event.
-                let allDayEvent = GTLRCalendar_Event()
-                allDayEvent.summary = "HR: " + self.reminders[selectedIndexPath.section].description
-                allDayEvent.descriptionProperty = self.reminders[selectedIndexPath.section].note
-                
-                // TODO: Alert: "Create event in your Google Calendar?"
-                
-                // Use dateLast as the event date.
-                let startString = self.reminders[selectedIndexPath.section].dateLast
-                let startDate = DF.dateFormatter.date(from: startString)!
-                // For all day event, end date is the day after the start date.
-                let endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
-                // Convert end date to string.
-                let endString   = DF.dateFormatter.string(from: endDate) // exclusive
-                
-                let startDT = GTLRCalendar_EventDateTime()
-                // For all day event, use date property, not dateTime.
-                startDT.date = GTLRDateTime(rfc3339String: startString)
-                allDayEvent.start = startDT
-                let endDT = GTLRCalendar_EventDateTime()
-                endDT.date = GTLRDateTime(rfc3339String: endString)
-                allDayEvent.end = endDT
-                
-                let createQuery = GTLRCalendarQuery_EventsInsert.query(withObject: allDayEvent, calendarId: "primary")
-                self.service.executeQuery(createQuery) { ticket, object, error in
-                    if let error = error {
-                        self.notificationAlert(title: "Calendar Error", message: error.localizedDescription)
-                        return
-                    }
-                    self.notificationAlert(title: "Success", message: "Event created")
-                }
+        let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
+            // Handle "Yes" tap
+            if let selectedIndexPath = self.tableView.indexPathForSelectedRow {
+                self.signInToAccessCalendar(selectedIndexPath)
             }
         }
         
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            // Handle "Cancel" tap
+            return
+        }
+        
+        alertController.addAction(yesAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
-
+    
     func notificationAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = .black
@@ -386,7 +275,7 @@ class RemindersViewController: UIViewController {
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
             let selectedRowData = reminders[selectedIndexPath.section]
-
+            
             // Check if the selectedRowData has "changed"
             if selectedRowData.hasUnsavedChanges {
                 // Present an alert or prompt the user to save/discard changes
@@ -419,7 +308,7 @@ class RemindersViewController: UIViewController {
     //MARK: - Data Manipulation Methods
     func loadReminders() -> Void {
         // Copy database file from app bundle to documents directory (one time only)
-//        copyFileToDocumentsFolder(nameForFile: "home_reminders", extForFile: "db")
+        //        copyFileToDocumentsFolder(nameForFile: "home_reminders", extForFile: "db")
         
         if let db = getConnection() {
             // Select all reminders, append each reminder to the reminders array
@@ -493,7 +382,7 @@ class RemindersViewController: UIViewController {
                 }
                 self.loadReminders()
                 self.tableView.reloadData()
-        
+                
             } catch {
                 print("Error saving reminder: \(error)")
             }
@@ -509,7 +398,7 @@ class RemindersViewController: UIViewController {
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
             let selectedRowData = reminders[selectedIndexPath.section]
-
+            
             // Check if the selectedRowData has "changed" based on your application's logic
             // For example, if a text field in the cell was edited and not saved
             if selectedRowData.hasUnsavedChanges {
@@ -520,14 +409,14 @@ class RemindersViewController: UIViewController {
                 alert.view.tintColor = .black
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     self.saveReminder(selectedIndexPath.section)
-//                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
-//                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
+                    //                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                    //                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
                     self.discardChangesForSelectedRowData(selectedIndexPath)
-//                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
-//                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
+                    //                    self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
+                    //                    self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
                     self.tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
@@ -557,7 +446,141 @@ class RemindersViewController: UIViewController {
         tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
     }
     
-}
+    //MARK: - Google Calendar Methods
+    func signInToAccessCalendar(_ selectedIndexPath: IndexPath?) {
+        // Request Calendar scopes and sign in if needed.
+        let additionalScopes = "https://www.googleapis.com/auth/calendar.events" // or full calendar scope
+        
+        // Check whether user is already signed in.
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            if error != nil || user == nil {
+                // Show the app's signed-out state.
+                //                self.notificationAlert(title: "Sign In", message: "Please sign in to access your calendar.")
+                print("Please sign in to access your calendar.")
+                GIDSignIn.sharedInstance.signIn(withPresenting: self, hint: additionalScopes) { signInResult, error in
+                    if let error = error {
+                        self.notificationAlert(title: "Google Sign-In Error", message: error.localizedDescription)
+                        return
+                    }
+                    guard (signInResult?.user) != nil else {
+                        self.notificationAlert(title: "Sign-In", message: "No user returned")
+                        return
+                    }
+                    // Provide credentials to the GTLR service
+                    self.service.authorizer = signInResult?.user.fetcherAuthorizer
+                    DispatchQueue.main.async {
+                        self.createAllDayEvent(selectedIndexPath!)
+                    }
+                }
+            } else {
+                // Show the app's signed-in state.
+                //                self.notificationAlert(title: "Signed In", message: "You are already signed in.")
+                print("You are already signed in.")
+                self.service.authorizer = user!.fetcherAuthorizer
+                DispatchQueue.main.async {
+                    self.createAllDayEvent(selectedIndexPath!)
+                }
+            }
+        }
+    }
+    
+    // Build and send a GTLRCalendar_Event
+    func createAllDayEvent(_ selectedIndexPath: IndexPath) {
+        
+        // Check for an existing Google Calendar event with same summary and date as the selected reminder.
+        let selectedReminder = reminders[selectedIndexPath.section]
+        let targetDateString = selectedReminder.dateLast
+        let targetDate = DF.dateFormatter.date(from: targetDateString)
+        
+        let query = GTLRCalendarQuery_EventsList.query(withCalendarId: "primary")
+        
+        // Set timeMin and timeMax to filter events for the specific date
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // Adjust as needed
+        
+        // Assuming 'targetDate' is the Date object representing the day you're checking
+        let startOfDay = Calendar.current.startOfDay(for: targetDate!)
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        query.timeMin = GTLRDateTime(date: startOfDay)
+        query.timeMax = GTLRDateTime(date: endOfDay)
+        query.singleEvents = true // Important for recurring events
+        
+        service.executeQuery(query) { (ticket, response, error) in
+            if let error = error {
+                print("Error listing events: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let eventList = response as? GTLRCalendar_Events else {
+                print("Invalid response type.")
+                return
+            }
+            
+            // Inside the completion handler of the events.list query:
+            let targetSummary = selectedReminder.description
+            
+            var eventFound = false
+            for event in eventList.items ?? [] {
+                print(event.summary ?? "Missing summary")
+                if event.summary == "HR: " + targetSummary {
+                    // Further check the date. For all-day events, 'start.date' is used.
+                    // For timed events, 'start.dateTime' is used.
+                    // You'll need to handle both cases or ensure your 'targetDate' aligns with the event's start type.
+                    
+                    let eventStartDate: Date?
+                    if let dateTime = event.start?.dateTime?.date {
+                        eventStartDate = dateTime
+                    } else if let date = event.start?.date?.date {
+                        eventStartDate = date
+                    } else {
+                        eventStartDate = nil
+                    }
+                    
+                    if let eventStartDate = eventStartDate, Calendar.current.isDate(eventStartDate, inSameDayAs: targetDate!) {
+                        print("Found an event with matching summary and date: \(event.summary ?? "")")
+                        eventFound = true
+                        self.notificationAlert(title: "Create Event", message: "Cancelled - found an event with matching summary and date.")
+                        break // Exit loop once a match is found
+                    }
+                }
+            }
+            
+            if !eventFound {
+                print("No event found with matching summary and date.")
+                // Proceed to create the new event.
+                let allDayEvent = GTLRCalendar_Event()
+                allDayEvent.summary = "HR: " + self.reminders[selectedIndexPath.section].description
+                allDayEvent.descriptionProperty = self.reminders[selectedIndexPath.section].note
+                
+                // Use dateLast as the event date.
+                let startString = self.reminders[selectedIndexPath.section].dateLast
+                let startDate = DF.dateFormatter.date(from: startString)!
+                // For all day event, end date is the day after the start date.
+                let endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
+                // Convert end date to string.
+                let endString   = DF.dateFormatter.string(from: endDate) // exclusive
+                
+                let startDT = GTLRCalendar_EventDateTime()
+                // For all day event, use date property, not dateTime.
+                startDT.date = GTLRDateTime(rfc3339String: startString)
+                allDayEvent.start = startDT
+                let endDT = GTLRCalendar_EventDateTime()
+                endDT.date = GTLRDateTime(rfc3339String: endString)
+                allDayEvent.end = endDT
+                
+                let createQuery = GTLRCalendarQuery_EventsInsert.query(withObject: allDayEvent, calendarId: "primary")
+                self.service.executeQuery(createQuery) { ticket, object, error in
+                    if let error = error {
+                        self.notificationAlert(title: "Calendar Error", message: error.localizedDescription)
+                        return
+                    }
+                    self.notificationAlert(title: "Success", message: "Event created")
+                }
+            }
+        }
+    }
+} // end RemindersViewController class
 
 //MARK: - UITableViewDataSource Implementation
 extension RemindersViewController: UITableViewDataSource {
@@ -653,7 +676,7 @@ extension RemindersViewController: UITableViewDelegate {
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             // Retrieve the data model for the currently selected row
             let selectedRowData = reminders[selectedIndexPath.section]
-
+            
             // Check if the selectedRowData has changed.
             if selectedRowData.hasUnsavedChanges {
                 // Prompt the user to save/discard changes
@@ -679,11 +702,11 @@ extension RemindersViewController: UITableViewDelegate {
                     return
                 }))
                 self.present(alert, animated: true, completion: nil)
-
+                
                 return nil // Prevent the new row from being selected immediately
             } // end: "if selectedRowData.hasUnsavedChanges"
         } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
-
+        
         // If no row is selected or no changes were detected, allow the selection
         return indexPath
     } // end: func
@@ -738,8 +761,8 @@ extension RemindersViewController: CustomCellDelegate {
     }
     
     func pickerValueDidChange(inCell cell: CustomCell, withText text: String) {
-            calculatedDateNext = text
-        }
+        calculatedDateNext = text
+    }
     
     func customCellFrequencyAlert(_ cell: CustomCell) {
         // Alert notification re: frequency when period is "one-time."
@@ -756,7 +779,7 @@ extension RemindersViewController: CustomCellDelegate {
         tableView.selectRow(at: selectedIndexPath, animated: true, scrollPosition: .none)
         self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: selectedIndexPath) // Manually call didSelectRowAt
     }
-
+    
 }
 
 //MARK: - PickerCellDelegate Implementation
@@ -769,9 +792,9 @@ extension RemindersViewController: PickerCellDelegate {
         reminders[section].period = pickerData[row]
         
         reminders[section].dateNext = calculatedDateNext
-//        if pickerData[row] == "one-time" {
-//            reminders[section].frequency = "0"
-//        }
+        //        if pickerData[row] == "one-time" {
+        //            reminders[section].frequency = "0"
+        //        }
         // reload the single row in that section
         let reloadIndexPath = IndexPath(row: 0, section: section)
         tableView.reloadRows(at: [reloadIndexPath], with: .none)
@@ -779,22 +802,22 @@ extension RemindersViewController: PickerCellDelegate {
         tableView.selectRow(at: reloadIndexPath, animated: true, scrollPosition: .none)
         tableView.delegate?.tableView?(tableView, didSelectRowAt: reloadIndexPath)
         
-//                if let indexPath = tableView.indexPath(for: cell) {
-//                    // Update tableRow directly
-//                    tableRow = indexPath.section
-//                    reminders[indexPath.section].hasUnsavedChanges = true
-//                    reminders[indexPath.section].period = pickerData[row]
-//                    reminders[indexPath.section].dateNext = calculatedDateNext
-//        
-//                    if pickerData[row] == "one-time" {
-//                        reminders[indexPath.section].frequency = "0"
-//                    }
-//                    tableView.reloadRows(at: [indexPath], with: .none)
-//        
-//                    // Programmatically select the row
-//                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-//                    tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
-//                }
+        //                if let indexPath = tableView.indexPath(for: cell) {
+        //                    // Update tableRow directly
+        //                    tableRow = indexPath.section
+        //                    reminders[indexPath.section].hasUnsavedChanges = true
+        //                    reminders[indexPath.section].period = pickerData[row]
+        //                    reminders[indexPath.section].dateNext = calculatedDateNext
+        //
+        //                    if pickerData[row] == "one-time" {
+        //                        reminders[indexPath.section].frequency = "0"
+        //                    }
+        //                    tableView.reloadRows(at: [indexPath], with: .none)
+        //
+        //                    // Programmatically select the row
+        //                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        //                    tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
+        //                }
     }
 }
 
@@ -804,4 +827,5 @@ extension RemindersViewController: TextCalculationDelegate {
         calculatedDateNext = text
     }
 }
+
 
