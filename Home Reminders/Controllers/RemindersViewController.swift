@@ -230,7 +230,7 @@ class RemindersViewController: UIViewController {
     @IBAction func calendarButtonPressed(_ sender: UIButton) {
         // Confirm that a reminder is selected.
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
-            // Request Calendar scope and sign in if needed.
+            // Request Calendar scopes and sign in if needed.
             let additionalScopes = "https://www.googleapis.com/auth/calendar.events" // or full calendar scope
             
             // Check whether user is already signed in.
@@ -271,36 +271,100 @@ class RemindersViewController: UIViewController {
     
     // Build and send a GTLRCalendar_Event
     func createAllDayEvent(_ selectedIndexPath: IndexPath) {
-        let allDayEvent = GTLRCalendar_Event()
-        allDayEvent.summary = "HR: " + reminders[selectedIndexPath.section].description
-        allDayEvent.descriptionProperty = reminders[selectedIndexPath.section].note
         
-        // TODO: check whether there is already an event with same summary and date.
-        // TODO: Alert: "Create event in your Google Calendar?"
+        // Check for an existing Google Calendar event with same summary and date as the selected reminder.
+        let selectedReminder = reminders[selectedIndexPath.row]
+        let targetDateString = selectedReminder.dateLast
+        let targetDate = DF.dateFormatter.date(from: targetDateString)
         
-        // Use dateLast as the event date.
-        let startString = reminders[selectedIndexPath.section].dateLast
-        let startDate = DF.dateFormatter.date(from: startString)!
-        // For all day event, end date is the day after the start date.
-        let endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
-        // Convert end date to string.
-        let endString   = DF.dateFormatter.string(from: endDate) // exclusive
+        let query = GTLRCalendarQuery_EventsList.query(withCalendarId: "primary")
         
-        let startDT = GTLRCalendar_EventDateTime()
-        // For all day event, use date property, not dateTime.
-        startDT.date = GTLRDateTime(rfc3339String: startString)
-        allDayEvent.start = startDT
-        let endDT = GTLRCalendar_EventDateTime()
-        endDT.date = GTLRDateTime(rfc3339String: endString)
-        allDayEvent.end = endDT
+        // Set timeMin and timeMax to filter events for the specific date
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // Adjust as needed
         
-        let query = GTLRCalendarQuery_EventsInsert.query(withObject: allDayEvent, calendarId: "primary")
-        service.executeQuery(query) { ticket, object, error in
+        // Assuming 'targetDate' is the Date object representing the day you're checking
+        let startOfDay = Calendar.current.startOfDay(for: targetDate!)
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        query.timeMin = GTLRDateTime(date: startOfDay)
+        query.timeMax = GTLRDateTime(date: endOfDay)
+        query.singleEvents = true // Important for recurring events
+        
+        service.executeQuery(query) { (ticket, response, error) in
             if let error = error {
-                self.notificationAlert(title: "Calendar Error", message: error.localizedDescription)
+                print("Error listing events: \(error.localizedDescription)")
                 return
             }
-            self.notificationAlert(title: "Success", message: "Event created")
+            
+            guard let eventList = response as? GTLRCalendar_Events else {
+                print("Invalid response type.")
+                return
+            }
+            
+            // Inside the completion handler of the events.list query:
+            let targetSummary = selectedReminder.description
+            
+            var eventFound = false
+            for event in eventList.items ?? [] {
+                print(event.summary ?? "Missing summary")
+                if event.summary == "HR: " + targetSummary {
+                    // Further check the date. For all-day events, 'start.date' is used.
+                    // For timed events, 'start.dateTime' is used.
+                    // You'll need to handle both cases or ensure your 'targetDate' aligns with the event's start type.
+                    
+                    let eventStartDate: Date?
+                    if let dateTime = event.start?.dateTime?.date {
+                        eventStartDate = dateTime
+                    } else if let date = event.start?.date?.date {
+                        eventStartDate = date
+                    } else {
+                        eventStartDate = nil
+                    }
+                    
+                    if let eventStartDate = eventStartDate, Calendar.current.isDate(eventStartDate, inSameDayAs: targetDate!) {
+                        print("Found an event with matching summary and date: \(event.summary ?? "")")
+                        eventFound = true
+                        self.notificationAlert(title: "Create Event", message: "Cancelled - found an event with matching summary and date.")
+                        break // Exit loop once a match is found
+                    }
+                }
+            }
+            
+            if !eventFound {
+                print("No event found with matching summary and date.")
+                // Proceed to create the new event.
+                let allDayEvent = GTLRCalendar_Event()
+                allDayEvent.summary = "HR: " + self.reminders[selectedIndexPath.section].description
+                allDayEvent.descriptionProperty = self.reminders[selectedIndexPath.section].note
+                
+                // TODO: Alert: "Create event in your Google Calendar?"
+                
+                // Use dateLast as the event date.
+                let startString = self.reminders[selectedIndexPath.section].dateLast
+                let startDate = DF.dateFormatter.date(from: startString)!
+                // For all day event, end date is the day after the start date.
+                let endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate)!
+                // Convert end date to string.
+                let endString   = DF.dateFormatter.string(from: endDate) // exclusive
+                
+                let startDT = GTLRCalendar_EventDateTime()
+                // For all day event, use date property, not dateTime.
+                startDT.date = GTLRDateTime(rfc3339String: startString)
+                allDayEvent.start = startDT
+                let endDT = GTLRCalendar_EventDateTime()
+                endDT.date = GTLRDateTime(rfc3339String: endString)
+                allDayEvent.end = endDT
+                
+                let createQuery = GTLRCalendarQuery_EventsInsert.query(withObject: allDayEvent, calendarId: "primary")
+                self.service.executeQuery(createQuery) { ticket, object, error in
+                    if let error = error {
+                        self.notificationAlert(title: "Calendar Error", message: error.localizedDescription)
+                        return
+                    }
+                    self.notificationAlert(title: "Success", message: "Event created")
+                }
+            }
         }
         
     }
