@@ -33,6 +33,8 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .brandLightBlue // nav bar color
             appearance.titleTextAttributes = [.foregroundColor: UIColor.brandLightYellow] // center title
+            appearance.shadowColor = .clear
+            appearance.shadowImage = UIImage()
             
             // Change the back button background (the "circle")
             //            appearance.backButtonAppearance.normal.backgroundImage = UIImage(color: .brandLightYellow, size: CGSize(width: 30, height: 30)).withRoundedCorners(radius: 15)

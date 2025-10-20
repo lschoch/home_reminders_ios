@@ -39,13 +39,12 @@ class RemindersViewController: UIViewController {
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .brandLightBlue // nav bar color
             appearance.titleTextAttributes = [.foregroundColor: UIColor.brandLightYellow] // center title
+            appearance.shadowColor = .clear
+            appearance.shadowImage = UIImage()
             
             navBar.standardAppearance = appearance
             navBar.scrollEdgeAppearance = appearance
-
         }
-        
-        navigationItem.title = "Home Reminders"
         
         // Observe for significant time changes (e.g., midnight) so that date dependent items can be updated as needed.
         NotificationCenter.default.addObserver(self,
@@ -68,6 +67,7 @@ class RemindersViewController: UIViewController {
         longPress.minimumPressDuration = 0.6
         tableView.addGestureRecognizer(longPress)
         
+        setupNavigationBarTitle()
         setupHeaderView()
         
         loadReminders()
@@ -126,16 +126,31 @@ class RemindersViewController: UIViewController {
                                                   object: nil)
     }
     
+    func setupNavigationBarTitle() {
+        let titleLabel = UILabel()
+        titleLabel.text = "Home Reminders"
+        titleLabel.textColor = .brandLightYellow
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        titleLabel.textAlignment = .center
+        
+        // Set a frame for the label; UIKit will adjust it somewhat for centering
+        // A wider frame helps ensure centering even with other bar button items
+        titleLabel.frame = CGRect(x: 0, y: 0, width: 250, height: 44)
+        
+        self.navigationItem.titleView = titleLabel
+    }
+    
     func setupHeaderView() {
         // Create the header view and its elements
-        customHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 25))
+        let headerHeight: CGFloat = 24
+        customHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: headerHeight))
         customHeaderView.backgroundColor = .brandLightBlue
         
-        headerLabel = UILabel(frame: customHeaderView.bounds.insetBy(dx: 0, dy: 0))
+        headerLabel = UILabel(frame: customHeaderView.bounds)
+        headerLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight] // allow label to resize with header
         headerLabel.textAlignment = .center
-//        headerLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        headerLabel.font = UIFont.systemFont(ofSize: 15)
-        headerLabel.textColor = .brandLightYellow
+        headerLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        headerLabel.textColor = .init(white: 1.0, alpha: 0.9)
         updateHeaderLabelText()
         customHeaderView.addSubview(headerLabel)
         
