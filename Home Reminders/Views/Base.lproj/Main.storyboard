@@ -84,13 +84,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="ecz-1n-oNE">
                         <barButtonItem key="leftBarButtonItem" title="Item" image="arrowshape.up.fill" catalog="system" style="done" id="izB-5T-dza">
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="tintColor" name="BrandLightYellow"/>
                             <connections>
                                 <action selector="upArrowPressed:" destination="BYZ-38-t0r" id="PHL-Ue-IgR"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="DYg-MH-xiq">
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="tintColor" name="BrandLightYellow"/>
                             <connections>
                                 <segue destination="NUt-DV-aUr" kind="show" identifier="NewReminderSegue" id="JhE-VC-gD5"/>
                             </connections>

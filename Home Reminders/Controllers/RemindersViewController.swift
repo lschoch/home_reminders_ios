@@ -38,7 +38,7 @@ class RemindersViewController: UIViewController {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .brandLightBlue // nav bar color
-            appearance.titleTextAttributes = [.foregroundColor: UIColor.black] // center title
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.brandLightYellow] // center title
             
             navBar.standardAppearance = appearance
             navBar.scrollEdgeAppearance = appearance
@@ -128,13 +128,14 @@ class RemindersViewController: UIViewController {
     
     func setupHeaderView() {
         // Create the header view and its elements
-        customHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 35))
-        customHeaderView.backgroundColor = .systemGray5
+        customHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 25))
+        customHeaderView.backgroundColor = .brandLightBlue
         
-        headerLabel = UILabel(frame: customHeaderView.bounds.insetBy(dx: 10, dy: 0))
+        headerLabel = UILabel(frame: customHeaderView.bounds.insetBy(dx: 0, dy: 0))
         headerLabel.textAlignment = .center
 //        headerLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        headerLabel.font = UIFont.systemFont(ofSize: 16)
+        headerLabel.font = UIFont.systemFont(ofSize: 15)
+        headerLabel.textColor = .brandLightYellow
         updateHeaderLabelText()
         customHeaderView.addSubview(headerLabel)
         
