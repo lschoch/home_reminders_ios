@@ -83,18 +83,20 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ecz-1n-oNE">
-                        <barButtonItem key="leftBarButtonItem" title="Item" style="done" id="izB-5T-dza">
-                            <color key="tintColor" name="BrandLightYellow"/>
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="arrowshape.up.fill" catalog="system" style="done" id="izB-5T-dza">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="upArrowPressed:" destination="BYZ-38-t0r" id="PHL-Ue-IgR"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="DYg-MH-xiq">
-                            <color key="tintColor" name="BrandLightYellow"/>
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <segue destination="NUt-DV-aUr" kind="show" identifier="NewReminderSegue" id="JhE-VC-gD5"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="dateButton" destination="izB-5T-dza" id="Arf-RK-khQ"/>
                         <outlet property="tableView" destination="lkm-lS-iyJ" id="sVR-vT-Bo4"/>
                     </connections>
                 </viewController>
@@ -233,6 +235,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="arrowshape.up.fill" catalog="system" width="123" height="128"/>
         <image name="chevron.left" catalog="system" width="97" height="128"/>
         <namedColor name="BrandDarkBlue">
             <color red="0.082352941176470587" green="0.29803921568627451" blue="0.4392156862745098" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

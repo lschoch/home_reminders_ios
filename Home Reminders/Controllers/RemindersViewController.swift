@@ -16,7 +16,6 @@ import GoogleSignIn
 class RemindersViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var dateButton: UIBarButtonItem!
     
     var reminders: [Reminder] = []
     var remindersOriginal: [Reminder] = []
@@ -26,6 +25,8 @@ class RemindersViewController: UIViewController {
     var selectedIndexPath: IndexPath?
     var activeTextField: UITextField?
     let cellSpacingHeight: CGFloat = 10.0
+    var customHeaderView: UIView!
+    var headerLabel: UILabel!
     
     private let service = GTLRCalendarService()
     
@@ -37,24 +38,20 @@ class RemindersViewController: UIViewController {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .brandLightBlue // nav bar color
-            appearance.titleTextAttributes = [.foregroundColor: UIColor.brandLightYellow] // center title
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.black] // center title
             
             navBar.standardAppearance = appearance
             navBar.scrollEdgeAppearance = appearance
+
         }
+        
+        navigationItem.title = "Home Reminders"
         
         // Observe for significant time changes (e.g., midnight) so that date dependent items can be updated as needed.
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(handleSignificantTimeChange),
                                                name: UIApplication.significantTimeChangeNotification,
                                                object: nil)
-        
-        // Configure dateButton
-        dateButton.target = nil
-        dateButton.action = nil
-        dateButton.style = .done
-        dateButton.tintColor = .brandLightYellow
-        updateDateButtonDate()
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -70,6 +67,8 @@ class RemindersViewController: UIViewController {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         longPress.minimumPressDuration = 0.6
         tableView.addGestureRecognizer(longPress)
+        
+        setupHeaderView()
         
         loadReminders()
         
@@ -127,17 +126,35 @@ class RemindersViewController: UIViewController {
                                                   object: nil)
     }
     
-    func updateDateButtonDate() {
+    func setupHeaderView() {
+        // Create the header view and its elements
+        customHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 35))
+        customHeaderView.backgroundColor = .systemGray5
+        
+        headerLabel = UILabel(frame: customHeaderView.bounds.insetBy(dx: 10, dy: 0))
+        headerLabel.textAlignment = .center
+//        headerLabel.font = UIFont.boldSystemFont(ofSize: 16)
+        headerLabel.font = UIFont.systemFont(ofSize: 16)
+        updateHeaderLabelText()
+        customHeaderView.addSubview(headerLabel)
+        
+        // Set it as the table's header view
+        tableView.tableHeaderView = customHeaderView
+    }
+    
+    func updateHeaderLabelText() {
         // Get the current date
         let currentDate = Date()
         // Format the date into a string
-        let dateString = DF.dateFormatter.string(from: currentDate)
-        dateButton.title? = dateString
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy"
+        let dateString = formatter.string(from: currentDate)
+        headerLabel.text = "Today is \(dateString)"
     }
-    
+
     @objc func handleSignificantTimeChange() {
         print("Significant time change notification received! Updating UI/data.")
-        updateDateButtonDate()
+        updateHeaderLabelText()
         // Reload data to reset date-dependent cell background color changes
         loadReminders()
         tableView.reloadData()
@@ -162,6 +179,8 @@ class RemindersViewController: UIViewController {
     
     @objc func hideKeyboard() {
         view.endEditing(true)
+    }
+    @IBAction func upArrowPressed(_ sender: UIBarButtonItem) {
     }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
