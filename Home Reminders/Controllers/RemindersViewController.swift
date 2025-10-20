@@ -196,7 +196,11 @@ class RemindersViewController: UIViewController {
     @objc func hideKeyboard() {
         view.endEditing(true)
     }
+    
     @IBAction func upArrowPressed(_ sender: UIBarButtonItem) {
+//        let indexPath = IndexPath(row: 0, section: 0)
+//        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        tableView.setContentOffset(.zero, animated: true)
     }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
