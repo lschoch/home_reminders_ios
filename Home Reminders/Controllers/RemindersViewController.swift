@@ -150,7 +150,7 @@ class RemindersViewController: UIViewController {
         headerLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight] // allow label to resize with header
         headerLabel.textAlignment = .center
         headerLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        headerLabel.textColor = .init(white: 1.0, alpha: 0.9)
+        headerLabel.textColor = .brandLightYellow
         updateHeaderLabelText()
         customHeaderView.addSubview(headerLabel)
         
