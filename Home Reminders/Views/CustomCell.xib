@@ -17,40 +17,23 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField opaque="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="248" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Description" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="j53-aq-Z9h">
-                        <rect key="frame" x="8" y="10.000000000000002" width="102" height="28.666666666666671"/>
+                        <rect key="frame" x="8" y="-109" width="102" height="147.66666666666666"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textField>
-                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xMz-FM-iHS" userLabel="dateLastStack">
-                        <rect key="frame" x="20" y="50" width="156" height="27"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fPp-Hd-Eih">
-                                <rect key="frame" x="0.0" y="0.0" width="46" height="27"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="27" id="ERn-PX-TaH"/>
-                                    <constraint firstAttribute="width" constant="46" id="cg9-SH-7Rv"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="P1m-fr-TCO">
-                                <rect key="frame" x="46" y="0.0" width="110" height="27"/>
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="110" id="AQy-WM-4qZ"/>
-                                    <constraint firstAttribute="height" constant="27" id="v8R-oZ-bzB"/>
-                                </constraints>
-                                <locale key="locale" localeIdentifier="en_SE"/>
-                            </datePicker>
-                        </subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fPp-Hd-Eih">
+                        <rect key="frame" x="20" y="50" width="36" height="27"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="27" id="mkC-Xo-9kr"/>
+                            <constraint firstAttribute="height" constant="27" id="ERn-PX-TaH"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="36" id="wWR-4E-ajG"/>
                         </constraints>
-                    </stackView>
-                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dSW-7Q-Gsa" userLabel="dateNextStack">
-                        <rect key="frame" x="380" y="50" width="51" height="27"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSW-7Q-Gsa" userLabel="dateNextStack">
+                        <rect key="frame" x="381" y="50" width="50" height="27"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Next:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jn-Ix-QKN">
                                 <rect key="frame" x="0.0" y="0.0" width="46" height="27"/>
@@ -58,13 +41,13 @@
                                     <constraint firstAttribute="width" constant="46" id="VF7-tO-CYP"/>
                                     <constraint firstAttribute="height" constant="27" id="qPT-xf-RKA"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" tag="3" contentMode="scaleToFill" horizontalHuggingPriority="248" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="272-le-tie">
-                                <rect key="frame" x="46" y="0.0" width="5" height="27"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <rect key="frame" x="46" y="0.0" width="4" height="27"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                         </subviews>
@@ -76,17 +59,17 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="ovv-e6-7YV"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textField>
-                    <textField hidden="YES" opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="248" ambiguous="YES" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2025-10-05" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dvF-fF-Uy3">
-                        <rect key="frame" x="66" y="92.666666666666657" width="79" height="18.666666666666671"/>
+                    <textField hidden="YES" opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="248" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="2025-10-05" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dvF-fF-Uy3">
+                        <rect key="frame" x="66" y="92.666666666666671" width="79" height="18.666666666666671"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Repeats every:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vnn-pX-SpZ">
-                        <rect key="frame" x="20.000000000000007" y="87" width="107.66666666666669" height="19.333333333333329"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <rect key="frame" x="20.000000000000007" y="89" width="101.66666666666669" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -103,25 +86,38 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </pickerView>
+                    <datePicker contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="P1m-fr-TCO">
+                        <rect key="frame" x="58" y="48" width="106" height="31"/>
+                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="31" id="PAk-B8-Tic"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="bu4-bB-RMT"/>
+                        </constraints>
+                        <locale key="locale" localeIdentifier="en"/>
+                    </datePicker>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="UUw-bv-h7A" secondAttribute="bottom" constant="10" id="AFC-4R-B50"/>
-                    <constraint firstItem="xMz-FM-iHS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Jw8-MW-WdT"/>
+                    <constraint firstItem="j53-aq-Z9h" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-124" id="Api-Po-3an"/>
+                    <constraint firstItem="fPp-Hd-Eih" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="M29-Ag-7qr"/>
                     <constraint firstItem="vnn-pX-SpZ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="NFC-n2-VBH"/>
+                    <constraint firstItem="P1m-fr-TCO" firstAttribute="centerY" secondItem="dSW-7Q-Gsa" secondAttribute="centerY" id="Prq-yY-aR7"/>
                     <constraint firstAttribute="trailing" secondItem="UUw-bv-h7A" secondAttribute="trailing" constant="8" id="RpX-4b-S21"/>
                     <constraint firstItem="dvF-fF-Uy3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="66" id="Udx-Ji-jCF"/>
+                    <constraint firstItem="fPp-Hd-Eih" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="50" id="Yhw-gp-b43"/>
+                    <constraint firstItem="P1m-fr-TCO" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="48" id="bEc-Aw-EE1"/>
                     <constraint firstAttribute="trailing" secondItem="dSW-7Q-Gsa" secondAttribute="trailing" constant="20" id="cc6-3k-GX8"/>
-                    <constraint firstItem="vnn-pX-SpZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="87" id="eGF-YZ-1wC"/>
+                    <constraint firstItem="vnn-pX-SpZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="89" id="eGF-YZ-1wC"/>
                     <constraint firstItem="UUw-bv-h7A" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="kBh-5q-Ihj"/>
-                    <constraint firstItem="xMz-FM-iHS" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="50" id="t64-R5-Hkc"/>
+                    <constraint firstItem="P1m-fr-TCO" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="9.3333333333333286" id="mWb-5N-97c"/>
                     <constraint firstItem="dvF-fF-Uy3" firstAttribute="top" secondItem="j53-aq-Z9h" secondAttribute="bottom" constant="54" id="uUE-l8-RvC"/>
+                    <constraint firstItem="P1m-fr-TCO" firstAttribute="leading" secondItem="fPp-Hd-Eih" secondAttribute="trailing" constant="2" id="wHi-vF-Mng"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="customCell" destination="H2p-sc-9uM" id="ymA-74-EAL"/>
                 <outlet property="dateLastField" destination="dvF-fF-Uy3" id="bPH-tz-2QO"/>
-                <outlet property="dateLastStack" destination="xMz-FM-iHS" id="GVi-ch-OjL"/>
                 <outlet property="dateNextField" destination="272-le-tie" id="ifM-US-gXl"/>
                 <outlet property="dateNextStack" destination="dSW-7Q-Gsa" id="9EX-Cn-fTZ"/>
                 <outlet property="datePicker" destination="P1m-fr-TCO" id="TUC-iX-79F"/>

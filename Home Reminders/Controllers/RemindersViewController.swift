@@ -163,7 +163,7 @@ class RemindersViewController: UIViewController {
         let currentDate = Date()
         // Format the date into a string
         let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd-yyyy"
+        formatter.dateFormat = "MMM d, yyyy"
         let dateString = formatter.string(from: currentDate)
         headerLabel.text = "Today is \(dateString)"
     }
@@ -658,7 +658,7 @@ extension RemindersViewController: UITableViewDataSource {
         cell.descriptionField.text = reminder.description
         cell.datePicker.date = DF.dateFormatter.date(from: reminder.dateLast) ?? Date()
         cell.dateLastField.text = reminder.dateLast
-        cell.dateNextField.text = reminder.dateNext
+        cell.dateNextField.text = DF.dateFormatter2.string(from: DF.dateFormatter.date(from: reminder.dateNext) ?? Date())
         cell.frequencyField.text = reminder.frequency
         cell.noteField.text = reminder.note
         cell.customCellDelegate = self
@@ -676,13 +676,13 @@ extension RemindersViewController: UITableViewDataSource {
             cell.dateNextStack.isHidden = true
             cell.lastLabel.text = "Due:"
             cell.repeatsEveryLabel.text = "Frequency:"
-            cell.setPickerLeading(101)
+            cell.setPickerLeading(96)
         } else {
             cell.frequencyField.isHidden = false
             cell.dateNextStack.isHidden = false
             cell.lastLabel.text = "Last:"
             cell.repeatsEveryLabel.text = "Repeats every:"
-            cell.setPickerLeading(185)
+            cell.setPickerLeading(180)
         }
         
         // Modify descriptionField background color as a function of due date in relation to today's date

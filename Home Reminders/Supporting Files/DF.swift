@@ -13,4 +13,10 @@ class DF {
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }()
+    
+    static let dateFormatter2: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d, yyyy"
+        return formatter
+    }()
 }

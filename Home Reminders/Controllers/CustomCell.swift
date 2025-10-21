@@ -129,6 +129,12 @@ class CustomCell: UITableViewCell {
         datePicker.preferredDatePickerStyle = .compact // Or .wheels, .compact, .inline (iOS 14+)
         datePicker.tintColor = .black
         
+        // Attempt to center the text display
+        datePicker.semanticContentAttribute = .forceRightToLeft
+        if let firstSubview = datePicker.subviews.first {
+            firstSubview.semanticContentAttribute = .forceRightToLeft
+        }
+        
         // Add a target to dismiss calendar when date is selected
         datePicker.addTarget(self, action: #selector(datePickerTapped), for: .primaryActionTriggered)
         
@@ -152,7 +158,7 @@ class CustomCell: UITableViewCell {
         let pickerH = picker.heightAnchor.constraint(equalToConstant: 56)
         
         // Frequency field left of picker
-        let freqLeading = frequencyField.leadingAnchor.constraint(equalTo: repeatsEveryLabel.trailingAnchor, constant: 5)
+        let freqLeading = frequencyField.leadingAnchor.constraint(equalTo: repeatsEveryLabel.trailingAnchor, constant: 8)
         let freqTop = frequencyField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 84)
         let freqW = frequencyField.widthAnchor.constraint(equalToConstant: 50)
         
