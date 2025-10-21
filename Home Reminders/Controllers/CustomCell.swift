@@ -129,7 +129,7 @@ class CustomCell: UITableViewCell {
         datePicker.preferredDatePickerStyle = .compact // Or .wheels, .compact, .inline (iOS 14+)
         datePicker.tintColor = .black
         
-        // Attempt to center the text display
+        // Attempt to center the text display in the date picker
         datePicker.semanticContentAttribute = .forceRightToLeft
         if let firstSubview = datePicker.subviews.first {
             firstSubview.semanticContentAttribute = .forceRightToLeft
@@ -168,7 +168,7 @@ class CustomCell: UITableViewCell {
         let descTrailing = descriptionField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
         
         // dateNextStack below description
-        let stackTop = dateNextStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 50)
+        let stackTop = dateNextStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 48)
         let stackTrailing = dateNextStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         let stackH = dateNextStack.heightAnchor.constraint(equalToConstant: 27)
         
@@ -232,7 +232,8 @@ class CustomCell: UITableViewCell {
         // Perform actions with the selected date, e.g., update a label, send data to another component, etc.
         dateLastField.text = DF.dateFormatter.string(from: selectedDate ?? Date())
         let calculatedDateNext = calculateDateNext(row: pickerRow)
-        dateNextField.text = calculatedDateNext
+        // Switch format of calculatedDateNext
+        dateNextField.text = DF.dateFormatter2.string(from: DF.dateFormatter.date(from: calculatedDateNext)!)
         customCellDelegate?.datePickerValueDidChange(inCell: self, withDate: selectedDate ?? Date())
         textCalculationDelegate?.didCalculateText(calculatedDateNext)
     }
@@ -334,7 +335,8 @@ extension CustomCell: UITextFieldDelegate {
         if textField.tag == 4 {
             let pickerIndex = picker.selectedRow(inComponent: 0)
             let calculatedDateNext = calculateDateNext(row: pickerIndex)
-            dateNextField.text = calculatedDateNext
+            // Switch format of calculatedDateNext
+            dateNextField.text = DF.dateFormatter2.string(from: DF.dateFormatter.date(from: calculatedDateNext)!)
             // Send calculatedDateNext to RemindersViewController.
             textCalculationDelegate?.didCalculateText(calculatedDateNext)
         }
@@ -367,7 +369,8 @@ extension CustomCell: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField.tag == 4 {
             let pickerRow = picker.selectedRow(inComponent: 0)
-            dateNextField.text = calculateDateNext(row: pickerRow)
+            // Switch format of calculatedDateNext
+            dateNextField.text = DF.dateFormatter2.string(from: DF.dateFormatter.date(from: calculateDateNext(row: pickerRow))!)
         }
         customCellDelegate?.customCell(self, didEndEditingWithField: textField)
     }

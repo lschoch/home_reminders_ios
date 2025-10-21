@@ -8,7 +8,6 @@
 import UIKit
 import SQLite
 import AppAuth
-// import GoogleAPIClientForRESTCore
 import GoogleAPIClientForREST_Calendar
 import GTMSessionFetcherCore
 import GoogleSignIn
@@ -26,7 +25,8 @@ class RemindersViewController: UIViewController {
     var activeTextField: UITextField?
     let cellSpacingHeight: CGFloat = 10.0
     var customHeaderView: UIView!
-    var headerLabel: UILabel!
+    var titleLabel: UILabel!
+    var dateLabel: UILabel!
     
     private let service = GTLRCalendarService()
     
@@ -68,7 +68,7 @@ class RemindersViewController: UIViewController {
         tableView.addGestureRecognizer(longPress)
         
         setupNavigationBarTitle()
-        setupHeaderView()
+//        setupHeaderView()
         
         loadReminders()
         
@@ -76,8 +76,17 @@ class RemindersViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        titleLabel.isHidden = false
+        dateLabel.isHidden = false
         loadReminders()
         tableView.reloadData()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // cleanup or state changes before the view disappears
+        titleLabel?.isHidden = true
+        dateLabel?.isHidden = true
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -88,8 +97,7 @@ class RemindersViewController: UIViewController {
             // Retrieve the data model for the currently selected row
             let selectedRowData = reminders[selectedIndexPath.section]
             
-            // Check if the selectedRowData has "changed" based on your application's logic
-            // For example, if a text field in the cell was edited and not saved
+            // Check if the selectedRowData has "changed"
             if identifier == "NewReminderSegue" && selectedRowData.hasUnsavedChanges {
                 // Present an alert or prompt the user to save/discard changes
                 let alert = UIAlertController(title: "Unsaved Changes", message: "Do you want to save changes before leaving?", preferredStyle: .alert)
@@ -97,14 +105,14 @@ class RemindersViewController: UIViewController {
                 alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
                     // Save changes for selectedRowData
                     self.saveReminder(selectedIndexPath.section)
-                    // Then, proceed with selecting the new row
+                    // Proceed with seque
                     self.performSegue(withIdentifier: identifier, sender: sender) // Manually perform the segue
                 }))
                 alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
                     // Discard changes for selectedRowData
                     self.discardChangesForSelectedRowData(selectedIndexPath)
                     
-                    // Then, proceed with seque
+                    // Proceed with seque
                     self.performSegue(withIdentifier: identifier, sender: sender) // Manually perform the segue
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
@@ -114,7 +122,7 @@ class RemindersViewController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
                 
                 return false // Prevent the segue from performing automatically
-            } // end: "identifier == "NewRemincerSegue" && selectedRowData.hasUnsavedChanges"
+            } // end: "identifier == "NewReminderSegue" && selectedRowData.hasUnsavedChanges"
         } // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
         return true // Allow other segues to perform normally, or if no unsaved changes
     } // end: function
@@ -127,50 +135,42 @@ class RemindersViewController: UIViewController {
     }
     
     func setupNavigationBarTitle() {
-        let titleLabel = UILabel()
-        titleLabel.text = "Home Reminders"
-        titleLabel.textColor = .brandLightYellow
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
-        titleLabel.textAlignment = .center
         
-        // Set a frame for the label; UIKit will adjust it somewhat for centering
-        // A wider frame helps ensure centering even with other bar button items
-        titleLabel.frame = CGRect(x: 0, y: 0, width: 250, height: 44)
+        if let navigationBar = self.navigationController?.navigationBar {
+            let firstFrame = CGRect(x: 0, y: 0, width: navigationBar.frame.width, height: navigationBar.frame.height/2)
+            let secondFrame = CGRect(x: 0, y: navigationBar.frame.height/2, width: navigationBar.frame.width, height: navigationBar.frame.height/2)
+            
+            titleLabel = UILabel(frame: firstFrame)
+            titleLabel.text = "Home Reminders"
+            titleLabel.textColor = .brandLightYellow
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
+            titleLabel.textAlignment = .center
+            
+            dateLabel = UILabel(frame: secondFrame)
+            dateLabel.textColor = .brandLightYellow
+            dateLabel.font = UIFont.boldSystemFont(ofSize: 16)
+            dateLabel.textAlignment = .center
+            updateDateLabelText()
+            
+            navigationBar.addSubview(titleLabel)
+            navigationBar.addSubview(dateLabel)
+        }
         
-        self.navigationItem.titleView = titleLabel
     }
     
-    func setupHeaderView() {
-        // Create the header view and its elements
-        let headerHeight: CGFloat = 24
-        customHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: headerHeight))
-        customHeaderView.backgroundColor = .brandLightBlue
-        
-        headerLabel = UILabel(frame: customHeaderView.bounds)
-        headerLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight] // allow label to resize with header
-        headerLabel.textAlignment = .center
-        headerLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        headerLabel.textColor = .brandLightYellow
-        updateHeaderLabelText()
-        customHeaderView.addSubview(headerLabel)
-        
-        // Set it as the table's header view
-        tableView.tableHeaderView = customHeaderView
-    }
-    
-    func updateHeaderLabelText() {
+func updateDateLabelText() {
         // Get the current date
         let currentDate = Date()
         // Format the date into a string
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy"
         let dateString = formatter.string(from: currentDate)
-        headerLabel.text = "Today is \(dateString)"
+        dateLabel.text = "Today is \(dateString)"
     }
 
     @objc func handleSignificantTimeChange() {
         print("Significant time change notification received! Updating UI/data.")
-        updateHeaderLabelText()
+        updateDateLabelText()
         // Reload data to reset date-dependent cell background color changes
         loadReminders()
         tableView.reloadData()
@@ -647,12 +647,12 @@ extension RemindersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let reminder = reminders[indexPath.section]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
-        
+
         // add border and color
         cell.backgroundColor = UIColor.white
-        cell.layer.borderColor = UIColor.black.cgColor
-        cell.layer.borderWidth = 1
-        cell.layer.cornerRadius = 8
+//        cell.layer.borderColor = UIColor.black.cgColor
+//        cell.layer.borderWidth = 1
+//        cell.layer.cornerRadius = 8
         cell.clipsToBounds = true
         
         cell.descriptionField.text = reminder.description
@@ -840,23 +840,6 @@ extension RemindersViewController: PickerCellDelegate {
         
         tableView.selectRow(at: reloadIndexPath, animated: true, scrollPosition: .none)
         tableView.delegate?.tableView?(tableView, didSelectRowAt: reloadIndexPath)
-        
-        //                if let indexPath = tableView.indexPath(for: cell) {
-        //                    // Update tableRow directly
-        //                    tableRow = indexPath.section
-        //                    reminders[indexPath.section].hasUnsavedChanges = true
-        //                    reminders[indexPath.section].period = pickerData[row]
-        //                    reminders[indexPath.section].dateNext = calculatedDateNext
-        //
-        //                    if pickerData[row] == "one-time" {
-        //                        reminders[indexPath.section].frequency = "0"
-        //                    }
-        //                    tableView.reloadRows(at: [indexPath], with: .none)
-        //
-        //                    // Programmatically select the row
-        //                    tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-        //                    tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath) // Manually call didSelectRowAt
-        //                }
     }
 }
 

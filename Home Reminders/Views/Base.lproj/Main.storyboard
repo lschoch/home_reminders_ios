@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="lkm-lS-iyJ">
-                                <rect key="frame" x="10" y="172" width="373" height="562"/>
+                                <rect key="frame" x="10" y="182" width="373" height="552"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" name="BrandDarkBlue"/>
                                 <prototypes>
@@ -79,7 +79,7 @@
                             <constraint firstItem="Rqb-gQ-BMZ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="cx4-0j-V3Q"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="lkm-lS-iyJ" secondAttribute="trailing" constant="10" id="kqa-B0-PC7"/>
                             <constraint firstItem="lkm-lS-iyJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="saQ-f5-RdR"/>
-                            <constraint firstItem="lkm-lS-iyJ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="vYH-4l-bL0"/>
+                            <constraint firstItem="lkm-lS-iyJ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="vYH-4l-bL0"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ecz-1n-oNE">
@@ -136,7 +136,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1Fx-D5-ckq">
-                                <rect key="frame" x="130" y="292" width="48" height="36"/>
+                                <rect key="frame" x="130" y="292.33333333333331" width="48" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="1j6-Qv-77a"/>
                                 </constraints>
