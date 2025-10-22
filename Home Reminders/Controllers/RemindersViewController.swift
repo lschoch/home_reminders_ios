@@ -216,9 +216,10 @@ func updateDateLabelText() {
     }
     
     @IBAction func upArrowPressed(_ sender: UIBarButtonItem) {
+        tableView.setContentOffset(.zero, animated: true)
+//        // Alternate method:
 //        let indexPath = IndexPath(row: 0, section: 0)
 //        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-        tableView.setContentOffset(.zero, animated: true)
     }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
