@@ -135,27 +135,45 @@ class RemindersViewController: UIViewController {
     }
     
     func setupNavigationBarTitle() {
-        
-        if let navigationBar = self.navigationController?.navigationBar {
-            let firstFrame = CGRect(x: 0, y: 0, width: navigationBar.frame.width, height: navigationBar.frame.height/2)
-            let secondFrame = CGRect(x: 0, y: navigationBar.frame.height/2, width: navigationBar.frame.width, height: navigationBar.frame.height/2)
-            
-            titleLabel = UILabel(frame: firstFrame)
-            titleLabel.text = "Home Reminders"
-            titleLabel.textColor = .brandLightYellow
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
-            titleLabel.textAlignment = .center
-            
-            dateLabel = UILabel(frame: secondFrame)
-            dateLabel.textColor = .brandLightYellow
-            dateLabel.font = UIFont.boldSystemFont(ofSize: 16)
-            dateLabel.textAlignment = .center
-            updateDateLabelText()
-            
-            navigationBar.addSubview(titleLabel)
-            navigationBar.addSubview(dateLabel)
-        }
-        
+        // build a small vertical stack and set it as the navigationItem.titleView so it stays centered
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.distribution = .fill
+        stack.spacing = 0
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        titleLabel = UILabel()
+        titleLabel.text = "Home Reminders"
+        titleLabel.textColor = .brandLightYellow
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 18) // nav-friendly size
+        titleLabel.textAlignment = .center
+        titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+
+        dateLabel = UILabel()
+        dateLabel.textColor = .brandLightYellow
+        dateLabel.font = UIFont.boldSystemFont(ofSize: 13)
+        dateLabel.textAlignment = .center
+        updateDateLabelText()
+
+        stack.addArrangedSubview(titleLabel)
+        stack.addArrangedSubview(dateLabel)
+        container.addSubview(stack)
+
+        // constrain stack to container edges
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: container.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            // limit width so the titleView doesn't try to occupy the full nav bar width (helps centering)
+            container.widthAnchor.constraint(lessThanOrEqualToConstant: UIScreen.main.bounds.width * 0.6)
+        ])
+
+        navigationItem.titleView = container
     }
     
 func updateDateLabelText() {

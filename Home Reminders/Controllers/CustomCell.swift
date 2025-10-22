@@ -153,7 +153,7 @@ class CustomCell: UITableViewCell {
         
         // Picker: place roughly where the XIB expected it; expose leading constant to update later
         pickerLeadingConstraint = picker.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 186)
-        let pickerTop = picker.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 70)
+        let pickerTop = picker.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 71)
         let pickerW = picker.widthAnchor.constraint(equalToConstant: 108)
         let pickerH = picker.heightAnchor.constraint(equalToConstant: 56)
         
@@ -168,15 +168,16 @@ class CustomCell: UITableViewCell {
         let descTrailing = descriptionField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
         
         // dateNextStack below description
-        let stackTop = dateNextStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 48)
-        let stackTrailing = dateNextStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
+        let stackTop = dateNextStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 49)
+        let stackLeading = dateNextStack.trailingAnchor.constraint(equalTo: datePicker.trailingAnchor, constant: 172)
+//        let stackTrailing = dateNextStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         let stackH = dateNextStack.heightAnchor.constraint(equalToConstant: 27)
         
         NSLayoutConstraint.activate([
             pickerLeadingConstraint!, pickerTop, pickerW, pickerH,
             freqLeading, freqTop, freqW,
             descTop, descLeading, descTrailing,
-            stackTop, stackTrailing, stackH
+            stackTop, stackLeading, stackH
         ])
         
         // Small layout pass to apply constraints immediately
