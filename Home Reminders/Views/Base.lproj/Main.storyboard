@@ -168,7 +168,7 @@
                                 <locale key="locale" localeIdentifier="en"/>
                             </datePicker>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Note" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="z1I-ou-bmM">
-                                <rect key="frame" x="16" y="422" width="361" height="36"/>
+                                <rect key="frame" x="16" y="421.66666666666669" width="361" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textField>
@@ -190,7 +190,7 @@
                             <constraint firstItem="1Fx-D5-ckq" firstAttribute="leading" secondItem="Rf0-L4-yXG" secondAttribute="trailing" constant="8" id="bWd-Uy-nBl"/>
                             <constraint firstItem="Rf0-L4-yXG" firstAttribute="leading" secondItem="0Ob-VO-CkX" secondAttribute="leading" constant="16" id="dup-1y-Fqn"/>
                             <constraint firstItem="N1t-KI-7Et" firstAttribute="top" secondItem="Rf0-L4-yXG" secondAttribute="bottom" constant="37.666666666666686" id="e8P-ls-lyo"/>
-                            <constraint firstItem="z1I-ou-bmM" firstAttribute="top" secondItem="N1t-KI-7Et" secondAttribute="bottom" constant="33" id="fkU-RT-XsC"/>
+                            <constraint firstItem="z1I-ou-bmM" firstAttribute="top" secondItem="mKp-87-cdD" secondAttribute="bottom" constant="0.67000000000000004" id="fkU-RT-XsC"/>
                             <constraint firstItem="1Fx-D5-ckq" firstAttribute="top" secondItem="PdA-ej-JOY" secondAttribute="bottom" constant="13" id="gMJ-3I-Wdc"/>
                             <constraint firstItem="N1t-KI-7Et" firstAttribute="leading" secondItem="0Ob-VO-CkX" secondAttribute="leading" constant="16" id="h2X-yv-Iew"/>
                             <constraint firstItem="PdA-ej-JOY" firstAttribute="top" secondItem="5Ux-hu-mDj" secondAttribute="bottom" constant="17" id="lmR-aE-u2y"/>

@@ -85,10 +85,6 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             frequencyField.addTarget(self, action: #selector(frequencyFieldChanged(_:)), for: .editingChanged)
             
             saveButton.isHidden = true
-            
-            // Dismiss keyboard when tapping outside text field.
-//            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-//            view.addGestureRecognizer(tapGesture)
         }
     }
     
@@ -101,10 +97,10 @@ class NewReminderViewController: UIViewController, UIPickerViewDelegate, UIPicke
             frequencyField.text = "0"
             
             // Alert notification re: frequency when period is "one-time."
-//            let ac = UIAlertController(title: "one-time", message: "Frequency is set to zero for 'one-time'.", preferredStyle: .alert)
-//            ac.addAction(UIAlertAction(title: "OK", style: .default))
-//            self.present(ac, animated: true)
-            
+            let ac = UIAlertController(title: "one-time", message: "Frequency must remain at zero for 'one-time' reminders.", preferredStyle: .alert)
+            ac.view.tintColor = .black
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(ac, animated: true)
         }
     }
     

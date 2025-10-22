@@ -64,7 +64,7 @@ class CustomCell: UITableViewCell {
         self.layer.borderColor = UIColor.black.cgColor
         self.layer.borderWidth = 1.0
         self.layer.cornerRadius = 8.0
-        
+        self.layer.backgroundColor = UIColor.white.cgColor
         
         // Shift text field text right (so that it's not at the very edge of the container)
         let paddingView1: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 6, height: 20))
@@ -342,14 +342,15 @@ extension CustomCell: UITextFieldDelegate {
             textCalculationDelegate?.didCalculateText(calculatedDateNext)
         }
         
-        // If period is "one-time", set frequency to zero and trigger alert.
-        //        if picker.selectedRow(inComponent: 0) == 0 {
-        //            frequencyField.text = "0"
-        //            // Trigger frequency alert if the call to this function is from the frequency field.
-        //            if textField.tag == 4 {
-        //                customCellDelegate?.customCellFrequencyAlert(self)
-        //            }
-        //        }
+        // TODO: this code can be deleted after use and testing confirms it is no longer needed.
+//        // If period is "one-time", set frequency to zero and trigger alert.
+//        if picker.selectedRow(inComponent: 0) == 0 {
+//            frequencyField.text = "0"
+//            // Trigger frequency alert if the call to this function is from the frequency field.
+//            if textField.tag == 4 {
+//                customCellDelegate?.customCellFrequencyAlert(self)
+//            }
+//        }
     }
     
     // Dismiss keyboard when "Return" key is tapped.

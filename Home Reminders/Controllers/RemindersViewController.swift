@@ -490,7 +490,6 @@ func updateDateLabelText() {
     }
     
     func discardChangesForSelectedRowData(_ selectedIndexPath: IndexPath) {
-        // Discard changes for selectedRowData
         // Reset calculatedDateNext so it won't overwrite previous value of dateNext.
         self.calculatedDateNext = ""
         self.reminders[selectedIndexPath.section].description = self.remindersOriginal[selectedIndexPath.section].description
@@ -666,13 +665,14 @@ extension RemindersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let reminder = reminders[indexPath.section]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! CustomCell
-
-        // add border and color
-        cell.backgroundColor = UIColor.white
+        
+        // TODO: These properties are set in CustomCell.swift, delete them after use and testing confirms they are not needed here.
+//        // add border and color
+//        cell.backgroundColor = UIColor.white
 //        cell.layer.borderColor = UIColor.black.cgColor
 //        cell.layer.borderWidth = 1
 //        cell.layer.cornerRadius = 8
-        cell.clipsToBounds = true
+//        cell.clipsToBounds = true
         
         cell.descriptionField.text = reminder.description
         cell.datePicker.date = DF.dateFormatter.date(from: reminder.dateLast) ?? Date()
@@ -850,9 +850,7 @@ extension RemindersViewController: PickerCellDelegate {
         reminders[section].period = pickerData[row]
         
         reminders[section].dateNext = calculatedDateNext
-        //        if pickerData[row] == "one-time" {
-        //            reminders[section].frequency = "0"
-        //        }
+        // No need to set frequency to zero since it is hidden when period is "one-time."
         // reload the single row in that section
         let reloadIndexPath = IndexPath(row: 0, section: section)
         tableView.reloadRows(at: [reloadIndexPath], with: .none)
