@@ -59,8 +59,8 @@ class RemindersViewController: UIViewController {
         tableView.sectionHeaderTopPadding = 0
         
         // Dismiss keyboard when tapping outside text field.
-        //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
-        //                view.addGestureRecognizer(tapGesture)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
         
         // add long-press recognizer to tableView to deselect a selected cell
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
@@ -196,21 +196,78 @@ func updateDateLabelText() {
     
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
+        // Currently active text field needs to resign first responder so that didEndEditing will fire.
+        activeTextField?.resignFirstResponder()
         let point = gesture.location(in: tableView)
-        guard let indexPath = tableView.indexPathForRow(at: point) else { return }
-        
-        // If the long-pressed row is currently selected, run the existing deselect flow
-        if let selected = tableView.indexPathForSelectedRow, selected == indexPath {
-            // reuse your existing deselect logic (shows alerts / saves as implemented)
-            deselectReminder()
-            //        } else {
-            //            // otherwise select the long-pressed row
-            //            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            //            tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
-            //        }
-        }
-    }
-    
+        guard let pointed = tableView.indexPathForRow(at: point) else { return }
+        if let selectedIndexPath = tableView.indexPathForSelectedRow {
+            // Get the currently selected row (if any)
+            let selectedRow = selectedIndexPath.section
+            if selectedIndexPath == pointed {
+                // Deselect the reminder and return.
+                // Check if the selectedRow data has changed.
+                if reminderHasUnsavedChanges(selectedRow) == true {
+                    // Present an alert and prompt user to save/discard changes or cancel.
+                    // If the user confirms to proceed, handle saving/discarding and return
+                    let alert = UIAlertController(title: "Deselect", message: "Save changes before deselecting?", preferredStyle: .alert)
+                    alert.view.tintColor = .black
+                    alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
+                        self.saveReminder(selectedRow)
+                        self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                    }))
+                    alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
+                        // Discard changes for selectedRowData
+                        self.discardChangesForSelectedRowData(selectedIndexPath)
+                        self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                    }))
+                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                        return
+                    }))
+                    self.present(alert, animated: true, completion: nil)
+                    return
+                } else {
+                    self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                }
+            } else {
+                // Deselect the reminder, select the long-pressed reminder, and return.
+                // Check if the selectedRow data has changed.
+                if reminderHasUnsavedChanges(selectedRow) == true {
+                    // Present an alert and prompt user to save/discard changes or cancel.
+                    // If the user confirms to proceed, handle saving/discarding and return
+                    let alert = UIAlertController(title: "Deselect", message: "Save changes before deselecting?", preferredStyle: .alert)
+                    alert.view.tintColor = .black
+                    alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { _ in
+                        self.saveReminder(selectedRow)
+                        self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                        // Select the long-pressed row
+                        self.tableView.selectRow(at: pointed, animated: true, scrollPosition: .none)
+                        self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: pointed)
+                    }))
+                    alert.addAction(UIAlertAction(title: "Discard", style: .destructive, handler: { _ in
+                        // Discard changes for selectedRowData
+                        self.discardChangesForSelectedRowData(selectedIndexPath)
+                        self.tableView.deselectRow(at: selectedIndexPath, animated: true)
+                        // Select the long-pressed row
+                        self.tableView.selectRow(at: pointed, animated: true, scrollPosition: .none)
+                        self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: pointed)
+                    }))
+                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                        return
+                    }))
+                    self.present(alert, animated: true, completion: nil)
+                    return
+                } else {
+                    tableView.selectRow(at: pointed, animated: true, scrollPosition: .none)
+                    tableView.delegate?.tableView?(tableView, didSelectRowAt: pointed)
+                }
+            }// end: "if selectedRowData.hasUnsavedChanges"
+        } else {
+            // If no row is selected, select the long-pressed row
+            tableView.selectRow(at: pointed, animated: true, scrollPosition: .none)
+            tableView.delegate?.tableView?(tableView, didSelectRowAt: pointed)
+        } // end "if let selectedIndexPath = tableView.indexPathForSelectedRow"
+    } // end "@objc func handleLongPress"
+
     @objc func hideKeyboard() {
         view.endEditing(true)
     }
@@ -331,11 +388,10 @@ func updateDateLabelText() {
         
         // Get the currently selected row (if any)
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
-            // Retrieve the data model for the currently selected row
-            let selectedRowData = reminders[selectedIndexPath.section]
+            let selectedRow = selectedIndexPath.section
             
-            // Check if the selectedRowData has "changed"
-            if selectedRowData.hasUnsavedChanges {
+            // Check if the selectedRow data has changed.
+            if reminderHasUnsavedChanges(selectedRow) == true {
                 // Present an alert or prompt the user to save/discard changes
                 // If the user chooses to stay on the current row, return nil
                 // If the user confirms to proceed, handle saving/discarding and then return indexPath
@@ -361,6 +417,15 @@ func updateDateLabelText() {
         } else {
             notificationAlert(title: "Deselect", message: "No row is selected.") // end: "if let selectedIndexPath = tableView.indexPathForSelectedRow"
         }
+    }
+    
+    func reminderHasUnsavedChanges(_ row: Int) -> Bool {
+        if reminders[row].description != remindersOriginal[row].description { return true }
+        else if reminders[row].dateLast != remindersOriginal[row].dateLast { return true }
+        else if reminders[row].frequency != remindersOriginal[row].frequency { return true }
+        else if reminders[row].period != remindersOriginal[row].period { return true }
+        else if reminders[row].note != remindersOriginal[row].note { return true }
+        else { return false }
     }
     
     //MARK: - Data Manipulation Methods
@@ -730,13 +795,13 @@ extension RemindersViewController: UITableViewDelegate {
         
         // Currently active text field needs to resign first responder so that didEndEditing will fire.
         activeTextField?.resignFirstResponder()
-        // Get the currently selected row (if any)
+        // Get the currently selected row (if any).
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
-            // Retrieve the data model for the currently selected row
-            let selectedRowData = reminders[selectedIndexPath.section]
+            // Retrieve the data model for the currently selected row.
+            let selectedRow = selectedIndexPath.section
             
-            // Check if the selectedRowData has changed.
-            if selectedRowData.hasUnsavedChanges {
+            // Check if the selectedRow data has changed.
+            if reminderHasUnsavedChanges(selectedRow) == true {
                 // Prompt the user to save/discard changes
                 // If the user chooses to stay on the current row, return nil
                 // If the user confirms to proceed, handle saving/discarding and then return indexPath
