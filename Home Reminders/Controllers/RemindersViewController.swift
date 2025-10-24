@@ -27,6 +27,10 @@ class RemindersViewController: UIViewController {
     var customHeaderView: UIView!
     var titleLabel: UILabel!
     var dateLabel: UILabel!
+    var helpLabel: UILabel!
+    var helpLabel2: UILabel!
+    var spacerLabel: UILabel!
+    var spacerLabel2: UILabel!
     
     private let service = GTLRCalendarService()
     
@@ -62,7 +66,7 @@ class RemindersViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         view.addGestureRecognizer(tapGesture)
         
-        // add long-press recognizer to tableView to deselect a selected cell
+        // Add long-press recognizer to tableView to toggle reminder selection
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         longPress.minimumPressDuration = 0.6
         tableView.addGestureRecognizer(longPress)
@@ -158,9 +162,43 @@ class RemindersViewController: UIViewController {
         dateLabel.font = UIFont.boldSystemFont(ofSize: 13)
         dateLabel.textAlignment = .center
         updateDateLabelText()
+        
+        spacerLabel = UILabel()
+        spacerLabel.textColor = .clear
+        spacerLabel.font = UIFont.boldSystemFont(ofSize: 6)
+        spacerLabel.text = "black"
+        
+        spacerLabel2 = UILabel()
+        spacerLabel2.textColor = .clear
+        spacerLabel2.font = UIFont.boldSystemFont(ofSize: 6)
+        spacerLabel2.text = "black"
+        
+        helpLabel = UILabel()
+        helpLabel.textColor = .black
+        helpLabel.backgroundColor = .clear
+//        helpLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.55).isActive = true
+        helpLabel.font = UIFont.systemFont(ofSize: 14)
+        helpLabel.textAlignment = .center
+        helpLabel.numberOfLines = 0
+        helpLabel.lineBreakMode = .byWordWrapping
+        helpLabel.text = "Long press to select a reminder."
+        
+        helpLabel2 = UILabel()
+        helpLabel2.textColor = .brandLightYellow
+        helpLabel2.backgroundColor = .clear
+        helpLabel2.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.55).isActive = true
+        helpLabel2.font = UIFont.boldSystemFont(ofSize: 14)
+        helpLabel2.textAlignment = .center
+        helpLabel.numberOfLines = 0
+        helpLabel.lineBreakMode = .byWordWrapping
+        helpLabel2.text = "reminder."
 
         stack.addArrangedSubview(titleLabel)
-        stack.addArrangedSubview(dateLabel)
+//        stack.addArrangedSubview(spacerLabel)
+//        stack.addArrangedSubview(dateLabel)
+//        stack.addArrangedSubview(spacerLabel2)
+        stack.addArrangedSubview(helpLabel)
+//        stack.addArrangedSubview(helpLabel2)
         container.addSubview(stack)
 
         // constrain stack to container edges
@@ -170,7 +208,7 @@ class RemindersViewController: UIViewController {
             stack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             stack.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             // limit width so the titleView doesn't try to occupy the full nav bar width (helps centering)
-            container.widthAnchor.constraint(lessThanOrEqualToConstant: UIScreen.main.bounds.width * 0.6)
+            container.widthAnchor.constraint(lessThanOrEqualToConstant: UIScreen.main.bounds.width)
         ])
 
         navigationItem.titleView = container
